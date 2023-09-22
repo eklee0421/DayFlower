@@ -1,20 +1,22 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    id(Plugins.ANDROID_APPLICATION)
+    id(Plugins.KOTLIN_ANDROID)
+    id(Plugins.HILT_ANDROID)
+    id(Plugins.KAPT)
 }
 
 android {
     namespace = "com.nyang.dayFlower"
-    compileSdk = 33
+    compileSdk = DefaultConfig.COMPILE_SDK_VERSION
 
     defaultConfig {
         applicationId = "com.nyang.dayFlower"
-        minSdk = 28
-        targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = DefaultConfig.MIN_SDK_VERSION
+        targetSdk = DefaultConfig.TARGET_SDK_VERSION
+        versionCode = DefaultConfig.VERSION_CODE
+        versionName = DefaultConfig.VERSION_NAME
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = DefaultConfig.TEST_INSTRUMENTATION_RUNNTER
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -30,14 +32,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
+        dataBinding = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -51,19 +55,38 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation("androidx.activity:activity-compose:1.7.2")
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    //androidx
+    implementation(Dependencies.coreKtx)
+    implementation(Dependencies.lifecycleRuntimeKtx)
+    implementation(Dependencies.lifecycleRuntimeCompose)
+    implementation(Dependencies.activityCompose)
+    implementation(Dependencies.composeUI)
+    implementation(Dependencies.composeUIToolingPreview)
+    implementation("androidx.compose.ui:ui-tooling:1.1.1")
+    implementation(Dependencies.material)
+    implementation(Dependencies.composeNavigation)
+    implementation("androidx.appcompat:appcompat:1.6.1")
+
+    testImplementation(Testing.composeUiTooling)
+    testImplementation(Testing.composeUiTestJunit)
+    testImplementation(Testing.composeUiTestManifest)
+    testImplementation(Testing.junit)
+    testImplementation(Testing.testExtJunit)
+    testImplementation(Testing.espressoCore)
+
+    implementation(Dependencies.hiltAndroid)
+    kapt(Dependencies.hiltCompiler)
+    implementation(Dependencies.hiltNavigationCompose)
+    implementation("androidx.compose.animation:animation:1.3.3")
+    implementation("androidx.compose.material:material-icons-extended:1.3.1")
+
+    implementation(Dependencies.accompanist_drawablepainter)
+    implementation(Dependencies.splashScreen)
+    implementation("com.google.accompanist:accompanist-drawablepainter:0.28.0")
+    implementation("androidx.compose.material:material-icons-extended:1.2.0")
+
+    implementation(Dependencies.gson)
+    implementation(Dependencies.retrofit2)
+    implementation(Dependencies.convertGson)
+    implementation("com.squareup.retrofit2:converter-scalars:2.3.0")
 }

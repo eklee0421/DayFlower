@@ -1,5 +1,16 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("com.android.application") version "8.1.0" apply false
-    id("org.jetbrains.kotlin.android") version "1.8.10" apply false
+    id(Plugins.ANDROID_APPLICATION) version Versions.AGP apply false
+    id(Plugins.ANDROID_LIBRARY) version Versions.AGP apply false
+    id(Plugins.KOTLIN_ANDROID) version Versions.KOTLIN apply false
+}
+
+buildscript {
+    dependencies {
+        classpath(Dependencies.hiltPlugin)
+    }
+}
+
+tasks.register<Delete>("clean") {
+    delete(rootProject.buildDir)
 }
