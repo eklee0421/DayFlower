@@ -16,6 +16,12 @@ android {
         versionCode = DefaultConfig.VERSION_CODE
         versionName = DefaultConfig.VERSION_NAME
 
+        buildConfigField(
+            DefaultConfig.API_KEY_TYPE,
+            DefaultConfig.SEARCH_FLOWER,
+            getApiKey(DefaultConfig.SEARCH_FLOWER)
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -43,6 +49,8 @@ android {
     }
     buildFeatures {
         compose = true
+        dataBinding = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -58,16 +66,19 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation("androidx.activity:activity-compose:1.7.2")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+
+    //compose
+    implementation(Dependencies.composeActivity)
+    implementation(Dependencies.composeUi)
+    implementation(Dependencies.composeUiGraphics)
+    implementation(Dependencies.composeUiToolingPreview)
+    implementation(Dependencies.composeMaterial3)
 
     //hilt
     implementation(Dependencies.hiltAndroid)
     kapt(Dependencies.hiltAndroidComplier)
+    implementation(Dependencies.hiltNavigationCompose)
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -81,4 +92,9 @@ dependencies {
 
 kapt {
     correctErrorTypes = true
+}
+
+
+fun getApiKey(propertyKey: String): String {
+    return com.android.build.gradle.internal.cxx.configure.gradleLocalProperties(rootDir).getProperty(propertyKey)
 }
