@@ -1,8 +1,8 @@
 plugins {
     id(Plugins.ANDROID_APPLICATION)
     id(Plugins.KOTLIN_ANDROID)
-    kotlin("kapt")
-    id("com.google.dagger.hilt.android")
+    kotlin(Plugins.KAPT)
+    id(Plugins.HILT_ANDROID)
 }
 
 android {
@@ -66,8 +66,8 @@ dependencies {
     implementation("androidx.compose.material3:material3")
 
     //hilt
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation(Dependencies.hiltAndroid)
+    kapt(Dependencies.hiltAndroidComplier)
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
