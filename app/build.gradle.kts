@@ -85,18 +85,16 @@ dependencies {
     implementation(Dependencies.retrofit2)
     implementation(Dependencies.convertGson)
     implementation(Dependencies.retrofitScalars)
+    implementation(Dependencies.retrofitSimpleXml)
 
-    implementation ("com.tickaroo.tikxml:annotation:0.8.13")
-    implementation ("com.tickaroo.tikxml:core:0.8.13")
-    implementation ("com.tickaroo.tikxml:retrofit-converter:0.8.13")
-    kapt ("com.tickaroo.tikxml:processor:0.8.13")
-    
-    //okhttp
-    implementation ("com.squareup.retrofit2:converter-simplexml:2.1.0")
-    /*implementation(Dependencies.okhttp3)
-    implementation(Dependencies.okhttp3Logging)
-    implementation(Dependencies.okhttp3UrlConnection)*/
+    //tikxml
+    implementation(Dependencies.tikxmlAnnotation)
+    implementation(Dependencies.tikxmlCore)
+    implementation(Dependencies.tikxmlRetrofitConverter)
+    kapt(Dependencies.tikxmlProcessor)
 
+    //coil compose
+    implementation("io.coil-kt:coil-compose:2.1.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

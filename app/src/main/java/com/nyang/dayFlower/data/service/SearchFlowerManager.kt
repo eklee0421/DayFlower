@@ -14,7 +14,7 @@ object SearchFlowerManager {
     private const val BASE_URL = "https://apis.data.go.kr/1390804/NihhsTodayFlowerInfo01/"
     private fun getInstance() = Retrofit.Builder()
         .baseUrl(BASE_URL)
-        //.client(okHttpClient)
+        .client(okHttpClient)
         .addConverterFactory(
             TikXmlConverterFactory.create(TikXml.Builder().exceptionOnUnreadXml(false).build())
         )

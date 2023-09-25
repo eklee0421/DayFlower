@@ -18,9 +18,11 @@ object Dependencies {
     const val retrofit2 = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT2}"
     const val convertGson = "com.squareup.retrofit2:converter-gson:${Versions.CONVERTER_GSON}"
     const val retrofitScalars = "com.squareup.retrofit2:converter-scalars:${Versions.RETROFIT_SCALARS}"
+    const val retrofitSimpleXml = "com.squareup.retrofit2:converter-simplexml:${Versions.RETROFIT_SIMPLE_XML}"
     
-    //okhttp
-    const val okhttp3 = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP3}"
-    const val okhttp3Logging = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP3}"
-    const val okhttp3UrlConnection = "com.squareup.okhttp3:okhttp-urlconnection:${Versions.OKHTTP3}"
+    //tikxml
+    const val tikxmlAnnotation = "com.tickaroo.tikxml:annotation:${Versions.TIKXML}"
+    const val tikxmlCore = "com.tickaroo.tikxml:core:${Versions.TIKXML}"
+    const val tikxmlRetrofitConverter = "com.tickaroo.tikxml:retrofit-converter:${Versions.TIKXML}"
+    const val tikxmlProcessor = "com.tickaroo.tikxml:processor:${Versions.TIKXML}"
 }

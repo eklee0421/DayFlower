@@ -11,8 +11,9 @@ object Versions {
     const val GSON = "2.9.0"
     const val RETROFIT2 = "2.9.0"
     const val CONVERTER_GSON = "2.9.0"
-    const val RETROFIT_SCALARS ="2.3.0"
+    const val RETROFIT_SCALARS = "2.3.0"
+    const val RETROFIT_SIMPLE_XML = "2.1.0"
 
-    //okhttp
-    const val OKHTTP3 = "4.1.0"
+    //tikxml
+    const val TIKXML = "0.8.13"
 }

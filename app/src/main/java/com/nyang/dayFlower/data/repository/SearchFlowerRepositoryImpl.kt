@@ -7,40 +7,34 @@ import com.nyang.dayFlower.domain.model.flowerDetail.FlowerDetail
 import com.nyang.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
 import com.nyang.dayFlower.domain.model.flowerDetail.ResponseFlowerDetail
 import com.nyang.dayFlower.domain.repository.SearchFlowerRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class SearchFlowerRepositoryImpl : SearchFlowerRepository {
-    override suspend fun getFlowerDetail(requestFlowerDetail: RequestFlowerDetail): FlowerDetail{
-        val service = SearchFlowerManager.getService()
-        var result = FlowerDetail()
+    override suspend fun getFlowerDetail(requestFlowerDetail: RequestFlowerDetail): FlowerDetail =
+        withContext(Dispatchers.IO) {
+            val service = SearchFlowerManager.getService()
+            var result = FlowerDetail()
 
-        service.getFlowerDetail(
-            serviceKey = BuildConfig.search_flower_api_key,
-            fMonth = 9,
-            fDay = 17
-        ).enqueue(object : Callback<ResponseFlowerDetail> {
-            override fun onResponse(
-                call: Call<ResponseFlowerDetail>,
-                response: Response<ResponseFlowerDetail>
-            ) {
-                Log.d("Success", response.body().toString())
+            val data = service.getFlowerDetail(
+                serviceKey = BuildConfig.search_flower_api_key,
+                fMonth = 9,
+                fDay = 17
+            )
 
-                response.body()?.let {
-                    result = it.root?.result ?: FlowerDetail()
+            when (data.isSuccessful) {
+                true -> {
+                    result = data.body()?.root?.result ?: FlowerDetail()
+                    Log.d("Success", "$result")
+                }
+                else -> {
+                    Log.d("Failure", "get flower detail")
                 }
             }
 
-            override fun onFailure(
-                call: Call<ResponseFlowerDetail>,
-                t: Throwable
-            ) {
-                Log.d("Failure", t.localizedMessage ?: "bbb")
-            }
-
-        })
-
-        return result
-    }
+            return@withContext result
+        }
 }
