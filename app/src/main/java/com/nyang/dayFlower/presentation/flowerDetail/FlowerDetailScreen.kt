@@ -4,8 +4,19 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.KeyboardArrowLeft
+import androidx.compose.material.icons.rounded.KeyboardArrowRight
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -27,14 +38,57 @@ import com.nyang.dayFlower.domain.model.flowerDetail.FlowerDetail
 fun FlowerDetailScreen(
     viewModel : FlowerDetailViewModel = hiltViewModel()
 ) {
+
     FlowerDetailContent(flowerDetail = viewModel.flowerDetail.value)
+
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FlowerDetailContent(
     flowerDetail : FlowerDetail = FlowerDetail()
 ) {
-    FlowerCard(flowerDetail=flowerDetail)
+    Scaffold(
+        topBar = { FlowerDetailTopBar(month = flowerDetail.fMonth, day = flowerDetail.fDay)}
+    ) {
+        Box(modifier = Modifier.padding(it)){
+            FlowerCard(flowerDetail=flowerDetail)
+        }
+
+    }
+}
+
+@Composable
+private fun FlowerDetailTopBar(
+    month : Int?,
+    day : Int?
+){
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .height(56.dp)){
+
+        Divider(color = Color.LightGray)
+
+        Text("${month}월 ${day}일",
+            modifier = Modifier.align(Alignment.Center))
+
+        IconButton(onClick = {  },
+            modifier = Modifier
+                .size(56.dp)
+                .align(Alignment.CenterStart)) {
+            Icon(imageVector= Icons.Rounded.KeyboardArrowLeft,
+                contentDescription = "")
+        }
+
+        IconButton(onClick = {  },
+            modifier = Modifier
+                .size(56.dp)
+                .align(Alignment.CenterEnd)) {
+            Icon(imageVector= Icons.Rounded.KeyboardArrowRight,
+                contentDescription = "")
+        }
+    }
 }
 
 @Composable
@@ -65,9 +119,7 @@ private fun FlowerCardFront(flowerDetail : FlowerDetail){
             contentDescription = flowerDetail.fileName1,
             modifier = Modifier.fillMaxSize())
 
-        Text("${flowerDetail.fMonth}월 ${flowerDetail.fDay}일",
-            color = Color.Red,
-            modifier = Modifier.align(Alignment.BottomStart))
+
     }
 
 
@@ -75,7 +127,14 @@ private fun FlowerCardFront(flowerDetail : FlowerDetail){
 
 @Composable
 private fun FlowerCardBack(flowerDetail : FlowerDetail){
-    Text("${flowerDetail.fContent}")
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text("${flowerDetail.fContent}")
+    }
+}
+
+@Composable
+private fun FlowerOtherDetail(){
+
 }
 
 @Preview
