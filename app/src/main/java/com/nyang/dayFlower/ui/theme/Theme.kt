@@ -16,20 +16,20 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 //region dark
-private val DarkColorScheme = darkColorScheme(
+private val darkColorScheme = darkColorScheme(
     primary = Primary60,
     onPrimary = Neutral100,
-    primaryContainer = Gray200,
+    primaryContainer = Primary90,
     onPrimaryContainer = Primary20,
 
     secondary = Secondary60,
     onSecondary = Neutral100,
-    secondaryContainer = Secondary99,
+    secondaryContainer = Secondary90,
     onSecondaryContainer = Secondary20,
 
     tertiary = Tertiary60,
     onTertiary = Neutral100,
-    tertiaryContainer = Tertiary99,
+    tertiaryContainer = Tertiary90,
     onTertiaryContainer = Tertiary20,
 
 
@@ -53,22 +53,21 @@ private val DarkColorScheme = darkColorScheme(
 )
 //endregion
 
-private val LightColorScheme = lightColorScheme(
+private val lightColorScheme = lightColorScheme(
     primary = Primary60,
     onPrimary = Neutral100,
-    primaryContainer = Gray200,
+    primaryContainer = Primary90,
     onPrimaryContainer = Primary20,
 
     secondary = Secondary60,
     onSecondary = Neutral100,
-    secondaryContainer = Secondary99,
+    secondaryContainer = Secondary90,
     onSecondaryContainer = Secondary20,
 
     tertiary = Tertiary60,
     onTertiary = Neutral100,
-    tertiaryContainer = Tertiary99,
+    tertiaryContainer = Tertiary90,
     onTertiaryContainer = Tertiary20,
-
 
     background = Neutral100,
     surface = Neutral99,
@@ -102,8 +101,8 @@ fun DayFlowerTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> darkColorScheme
+        else -> lightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {

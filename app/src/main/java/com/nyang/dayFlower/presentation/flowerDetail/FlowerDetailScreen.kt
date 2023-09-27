@@ -16,6 +16,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -68,7 +69,7 @@ private fun FlowerDetailTopBar(
             .fillMaxWidth()
             .height(56.dp)){
 
-        Divider(color = Color.LightGray)
+        Divider(color = MaterialTheme.colorScheme.outline)
 
         Text("${month}월 ${day}일",
             modifier = Modifier.align(Alignment.Center))
