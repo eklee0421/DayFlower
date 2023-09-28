@@ -94,7 +94,11 @@ dependencies {
     kapt(Dependencies.tikxmlProcessor)
 
     //coil compose
-    implementation("io.coil-kt:coil-compose:2.1.0")
+    implementation(Dependencies.coilCompose)
+
+    //viewpager
+    implementation(Dependencies.accompanistPager)
+    implementation(Dependencies.accompanistPagerIndicators)
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

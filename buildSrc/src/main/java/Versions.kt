@@ -16,4 +16,10 @@ object Versions {
 
     //tikxml
     const val TIKXML = "0.8.13"
+
+    //coil compose
+    const val COIL_COMPSE = "2.1.0"
+
+    //view pager
+    const val ACCOMPANIST_PAGER = "0.20.1"
 }

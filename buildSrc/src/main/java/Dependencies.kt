@@ -25,4 +25,11 @@ object Dependencies {
     const val tikxmlCore = "com.tickaroo.tikxml:core:${Versions.TIKXML}"
     const val tikxmlRetrofitConverter = "com.tickaroo.tikxml:retrofit-converter:${Versions.TIKXML}"
     const val tikxmlProcessor = "com.tickaroo.tikxml:processor:${Versions.TIKXML}"
+
+    //coil compose
+    const val coilCompose = "io.coil-kt:coil-compose:${Versions.COIL_COMPSE}"
+
+    //view pager
+    const val accompanistPager = "com.google.accompanist:accompanist-pager:${Versions.ACCOMPANIST_PAGER}"
+    const val accompanistPagerIndicators = "com.google.accompanist:accompanist-pager-indicators:${Versions.ACCOMPANIST_PAGER}"
 }

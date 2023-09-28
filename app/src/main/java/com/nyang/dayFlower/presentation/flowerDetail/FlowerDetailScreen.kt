@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,9 +41,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.VerticalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.nyang.dayFlower.R
 import com.nyang.dayFlower.domain.model.flowerDetail.FlowerDetail
 import com.nyang.dayFlower.ui.theme.Tertiary10
+import kotlinx.coroutines.launch
 
 @Composable
 fun FlowerDetailScreen(
@@ -53,7 +58,7 @@ fun FlowerDetailScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
 @Composable
 private fun FlowerDetailContent(
     flowerDetail : FlowerDetail = FlowerDetail()
@@ -61,11 +66,21 @@ private fun FlowerDetailContent(
     Scaffold(
         topBar = { FlowerDetailTopBar(month = flowerDetail.fMonth, day = flowerDetail.fDay)}
     ) {
-        Box(modifier = Modifier.padding(it)){
-            //todo FlowerCard(flowerDetail=flowerDetail)
-            FlowerOtherDetail(flowerDetail = flowerDetail)
-        }
 
+        val pagerState = rememberPagerState()
+        val coroutineScope = rememberCoroutineScope()
+
+        VerticalPager(
+            count = 2,
+            state = pagerState,
+            modifier = Modifier.padding(it)) { page ->
+            when(page){
+                0 -> FlowerCard(flowerDetail = flowerDetail) {
+                    coroutineScope.launch { pagerState.animateScrollToPage(1) } }
+                1 -> FlowerOtherDetail(flowerDetail = flowerDetail){
+                    coroutineScope.launch { pagerState.animateScrollToPage(0) } }
+            }
+        }
     }
 }
 
@@ -102,8 +117,9 @@ private fun FlowerDetailTopBar(
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-private fun FlowerCard(flowerDetail : FlowerDetail){
+private fun FlowerCard(flowerDetail : FlowerDetail, movePage:()->Unit){
 
     val cardState = remember{ mutableStateOf(true) }
 
@@ -128,7 +144,7 @@ private fun FlowerCard(flowerDetail : FlowerDetail){
         
         Spacer(modifier = Modifier.size(16.dp))
         
-        IconButton(onClick = {  },
+        IconButton(onClick = { movePage() },
             modifier = Modifier
                 .size(48.dp)
                 .align(Alignment.CenterHorizontally)) {
@@ -158,15 +174,19 @@ private fun FlowerCardFront(flowerDetail : FlowerDetail){
 
 @Composable
 private fun FlowerCardBack(flowerDetail : FlowerDetail){
-    Box(modifier = Modifier
-        .fillMaxSize()
+    Column(modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("${flowerDetail.fContent}")
+        Text("${flowerDetail.flowNm}")
+        Text("${flowerDetail.fEngNm}")
+        Text("${flowerDetail.fSctNm}")
+        Text("${flowerDetail.flowLang}")
     }
 }
 
 @Composable
-private fun FlowerOtherDetail(flowerDetail: FlowerDetail){
+private fun FlowerOtherDetail(flowerDetail: FlowerDetail, movePage: () -> Unit){
+
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -189,6 +209,13 @@ private fun InfoContent(title: String, content: String){
         Text(content)
     }
 }
+
+/*@Composable
+private fun InfoImage(image1: String, image2: String, image3: String){
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)){
+
+    }
+}*/
 
 @Preview
 @Composable
