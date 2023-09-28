@@ -31,6 +31,25 @@ class FlowerDetailViewModel @Inject constructor(
         }
     }
 
+    fun onEvent(event: FlowerDetailOnEvent){
+        viewModelScope.launch {
+            when (event) {
+                is FlowerDetailOnEvent.SearchFlower -> {
+                    localDate.value = LocalDate.of(localDate.value.year,event.month,event.day)
+                    getFlowerDetail()
+                }
+                FlowerDetailOnEvent.SearchNextFlower -> {
+                    localDate.value = localDate.value.plusDays(1)
+                    getFlowerDetail()
+                }
+                FlowerDetailOnEvent.SearchPrevFlower -> {
+                    localDate.value = localDate.value.minusDays(1)
+                    getFlowerDetail()
+                }
+            }
+        }
+    }
+
     private suspend fun getFlowerDetail() {
         flowerDetailUseCase(
             requestFlowerDetail = RequestFlowerDetail(
