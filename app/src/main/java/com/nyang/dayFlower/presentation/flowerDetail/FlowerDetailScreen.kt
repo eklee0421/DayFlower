@@ -1,14 +1,21 @@
 package com.nyang.dayFlower.presentation.flowerDetail
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
@@ -27,13 +34,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.nyang.dayFlower.R
 import com.nyang.dayFlower.domain.model.flowerDetail.FlowerDetail
+import com.nyang.dayFlower.ui.theme.Tertiary10
 
 @Composable
 fun FlowerDetailScreen(
@@ -53,7 +62,8 @@ private fun FlowerDetailContent(
         topBar = { FlowerDetailTopBar(month = flowerDetail.fMonth, day = flowerDetail.fDay)}
     ) {
         Box(modifier = Modifier.padding(it)){
-            FlowerCard(flowerDetail=flowerDetail)
+            //todo FlowerCard(flowerDetail=flowerDetail)
+            FlowerOtherDetail(flowerDetail = flowerDetail)
         }
 
     }
@@ -69,7 +79,7 @@ private fun FlowerDetailTopBar(
             .fillMaxWidth()
             .height(56.dp)){
 
-        Divider(color = MaterialTheme.colorScheme.outline)
+        Divider(color = MaterialTheme.colorScheme.outlineVariant)
 
         Text("${month}월 ${day}일",
             modifier = Modifier.align(Alignment.Center))
@@ -95,15 +105,36 @@ private fun FlowerDetailTopBar(
 @Composable
 private fun FlowerCard(flowerDetail : FlowerDetail){
 
-    val selectType = remember{ mutableStateOf(true) }
+    val cardState = remember{ mutableStateOf(true) }
 
-    Box(modifier = Modifier
+    Column(modifier = Modifier
         .padding(16.dp)
-        .clip(RoundedCornerShape(16.dp))
-        .clickable { selectType.value = !selectType.value }
     ){
-        if(selectType.value) FlowerCardFront(flowerDetail=flowerDetail)
-        else FlowerCardBack(flowerDetail=flowerDetail)
+        Box(modifier = Modifier
+            .weight(1f)
+            .clip(RoundedCornerShape(16.dp))
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .background(Color.White)
+            .clickable { cardState.value = !cardState.value }
+            .padding(16.dp)
+        ){
+            if(cardState.value) FlowerCardFront(flowerDetail=flowerDetail)
+            else FlowerCardBack(flowerDetail=flowerDetail)
+        }
+        
+        Spacer(modifier = Modifier.size(16.dp))
+        
+        IconButton(onClick = {  },
+            modifier = Modifier
+                .size(48.dp)
+                .align(Alignment.CenterHorizontally)) {
+            Image(painter = painterResource(id = R.drawable.ic_double_arrow_down),
+                contentDescription = "down_arrow")
+        }
     }
 
 
@@ -119,8 +150,7 @@ private fun FlowerCardFront(flowerDetail : FlowerDetail){
                 .build(),
             contentDescription = flowerDetail.fileName1,
             modifier = Modifier.fillMaxSize())
-
-
+        
     }
 
 
@@ -128,14 +158,36 @@ private fun FlowerCardFront(flowerDetail : FlowerDetail){
 
 @Composable
 private fun FlowerCardBack(flowerDetail : FlowerDetail){
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+    ) {
         Text("${flowerDetail.fContent}")
     }
 }
 
 @Composable
-private fun FlowerOtherDetail(){
-
+private fun FlowerOtherDetail(flowerDetail: FlowerDetail){
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ){
+        InfoContent(title = "이름", content = "${flowerDetail.flowNm} (${flowerDetail.fEngNm})")
+        InfoContent(title = "학명", content = "${flowerDetail.fSctNm}")
+        InfoContent(title = "꽃말", content = "${flowerDetail.flowLang}")
+        InfoContent(title = "내용", content = "${flowerDetail.fContent}")
+        InfoContent(title = "이용", content = "${flowerDetail.fUse}")
+        InfoContent(title = "기르기", content = "${flowerDetail.fGrow}")
+        InfoContent(title = "자생지", content = "${flowerDetail.fType}")
+    }
+}
+@Composable
+private fun InfoContent(title: String, content: String){
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(title, color = Tertiary10)
+        Text(content)
+    }
 }
 
 @Preview
