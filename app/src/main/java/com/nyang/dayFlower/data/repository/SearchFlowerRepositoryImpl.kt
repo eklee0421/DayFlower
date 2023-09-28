@@ -21,8 +21,8 @@ class SearchFlowerRepositoryImpl : SearchFlowerRepository {
 
             val data = service.getFlowerDetail(
                 serviceKey = BuildConfig.search_flower_api_key,
-                fMonth = 2,
-                fDay = 29
+                fMonth = requestFlowerDetail.fMonth ?: 1,
+                fDay = requestFlowerDetail.fDay ?: 1
             )
 
             when (data.isSuccessful) {

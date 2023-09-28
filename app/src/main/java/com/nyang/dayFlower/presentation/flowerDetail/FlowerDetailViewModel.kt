@@ -13,6 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,6 +23,7 @@ class FlowerDetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     val flowerDetail = mutableStateOf(FlowerDetail())
+    val localDate = mutableStateOf(LocalDate.now())
 
     init{
         viewModelScope.launch {
@@ -29,7 +32,10 @@ class FlowerDetailViewModel @Inject constructor(
     }
 
     private suspend fun getFlowerDetail() {
-        flowerDetailUseCase(requestFlowerDetail = RequestFlowerDetail()).collect {
+        flowerDetailUseCase(
+            requestFlowerDetail = RequestFlowerDetail(
+                fMonth = localDate.value.month.value,
+                fDay = localDate.value.dayOfMonth)).collect {
             flowerDetail.value = it
         }
     }
