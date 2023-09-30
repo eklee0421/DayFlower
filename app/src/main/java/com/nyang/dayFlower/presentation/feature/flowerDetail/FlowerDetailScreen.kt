@@ -1,4 +1,4 @@
-package com.nyang.dayFlower.presentation.flowerDetail
+package com.nyang.dayFlower.presentation.feature.flowerDetail
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,9 +16,9 @@ import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.nyang.dayFlower.domain.model.common.FlowerDetail
 import com.nyang.dayFlower.presentation.base.BaseDatePicker
-import com.nyang.dayFlower.presentation.flowerDetail.component.FlowerCard
-import com.nyang.dayFlower.presentation.flowerDetail.component.FlowerDetailTopBar
-import com.nyang.dayFlower.presentation.flowerDetail.component.FlowerInfoView
+import com.nyang.dayFlower.presentation.feature.flowerDetail.component.FlowerCard
+import com.nyang.dayFlower.presentation.feature.flowerDetail.component.FlowerDetailTopBar
+import com.nyang.dayFlower.presentation.feature.flowerDetail.component.FlowerInfoView
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -51,7 +51,7 @@ private fun FlowerDetailContent(
     }
 
     Scaffold(
-        topBar = { FlowerDetailTopBar(localDate = localDate, onEvent = onEvent)}
+        topBar = { FlowerDetailTopBar(localDate = localDate, onEvent = onEvent) }
     ) {
 
         val pagerState = rememberPagerState()

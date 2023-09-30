@@ -1,4 +1,4 @@
-package com.nyang.dayFlower.presentation.flowerDetail
+package com.nyang.dayFlower.presentation.feature.flowerDetail
 
 import com.nyang.dayFlower.domain.model.common.FlowerDetail
 import java.time.LocalDate

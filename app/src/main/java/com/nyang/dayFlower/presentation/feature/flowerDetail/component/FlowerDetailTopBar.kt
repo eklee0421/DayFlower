@@ -1,4 +1,4 @@
-package com.nyang.dayFlower.presentation.flowerDetail.component
+package com.nyang.dayFlower.presentation.feature.flowerDetail.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.nyang.dayFlower.presentation.flowerDetail.FlowerDetailEvent
+import com.nyang.dayFlower.presentation.feature.flowerDetail.FlowerDetailEvent
 import java.time.LocalDate
 
 @Composable

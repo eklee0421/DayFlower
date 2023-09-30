@@ -64,8 +64,9 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation(Dependencies.coreKtx)
+    implementation(Dependencies.lifecycleRuntimeKtx)
+    implementation(Dependencies.lifecycleRuntimeCompose)
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
 
     //compose
@@ -74,7 +75,7 @@ dependencies {
     implementation(Dependencies.composeUiGraphics)
     implementation(Dependencies.composeUiToolingPreview)
     implementation(Dependencies.composeMaterial3)
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation(Dependencies.navigationCompose)
 
     //hilt
     implementation(Dependencies.hiltAndroid)

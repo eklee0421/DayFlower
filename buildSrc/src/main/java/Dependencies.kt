@@ -1,11 +1,18 @@
 object Dependencies {
 
+    const val coreKtx = "androidx.core:core-ktx:${Versions.CORE_KTX}"
+
+    //lifecycle
+    const val lifecycleRuntimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.LIFECYCLE_RUNTIME}"
+    const val lifecycleRuntimeCompose = "androidx.lifecycle:lifecycle-runtime-compose:${Versions.LIFECYCLE_RUNTIME}"
+
     //androidx compose
     const val composeActivity = "androidx.activity:activity-compose:${Versions.COMPOSE_AVTIVITY}"
     const val composeUi = "androidx.compose.ui:ui"
     const val composeUiGraphics = "androidx.compose.ui:ui-graphics"
     const val composeUiToolingPreview = "androidx.compose.ui:ui-tooling-preview"
     const val composeMaterial3 = "androidx.compose.material3:material3"
+    const val navigationCompose = "androidx.navigation:navigation-compose:${Versions.NAVIGATION_COMPOSE}"
 
     //hilt
     const val hiltAndroid = "com.google.dagger:hilt-android:${Versions.HILT_ANDROID}"

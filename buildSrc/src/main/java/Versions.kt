@@ -1,6 +1,13 @@
 object Versions {
+
+    const val CORE_KTX = "1.9.0"
+
+    //lifecycle
+    const val LIFECYCLE_RUNTIME = "2.6.2"
+
     //compose
     const val COMPOSE_AVTIVITY = "1.7.2"
+    const val NAVIGATION_COMPOSE = "2.5.3"
 
     //hilt
     const val HILT_ANDROID = "2.44"

@@ -1,4 +1,4 @@
-package com.nyang.dayFlower.presentation.flowerDetail
+package com.nyang.dayFlower.presentation.feature.flowerDetail
 
 sealed class FlowerDetailEvent {
     object SearchPrevFlower : FlowerDetailEvent()
