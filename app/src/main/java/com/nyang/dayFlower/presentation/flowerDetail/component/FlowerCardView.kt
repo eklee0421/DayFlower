@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.nyang.dayFlower.R
-import com.nyang.dayFlower.domain.model.flowerDetail.FlowerDetail
+import com.nyang.dayFlower.domain.model.common.FlowerDetail
 
 @Composable
 fun FlowerCard(flowerDetail : FlowerDetail, movePage:()->Unit){

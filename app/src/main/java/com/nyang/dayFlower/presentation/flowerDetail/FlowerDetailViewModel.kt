@@ -1,20 +1,16 @@
 package com.nyang.dayFlower.presentation.flowerDetail
 
 
-import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nyang.dayFlower.domain.model.flowerDetail.FlowerDetail
 import com.nyang.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
 import com.nyang.dayFlower.domain.usecase.GetFlowerDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,8 +18,8 @@ class FlowerDetailViewModel @Inject constructor(
     private val flowerDetailUseCase: GetFlowerDetailUseCase
 ) : ViewModel() {
 
-    val flowerDetail = mutableStateOf(FlowerDetail())
-    val localDate = mutableStateOf(LocalDate.now())
+    private val _uiState = MutableStateFlow(FlowerDetailUiState())
+    val uiState: StateFlow<FlowerDetailUiState> = _uiState
 
     init{
         viewModelScope.launch {
@@ -31,31 +27,42 @@ class FlowerDetailViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: FlowerDetailOnEvent){
+    fun onEvent(event: FlowerDetailEvent){
         viewModelScope.launch {
             when (event) {
-                is FlowerDetailOnEvent.SearchFlower -> {
-                    localDate.value = LocalDate.of(localDate.value.year,event.month,event.day)
+                is FlowerDetailEvent.SearchFlower -> {
+                    setLocalDate(LocalDate.of(LocalDate.now().year, event.month, event.day))
                     getFlowerDetail()
                 }
-                FlowerDetailOnEvent.SearchNextFlower -> {
-                    localDate.value = localDate.value.plusDays(1)
+                FlowerDetailEvent.SearchNextFlower -> {
+                    setLocalDate(_uiState.value.localDate.plusDays(1))
                     getFlowerDetail()
                 }
-                FlowerDetailOnEvent.SearchPrevFlower -> {
-                    localDate.value = localDate.value.minusDays(1)
+                FlowerDetailEvent.SearchPrevFlower -> {
+                    setLocalDate(_uiState.value.localDate.minusDays(1))
                     getFlowerDetail()
+                }
+                FlowerDetailEvent.ShowDatePicker ->{
+                    _uiState.update { it.copy(isDatePicker = true) }
                 }
             }
+        }
+    }
+
+    private fun setLocalDate(localDate : LocalDate){
+        _uiState.update {
+            it.copy(localDate = localDate, isDatePicker = false)
         }
     }
 
     private suspend fun getFlowerDetail() {
         flowerDetailUseCase(
             requestFlowerDetail = RequestFlowerDetail(
-                fMonth = localDate.value.month.value,
-                fDay = localDate.value.dayOfMonth)).collect {
-            flowerDetail.value = it
+                fMonth = _uiState.value.localDate.month.value,
+                fDay = _uiState.value.localDate.dayOfMonth)).collect { result->
+            _uiState.update {
+                it.copy(flowerDetail = result)
+            }
         }
     }
 

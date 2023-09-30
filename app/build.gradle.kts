@@ -74,6 +74,7 @@ dependencies {
     implementation(Dependencies.composeUiGraphics)
     implementation(Dependencies.composeUiToolingPreview)
     implementation(Dependencies.composeMaterial3)
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
     //hilt
     implementation(Dependencies.hiltAndroid)

@@ -3,15 +3,11 @@ package com.nyang.dayFlower.data.repository
 import android.util.Log
 import com.nyang.dayFlower.BuildConfig
 import com.nyang.dayFlower.data.service.SearchFlowerManager
-import com.nyang.dayFlower.domain.model.flowerDetail.FlowerDetail
+import com.nyang.dayFlower.domain.model.common.FlowerDetail
 import com.nyang.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
-import com.nyang.dayFlower.domain.model.flowerDetail.ResponseFlowerDetail
 import com.nyang.dayFlower.domain.repository.SearchFlowerRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SearchFlowerRepositoryImpl : SearchFlowerRepository {
     override suspend fun getFlowerDetail(requestFlowerDetail: RequestFlowerDetail): FlowerDetail =

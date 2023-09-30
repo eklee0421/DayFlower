@@ -9,7 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.nyang.dayFlower.domain.model.flowerDetail.FlowerDetail
+import com.nyang.dayFlower.domain.model.common.FlowerDetail
 import com.nyang.dayFlower.ui.theme.Tertiary10
 
 @Composable

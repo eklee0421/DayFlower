@@ -1,6 +1,6 @@
 package com.nyang.dayFlower.domain.usecase
 
-import com.nyang.dayFlower.domain.model.flowerDetail.FlowerDetail
+import com.nyang.dayFlower.domain.model.common.FlowerDetail
 import com.nyang.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
 import com.nyang.dayFlower.domain.repository.SearchFlowerRepository
 import kotlinx.coroutines.flow.Flow

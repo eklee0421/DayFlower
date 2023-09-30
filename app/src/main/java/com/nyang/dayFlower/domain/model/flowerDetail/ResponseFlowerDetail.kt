@@ -1,5 +1,6 @@
 package com.nyang.dayFlower.domain.model.flowerDetail
 
+import com.nyang.dayFlower.domain.model.common.FlowerDetail
 import com.tickaroo.tikxml.annotation.Element
 import com.tickaroo.tikxml.annotation.PropertyElement
 import com.tickaroo.tikxml.annotation.Xml

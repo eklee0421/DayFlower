@@ -1,4 +1,4 @@
-package com.nyang.dayFlower.domain.model.flowerDetail
+package com.nyang.dayFlower.domain.model.common
 
 import com.tickaroo.tikxml.annotation.PropertyElement
 import com.tickaroo.tikxml.annotation.Xml
