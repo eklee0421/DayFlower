@@ -1,5 +1,6 @@
 package com.nyang.dayFlower.presentation.feature.mainFlower.flowerMonth
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -41,11 +42,11 @@ fun FlowerMonthView(
             )
         }
     ){
-        LazyColumn(modifier = Modifier.fillMaxSize().padding(it)) {
-            itemsIndexed(flowerMonth) { index, flowerDetail ->
-                Text(text = flowerDetail.flowNm.toString())
-                Spacer(modifier = Modifier.height(20.dp))
-            }
+       Box(modifier = Modifier
+           .fillMaxSize()
+           .padding(it)
+           .padding(16.dp)) {
+           FlowerCalendar(flowerMonth = flowerMonth)
         }
     }
 

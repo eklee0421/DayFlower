@@ -63,9 +63,6 @@ fun FlowerDetailView(
 }
 
 
-
-
-
 @Preview
 @Composable
 private fun FlowerDetailPreview() {
