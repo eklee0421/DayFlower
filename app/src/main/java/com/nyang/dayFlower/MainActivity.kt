@@ -31,40 +31,18 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             DayFlowerTheme {
                 val navHostController = rememberNavController()
-                val isCalendar = remember {
-                    mutableStateOf(false)
-                }
-                Scaffold(topBar = {
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 4.dp)
-                        .height(56.dp)){
-                        Text("하루, 꽃", modifier = Modifier.align(Alignment.Center))
 
-                        IconButton(onClick = {
-                            navHostController.onNavigateNext(if(isCalendar.value) Screens.FlowerDetail else Screens.FlowerCalendar)
-                        }, modifier = Modifier.align(Alignment.CenterEnd)) {
-                            Image(painter = painterResource(id = if(isCalendar.value) R.drawable.ic_calendar else R.drawable.ic_day), contentDescription = null)
-                        }
-                    }
-
-                }) {
-                    Surface(
+                Surface(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(it),
+                            .fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        NavGraph(navController = navHostController) {
-                            isCalendar.value = it == Screens.FlowerCalendar
-                        }
-                    }
+                    NavGraph(navController = navHostController)
                 }
 
             }

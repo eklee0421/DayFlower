@@ -7,22 +7,20 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.nyang.dayFlower.presentation.feature.flowerCalendar.FlowerCalendarScreen
+import com.nyang.dayFlower.presentation.feature.flowerDetail.FlowerCalendarScreen
 import com.nyang.dayFlower.presentation.feature.flowerDetail.FlowerDetailScreen
 
 @Composable
-fun NavGraph(navController: NavHostController, nowScreen: (Screens)->Unit) {
+fun NavGraph(navController: NavHostController) {
 
     NavHost(navController = navController,
         startDestination = Screens.FlowerDetail.route){
 
         composable(route = Screens.FlowerCalendar.route){
-            nowScreen(Screens.FlowerCalendar)
-            FlowerCalendarScreen()
+            //FlowerCalendarScreen()
         }
 
         composable(route = Screens.FlowerDetail.route){
-            nowScreen(Screens.FlowerDetail)
             FlowerDetailScreen()
         }
     }
