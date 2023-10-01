@@ -1,9 +1,9 @@
-package com.nyang.dayFlower.presentation.feature.flowerDetail
+package com.nyang.dayFlower.presentation.feature.mainFlower
 
 import com.nyang.dayFlower.domain.model.common.FlowerDetail
 import java.time.LocalDate
 
-data class FlowerDetailUiState (
+data class MainFlowerUiState (
     val isDatePicker: Boolean = false,
     val flowerDetail : FlowerDetail = FlowerDetail(),
     val flowerMonth : List<FlowerDetail> = emptyList(),

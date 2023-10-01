@@ -1,4 +1,4 @@
-package com.nyang.dayFlower.presentation.feature.flowerDetail.component
+package com.nyang.dayFlower.presentation.feature.mainFlower.flowerMonth
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,13 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.nyang.dayFlower.presentation.feature.flowerDetail.FlowerDetailEvent
+import com.nyang.dayFlower.presentation.feature.mainFlower.MainFlowerEvent
 import java.time.LocalDate
 
 @Composable
-fun FlowerDetailTopBar(
+fun FlowerMonthTopBar(
     localDate: LocalDate?,
-    onEvent: (FlowerDetailEvent) -> Unit = {}
+    onEvent: (MainFlowerEvent) -> Unit = {}
 ){
 
     Box(
@@ -36,9 +36,9 @@ fun FlowerDetailTopBar(
         Text("${localDate?.month?.value}월 ${localDate?.dayOfMonth}일",
             modifier = Modifier
                 .align(Alignment.Center)
-                .clickable { onEvent(FlowerDetailEvent.ShowDatePicker) } )
+                .clickable { onEvent(MainFlowerEvent.ShowDatePicker) } )
 
-        IconButton(onClick = { onEvent(FlowerDetailEvent.SearchPrevFlower) },
+        IconButton(onClick = { onEvent(MainFlowerEvent.SearchPrevMainFlower) },
             modifier = Modifier
                 .size(56.dp)
                 .align(Alignment.CenterStart)) {
@@ -46,7 +46,7 @@ fun FlowerDetailTopBar(
                 contentDescription = "")
         }
 
-        IconButton(onClick = { onEvent(FlowerDetailEvent.SearchNextFlower)  },
+        IconButton(onClick = { onEvent(MainFlowerEvent.SearchNextMainFlower)  },
             modifier = Modifier
                 .size(56.dp)
                 .align(Alignment.CenterEnd)) {

@@ -1,4 +1,4 @@
-package com.nyang.dayFlower.presentation.feature.flowerDetail.component
+package com.nyang.dayFlower.presentation.feature.mainFlower.flowerDetail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

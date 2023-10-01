@@ -1,27 +1,20 @@
 package com.nyang.dayFlower.presentation.navigation
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.nyang.dayFlower.presentation.feature.flowerDetail.FlowerCalendarScreen
-import com.nyang.dayFlower.presentation.feature.flowerDetail.FlowerDetailScreen
+import com.nyang.dayFlower.presentation.feature.mainFlower.MainFlowerScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
 
     NavHost(navController = navController,
-        startDestination = Screens.FlowerDetail.route){
+        startDestination = Screens.MainFlower.route){
 
-        composable(route = Screens.FlowerCalendar.route){
-            //FlowerCalendarScreen()
-        }
-
-        composable(route = Screens.FlowerDetail.route){
-            FlowerDetailScreen()
+        composable(route = Screens.MainFlower.route){
+            MainFlowerScreen()
         }
     }
 }

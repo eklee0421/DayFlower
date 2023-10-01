@@ -1,4 +1,4 @@
-package com.nyang.dayFlower.presentation.feature.flowerDetail
+package com.nyang.dayFlower.presentation.feature.mainFlower
 
 
 import androidx.lifecycle.ViewModel
@@ -16,13 +16,13 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class FlowerDetailViewModel @Inject constructor(
+class MainFlowerViewModel @Inject constructor(
     private val flowerDetailUseCase: GetFlowerDetailUseCase,
     private val flowerMonthUseCase: GetFlowerMonthUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(FlowerDetailUiState())
-    val uiState: StateFlow<FlowerDetailUiState> = _uiState
+    private val _uiState = MutableStateFlow(MainFlowerUiState())
+    val uiState: StateFlow<MainFlowerUiState> = _uiState
 
     init{
         viewModelScope.launch {
@@ -30,25 +30,25 @@ class FlowerDetailViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: FlowerDetailEvent){
+    fun onEvent(event: MainFlowerEvent){
         viewModelScope.launch {
             when (event) {
-                is FlowerDetailEvent.SearchFlower -> {
+                is MainFlowerEvent.SearchMainFlower -> {
                     setLocalDate(LocalDate.of(LocalDate.now().year, event.month, event.day))
                     getFlowerDetail()
                 }
-                is FlowerDetailEvent.SearchNextFlower -> {
+                is MainFlowerEvent.SearchNextMainFlower -> {
                     setLocalDate(_uiState.value.localDate.plusDays(1))
                     getFlowerDetail()
                 }
-                is FlowerDetailEvent.SearchPrevFlower -> {
+                is MainFlowerEvent.SearchPrevMainFlower -> {
                     setLocalDate(_uiState.value.localDate.minusDays(1))
                     getFlowerDetail()
                 }
-                is FlowerDetailEvent.ShowDatePicker ->{
+                is MainFlowerEvent.ShowDatePicker ->{
                     _uiState.update { it.copy(isDatePicker = true) }
                 }
-                is FlowerDetailEvent.IsChangeView -> {
+                is MainFlowerEvent.IsChangeView -> {
                     _uiState.update {
                         it.copy(isCalendar = event.isCalendar)
                     }

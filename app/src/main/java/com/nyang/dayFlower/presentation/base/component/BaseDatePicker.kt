@@ -1,4 +1,4 @@
-package com.nyang.dayFlower.presentation.base
+package com.nyang.dayFlower.presentation.base.component
 
 import android.app.DatePickerDialog
 import androidx.compose.runtime.Composable
