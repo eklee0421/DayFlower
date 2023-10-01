@@ -23,7 +23,7 @@ import java.time.LocalDate
 @Composable
 fun FlowerMonthTopBar(
     localDate: LocalDate?,
-    onEvent: (MainFlowerEvent) -> Unit = {}
+    onEvent: (MainFlowerEvent) -> Unit
 ){
 
     Box(
@@ -33,12 +33,12 @@ fun FlowerMonthTopBar(
 
         Divider(color = MaterialTheme.colorScheme.outlineVariant)
 
-        Text("${localDate?.month?.value}월 ${localDate?.dayOfMonth}일",
+        Text("${localDate?.month?.value}월",
             modifier = Modifier
                 .align(Alignment.Center)
                 .clickable { onEvent(MainFlowerEvent.ShowDatePicker) } )
 
-        IconButton(onClick = { onEvent(MainFlowerEvent.SearchPrevMainFlower) },
+        IconButton(onClick = { onEvent(MainFlowerEvent.SearchPrevMonth) },
             modifier = Modifier
                 .size(56.dp)
                 .align(Alignment.CenterStart)) {
@@ -46,7 +46,7 @@ fun FlowerMonthTopBar(
                 contentDescription = "")
         }
 
-        IconButton(onClick = { onEvent(MainFlowerEvent.SearchNextMainFlower)  },
+        IconButton(onClick = { onEvent(MainFlowerEvent.SearchNextMonth)  },
             modifier = Modifier
                 .size(56.dp)
                 .align(Alignment.CenterEnd)) {

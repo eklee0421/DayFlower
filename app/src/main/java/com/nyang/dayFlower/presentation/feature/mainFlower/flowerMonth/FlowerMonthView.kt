@@ -20,18 +20,35 @@ import com.google.accompanist.pager.rememberPagerState
 import com.nyang.dayFlower.domain.model.common.FlowerDetail
 import com.nyang.dayFlower.presentation.base.component.BaseDatePicker
 import com.nyang.dayFlower.presentation.feature.mainFlower.MainFlowerEvent
+import com.nyang.dayFlower.presentation.feature.mainFlower.flowerDetail.FlowerDetailTopBar
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FlowerMonthView(flowerMonth: List<FlowerDetail> = emptyList()) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        itemsIndexed(flowerMonth) { index, flowerDetail ->
-            Text(text = flowerDetail.flowNm.toString())
-            Spacer(modifier = Modifier.height(20.dp))
+fun FlowerMonthView(
+    flowerMonth: List<FlowerDetail> = emptyList(),
+    localDate: LocalDate = LocalDate.now(),
+    isDatePicker: Boolean = false,
+    onEvent: (MainFlowerEvent) -> Unit = {}) {
+
+    Scaffold(
+        topBar = {
+            FlowerMonthTopBar(
+                localDate = localDate,
+                onEvent = onEvent
+            )
+        }
+    ){
+        LazyColumn(modifier = Modifier.fillMaxSize().padding(it)) {
+            itemsIndexed(flowerMonth) { index, flowerDetail ->
+                Text(text = flowerDetail.flowNm.toString())
+                Spacer(modifier = Modifier.height(20.dp))
+            }
         }
     }
+
 }
 
 @Preview

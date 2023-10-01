@@ -38,7 +38,7 @@ fun FlowerDetailTopBar(
                 .align(Alignment.Center)
                 .clickable { onEvent(MainFlowerEvent.ShowDatePicker) } )
 
-        IconButton(onClick = { onEvent(MainFlowerEvent.SearchPrevMainFlower) },
+        IconButton(onClick = { onEvent(MainFlowerEvent.SearchPrevDay) },
             modifier = Modifier
                 .size(56.dp)
                 .align(Alignment.CenterStart)) {
@@ -46,7 +46,7 @@ fun FlowerDetailTopBar(
                 contentDescription = "")
         }
 
-        IconButton(onClick = { onEvent(MainFlowerEvent.SearchNextMainFlower)  },
+        IconButton(onClick = { onEvent(MainFlowerEvent.SearchNextDay)  },
             modifier = Modifier
                 .size(56.dp)
                 .align(Alignment.CenterEnd)) {

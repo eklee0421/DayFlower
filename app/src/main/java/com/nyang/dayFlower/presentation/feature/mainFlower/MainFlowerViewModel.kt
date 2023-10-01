@@ -37,13 +37,21 @@ class MainFlowerViewModel @Inject constructor(
                     setLocalDate(LocalDate.of(LocalDate.now().year, event.month, event.day))
                     getFlowerDetail()
                 }
-                is MainFlowerEvent.SearchNextMainFlower -> {
+                is MainFlowerEvent.SearchNextDay -> {
                     setLocalDate(_uiState.value.localDate.plusDays(1))
                     getFlowerDetail()
                 }
-                is MainFlowerEvent.SearchPrevMainFlower -> {
+                is MainFlowerEvent.SearchPrevDay -> {
                     setLocalDate(_uiState.value.localDate.minusDays(1))
                     getFlowerDetail()
+                }
+                is MainFlowerEvent.SearchNextMonth -> {
+                    setLocalDate(_uiState.value.localDate.plusMonths(1))
+                    getFlowerMonth()
+                }
+                is MainFlowerEvent.SearchPrevMonth -> {
+                    setLocalDate(_uiState.value.localDate.minusMonths(1))
+                    getFlowerMonth()
                 }
                 is MainFlowerEvent.ShowDatePicker ->{
                     _uiState.update { it.copy(isDatePicker = true) }

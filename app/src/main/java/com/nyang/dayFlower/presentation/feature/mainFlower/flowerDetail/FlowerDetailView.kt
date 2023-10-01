@@ -32,7 +32,7 @@ fun FlowerDetailView(
 
     Scaffold(
         topBar = {
-            com.nyang.dayFlower.presentation.feature.mainFlower.flowerMonth.FlowerMonthTopBar(
+            FlowerDetailTopBar(
                 localDate = localDate,
                 onEvent = onEvent
             )

@@ -80,7 +80,10 @@ private fun FlowerBaseContent(
                 .padding(it)
         ) {
             if (isCalendar) {
-                FlowerMonthView(flowerMonth= flowerMonth)
+                FlowerMonthView(
+                    flowerMonth = flowerMonth,
+                    localDate = localDate,
+                    onEvent = onEvent)
             } else {
                 FlowerDetailView(
                     flowerDetail = flowerDetail,
