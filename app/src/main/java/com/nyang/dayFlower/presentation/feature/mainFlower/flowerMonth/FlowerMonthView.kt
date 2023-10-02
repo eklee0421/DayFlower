@@ -25,7 +25,6 @@ import com.nyang.dayFlower.presentation.feature.mainFlower.flowerDetail.FlowerDe
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlowerMonthView(
@@ -46,7 +45,7 @@ fun FlowerMonthView(
            .fillMaxSize()
            .padding(it)
            .padding(16.dp)) {
-           FlowerCalendar(flowerMonth = flowerMonth)
+           FlowerCalendar(flowerMonth = flowerMonth, onEvent = onEvent)
         }
     }
 

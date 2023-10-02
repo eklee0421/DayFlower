@@ -1,5 +1,6 @@
 package com.nyang.dayFlower.presentation.feature.mainFlower.flowerDetail
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -29,6 +31,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.nyang.dayFlower.R
 import com.nyang.dayFlower.domain.model.common.FlowerDetail
+import com.nyang.dayFlower.presentation.base.Utils
 
 @Composable
 fun FlowerCard(flowerDetail : FlowerDetail, movePage:()->Unit){
@@ -48,7 +51,6 @@ fun FlowerCard(flowerDetail : FlowerDetail, movePage:()->Unit){
             )
             .background(Color.White)
             .clickable { cardState.value = !cardState.value }
-            .padding(16.dp)
         ){
             if(cardState.value) FlowerCardFront(flowerDetail=flowerDetail)
             else FlowerCardBack(flowerDetail=flowerDetail)
@@ -69,24 +71,21 @@ fun FlowerCard(flowerDetail : FlowerDetail, movePage:()->Unit){
 }
 
 @Composable
-private fun FlowerCardFront(flowerDetail : FlowerDetail){
-
-    Box(){
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(flowerDetail.imgUrl1)
-                .build(),
-            contentDescription = flowerDetail.fileName1,
-            modifier = Modifier.fillMaxSize())
-
-    }
-
-
+private fun FlowerCardFront(flowerDetail : FlowerDetail) {
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(Utils.setImageUrl(flowerDetail.imgUrl1))
+            .crossfade(true)
+            .build(),
+        contentDescription = flowerDetail.fileName1,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize()
+    )
 }
 
 @Composable
 private fun FlowerCardBack(flowerDetail : FlowerDetail){
-    Column(modifier = Modifier.fillMaxSize(),
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text("${flowerDetail.flowNm}")
