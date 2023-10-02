@@ -4,8 +4,10 @@ package com.nyang.dayFlower.presentation.feature.mainFlower
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyang.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
+import com.nyang.dayFlower.domain.model.flowerList.RequestFlowerList
 import com.nyang.dayFlower.domain.model.flowerMonth.RequestFlowerMonth
 import com.nyang.dayFlower.domain.usecase.GetFlowerDetailUseCase
+import com.nyang.dayFlower.domain.usecase.GetFlowerListUseCase
 import com.nyang.dayFlower.domain.usecase.GetFlowerMonthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainFlowerViewModel @Inject constructor(
     private val flowerDetailUseCase: GetFlowerDetailUseCase,
-    private val flowerMonthUseCase: GetFlowerMonthUseCase
+    private val flowerMonthUseCase: GetFlowerMonthUseCase,
+    private val flowerListUseCase: GetFlowerListUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainFlowerUiState())
@@ -64,7 +67,19 @@ class MainFlowerViewModel @Inject constructor(
                     if(event.isCalendar) getFlowerMonth()
                     else getFlowerDetail()
                 }
+                is MainFlowerEvent.IsSearchDialog -> {
+                    isSearchDialog(event.isShow)
+                }
+                is MainFlowerEvent.SearchFlowerList -> {
+                    getFlowerList(event.type,event.word)
+                }
             }
+        }
+    }
+
+    private fun isSearchDialog(isShow: Boolean){
+        _uiState.update {
+            it.copy(isSearch = isShow, flowerList = emptyList())
         }
     }
 
@@ -92,6 +107,19 @@ class MainFlowerViewModel @Inject constructor(
         ).collect { result->
             _uiState.update {
                 it.copy(flowerMonth = result)
+            }
+        }
+    }
+
+    private suspend fun getFlowerList(type: Int, word: String){
+        flowerListUseCase(
+            requestFlowerList = RequestFlowerList(
+                searchType = type,
+                searchWord = word
+            )
+        ).collect{ result->
+            _uiState.update {
+                it.copy(flowerList = result)
             }
         }
     }

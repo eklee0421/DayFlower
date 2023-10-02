@@ -9,11 +9,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +29,7 @@ import com.nyang.dayFlower.R
 import com.nyang.dayFlower.domain.model.common.FlowerDetail
 import com.nyang.dayFlower.presentation.feature.mainFlower.flowerDetail.FlowerDetailView
 import com.nyang.dayFlower.presentation.feature.mainFlower.flowerMonth.FlowerMonthView
+import com.nyang.dayFlower.presentation.feature.mainFlower.searchFlower.SearchFlowerScreen
 import java.time.LocalDate
 
 @Composable
@@ -32,6 +37,12 @@ fun MainFlowerScreen(
     viewModel : MainFlowerViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    SearchFlowerScreen(isShown = uiState.isSearch,
+        onDismiss = {viewModel.onEvent(MainFlowerEvent.IsSearchDialog(false))},
+        flowerList = uiState.flowerList,
+        onSearch = { type, word-> viewModel.onEvent(MainFlowerEvent.SearchFlowerList(type,word)) }
+    )
 
     FlowerBaseContent(
         flowerDetail = uiState.flowerDetail,
@@ -63,14 +74,21 @@ private fun FlowerBaseContent(
         ) {
             Text("하루, 꽃", modifier = Modifier.align(Alignment.Center))
 
-            IconButton(onClick = {
-                onEvent(MainFlowerEvent.IsChangeView(isCalendar = !isCalendar))
-            }, modifier = Modifier.align(Alignment.CenterEnd)) {
-                Image(
-                    painter = painterResource(id = if (!isCalendar) R.drawable.ic_calendar else R.drawable.ic_day),
-                    contentDescription = null
-                )
+            IconButton(onClick = { onEvent(MainFlowerEvent.IsSearchDialog(true)) }, modifier = Modifier.align(Alignment.CenterStart)) {
+                Icon(Icons.Rounded.Search,"")
             }
+
+            if(!isCalendar){
+                IconButton(onClick = {
+                    onEvent(MainFlowerEvent.IsChangeView(isCalendar = true))
+                }, modifier = Modifier.align(Alignment.CenterEnd)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_calendar),
+                        contentDescription = null
+                    )
+                }
+            }
+
         }
 
     }) {
