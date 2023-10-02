@@ -37,13 +37,3 @@ private fun InfoContent(title: String, content: String){
         Text(content)
     }
 }
-
-
-
-/*todo 이미지
-@Composable
-private fun InfoImage(image1: String, image2: String, image3: String){
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)){
-
-    }
-}*/

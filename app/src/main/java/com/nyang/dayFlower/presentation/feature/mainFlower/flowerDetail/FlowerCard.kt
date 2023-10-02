@@ -8,7 +8,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -72,25 +74,44 @@ fun FlowerCard(flowerDetail : FlowerDetail, movePage:()->Unit){
 
 @Composable
 private fun FlowerCardFront(flowerDetail : FlowerDetail) {
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(Utils.setImageUrl(flowerDetail.imgUrl1))
-            .crossfade(true)
-            .build(),
-        contentDescription = flowerDetail.fileName1,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxSize()
-    )
+    Box(modifier = Modifier.fillMaxSize()){
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(Utils.setImageUrl(flowerDetail.imgUrl1))
+                .crossfade(true)
+                .build(),
+            contentDescription = flowerDetail.fileName1,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+        CardTitle(flowerDetail = flowerDetail)
+    }
+
 }
 
 @Composable
 private fun FlowerCardBack(flowerDetail : FlowerDetail){
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    Box(modifier = Modifier.fillMaxSize()){
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(Utils.setImageUrl(flowerDetail.imgUrl2))
+                .crossfade(true)
+                .build(),
+            contentDescription = flowerDetail.fileName2,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+        CardTitle(flowerDetail = flowerDetail)
+    }
+}
+
+@Composable
+private fun CardTitle(flowerDetail : FlowerDetail) {
+    Column(modifier = Modifier.fillMaxHeight().padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Bottom)
     ) {
-        Text("${flowerDetail.flowNm}")
-        Text("${flowerDetail.fEngNm}")
-        Text("${flowerDetail.fSctNm}")
-        Text("${flowerDetail.flowLang}")
+        Text("${flowerDetail.flowNm} / ${flowerDetail.fEngNm}", color = Color.White)
+        Text("${flowerDetail.fSctNm}", color = Color.White)
+        Text("${flowerDetail.flowLang}", color = Color.White)
     }
 }

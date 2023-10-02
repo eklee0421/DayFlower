@@ -45,7 +45,7 @@ fun FlowerCalendar(flowerMonth: List<FlowerDetail>, onEvent: (MainFlowerEvent)->
                        onEvent(MainFlowerEvent.IsChangeView(isCalendar = false, month = flowerDetail.fMonth, day = flowerDetail.fDay))
         },
             contentAlignment = Alignment.Center){
-            FlowerCalendarImage(imageUrl = flowerDetail.imgUrl1 ?: "")
+            FlowerCalendarImage(imageUrl = flowerDetail.imgUrl3 ?: "")
             Text(text= flowerDetail.fDay.toString(), color = Color.White)
         }
 
