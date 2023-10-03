@@ -7,25 +7,34 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.IconButton
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.IconButton
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -58,6 +67,7 @@ fun SearchFlowerScreen(isShown: Boolean, onDismiss:()->Unit, flowerList: List<Fl
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchFlowerContent(onDismiss:()->Unit, flowerList: List<FlowerDetail>, onSearch:(Int,String)->Unit) {
 
@@ -79,12 +89,39 @@ private fun SearchFlowerContent(onDismiss:()->Unit, flowerList: List<FlowerDetai
         }
 
         //검색
-        Row(){
-            //스피너
-            //텍스트필드
-            TextField(value = word.value, onValueChange = {word.value = it}, modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp))
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .height(84.dp)
+            .padding(16.dp)
+        ){
+            val isExpanded = remember { mutableStateOf(false) }
+            val typeList = listOf(1 to "꽃이름", 2 to "학명", 3 to "영문명", 4 to "꽃말", 5 to "내용", 6 to "이용", 7 to "기르기", 8 to "자생지")
+
+            Button(onClick = {isExpanded.value=true},
+                modifier = Modifier
+                    .width(121.dp)
+                    .fillMaxHeight()){
+                Row(modifier = Modifier.align(Alignment.CenterVertically),){
+                    Text(typeList.first { it.first == type.value }.second, modifier = Modifier.weight(1f))
+                    Icon(Icons.Rounded.KeyboardArrowDown,"")
+                }
+            }
+
+            DropdownMenu(expanded = isExpanded.value, onDismissRequest = { isExpanded.value=false }) {
+                for (typed in typeList) {
+                    DropdownMenuItem(onClick = {
+                        type.value = typed.first
+                        isExpanded.value = false
+                    }, text = { Text(typed.second) })
+                }
+            }
+            
+            Spacer(modifier = Modifier.width(8.dp))
+
+            OutlinedTextField(value = word.value,
+                onValueChange = {word.value = it},
+                trailingIcon = {IconButton(onClick = {word.value=""}){Icon(Icons.Rounded.Clear,"")} },
+                modifier = Modifier.fillMaxSize())
         }
 
         if(flowerList.isEmpty()){
@@ -124,7 +161,10 @@ private fun SearchFlowerContent(onDismiss:()->Unit, flowerList: List<FlowerDetai
 @Composable
 private fun FlowerInfoSummary(item: FlowerDetail, isDetail: Boolean, index: Int, selected:(Int)->Unit){
     Row(modifier = Modifier
-        .fillMaxWidth().height(48.dp).clickable { selected(index) }.padding(8.dp),
+        .fillMaxWidth()
+        .height(48.dp)
+        .clickable { selected(index) }
+        .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically){
         AsyncImage(
@@ -134,7 +174,9 @@ private fun FlowerInfoSummary(item: FlowerDetail, isDetail: Boolean, index: Int,
                 .build(),
             contentDescription = item.fileName1,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.size(32.dp).clip(CircleShape)
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape)
         )
         Text(item.flowNm.toString(), modifier = Modifier.weight(1f))
         Icon(if(isDetail) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown, "")
