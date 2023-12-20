@@ -2,8 +2,10 @@ package com.nyang.dayFlower.data.service
 
 import android.annotation.SuppressLint
 import com.google.gson.GsonBuilder
+import com.nyang.dayFlower.data.network.ResultCallAdapterFactory
 import com.tickaroo.tikxml.TikXml
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
+import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -11,6 +13,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
@@ -18,6 +21,7 @@ import javax.net.ssl.X509TrustManager
 object SearchFlowerManager {
     
     private const val BASE_URL = "https://apis.data.go.kr/1390804/NihhsTodayFlowerInfo01/"
+
     private fun getInstance() = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
@@ -26,6 +30,7 @@ object SearchFlowerManager {
         )
         .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
+        .addCallAdapterFactory(ResultCallAdapterFactory())
         .build()
 
     private var okHttpClient = getUnsafeOkHttpClient()
@@ -65,7 +70,7 @@ fun getUnsafeOkHttpClient(): OkHttpClient.Builder {
 
     val builder = OkHttpClient.Builder()
     builder.sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
-    builder.hostnameVerifier { hostname, session -> true }
+    builder.hostnameVerifier { _, _ -> true }
 
     return builder
 }

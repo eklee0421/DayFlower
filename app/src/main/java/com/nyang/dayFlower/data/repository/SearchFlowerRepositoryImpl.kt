@@ -2,6 +2,7 @@ package com.nyang.dayFlower.data.repository
 
 import android.util.Log
 import com.nyang.dayFlower.BuildConfig
+import com.nyang.dayFlower.data.network.ResultWrapper
 import com.nyang.dayFlower.data.service.SearchFlowerManager
 import com.nyang.dayFlower.domain.model.common.FlowerDetail
 import com.nyang.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
@@ -9,83 +10,50 @@ import com.nyang.dayFlower.domain.model.flowerList.RequestFlowerList
 import com.nyang.dayFlower.domain.model.flowerMonth.RequestFlowerMonth
 import com.nyang.dayFlower.domain.repository.SearchFlowerRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
 class SearchFlowerRepositoryImpl : SearchFlowerRepository {
-    override suspend fun getFlowerDetail(requestFlowerDetail: RequestFlowerDetail): FlowerDetail =
-        withContext(Dispatchers.IO) {
-            val service = SearchFlowerManager.getService()
-            var result = FlowerDetail()
+    override suspend fun getFlowerDetail(requestFlowerDetail: RequestFlowerDetail): Flow<ResultWrapper<FlowerDetail>> = flow{
 
-            val data = service.getFlowerDetail(
+        SearchFlowerManager.getService().getFlowerDetail(
                 serviceKey = BuildConfig.search_flower_api_key,
                 fMonth = requestFlowerDetail.fMonth ?: 1,
                 fDay = requestFlowerDetail.fDay ?: 1
-            )
+            ).onSuccess {
+                emit(ResultWrapper.Success(it.root?.result ?: FlowerDetail()))
+            }.onFailure {
+            Log.d("detail", it.message ?: "")
+            emit(ResultWrapper.Error(it.message ?: "error: Failure Get flower detail")) }
 
-            when (data.isSuccessful) {
-                true -> {
-                    result = data.body()?.root?.result ?: FlowerDetail()
-                    Log.d("Success", "$result")
-                }
+        }.flowOn(Dispatchers.IO)
 
-                else -> {
-                    Log.d("Failure", "get flower detail")
-                }
-            }
+    override suspend fun getFlowerMonth(requestFlowerMonth: RequestFlowerMonth): Flow<ResultWrapper<List<FlowerDetail>>> = flow{
 
-            return@withContext result
-        }
+        SearchFlowerManager.getService().getFlowerMonth(
+            serviceKey = BuildConfig.search_flower_api_key,
+            numOfRows = 31,
+            fMonth = requestFlowerMonth.fMonth ?: 1,
+        ).onSuccess {
+            emit(ResultWrapper.Success(it.root?.result ?: emptyList())) }
+            .onFailure { emit(ResultWrapper.Error(it.message ?: "error: Failure Get flower detail")) }
 
-    override suspend fun getFlowerMonth(requestFlowerMonth: RequestFlowerMonth): List<FlowerDetail> =
-        withContext(Dispatchers.IO) {
-            val service = SearchFlowerManager.getService()
-            var result = emptyList<FlowerDetail>()
+    }.flowOn(Dispatchers.IO)
 
-            val data = service.getFlowerMonth(
-                serviceKey = BuildConfig.search_flower_api_key,
-                numOfRows = 31,
-                fMonth = requestFlowerMonth.fMonth ?: 1,
-                )
+    override suspend fun getFlowerList(requestFlowerList: RequestFlowerList): Flow<ResultWrapper<List<FlowerDetail>>>  = flow{
 
-            when (data.isSuccessful) {
-                true -> {
-                    result = data.body()?.root?.result ?: emptyList()
-                    Log.d("Success", "$result")
-                }
+        SearchFlowerManager.getService().getFlowerList(
+            serviceKey = BuildConfig.search_flower_api_key,
+            searchType = requestFlowerList.searchType ?: 1,
+            searchWord = requestFlowerList.searchWord ?: "",
+            pageNo = requestFlowerList.pageNo?: 1,
+            numOfRows = 10,
+        ).onSuccess {
+            emit(ResultWrapper.Success(it.root?.result ?: emptyList())) }
+            .onFailure { emit(ResultWrapper.Error(it.message ?: "error: Failure Get flower detail")) }
 
-                else -> {
-                    Log.d("Failure", "get flower detail")
-                }
-            }
+    }.flowOn(Dispatchers.IO)
 
-            return@withContext result
-        }
-
-    override suspend fun getFlowerList(requestFlowerList: RequestFlowerList): List<FlowerDetail> =
-        withContext(Dispatchers.IO) {
-            val service = SearchFlowerManager.getService()
-            var result = emptyList<FlowerDetail>()
-
-            val data = service.getFlowerList(
-                serviceKey = BuildConfig.search_flower_api_key,
-                searchType = requestFlowerList.searchType ?: 1,
-                searchWord = requestFlowerList.searchWord ?: "",
-                pageNo = requestFlowerList.pageNo?: 1,
-                numOfRows = 10,
-            )
-
-            when (data.isSuccessful) {
-                true -> {
-                    result = data.body()?.root?.result ?: emptyList()
-                    Log.d("Success", "$result")
-                }
-
-                else -> {
-                    Log.d("Failure", "get flower detail")
-                }
-            }
-
-            return@withContext result
-        }
 }

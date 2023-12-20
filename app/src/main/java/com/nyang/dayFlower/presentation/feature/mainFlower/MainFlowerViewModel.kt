@@ -3,6 +3,7 @@ package com.nyang.dayFlower.presentation.feature.mainFlower
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nyang.dayFlower.data.network.ResultWrapper
 import com.nyang.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
 import com.nyang.dayFlower.domain.model.flowerList.RequestFlowerList
 import com.nyang.dayFlower.domain.model.flowerMonth.RequestFlowerMonth
@@ -94,8 +95,15 @@ class MainFlowerViewModel @Inject constructor(
             requestFlowerDetail = RequestFlowerDetail(
                 fMonth = _uiState.value.localDate.month.value,
                 fDay = _uiState.value.localDate.dayOfMonth)).collect { result->
-            _uiState.update {
-                it.copy(flowerDetail = result)
+            when(result){
+                is ResultWrapper.Success ->{
+                    _uiState.update {
+                        it.copy(flowerDetail = result.data)
+                    }
+                }
+                is ResultWrapper.Error -> {
+
+                }
             }
         }
     }
@@ -105,8 +113,15 @@ class MainFlowerViewModel @Inject constructor(
             requestFlowerMonth = RequestFlowerMonth(
                 fMonth = _uiState.value.localDate.month.value)
         ).collect { result->
-            _uiState.update {
-                it.copy(flowerMonth = result)
+            when(result){
+                is ResultWrapper.Success ->{
+                    _uiState.update {
+                        it.copy(flowerMonth = result.data)
+                    }
+                }
+                is ResultWrapper.Error -> {
+
+                }
             }
         }
     }
@@ -118,8 +133,15 @@ class MainFlowerViewModel @Inject constructor(
                 searchWord = word
             )
         ).collect{ result->
-            _uiState.update {
-                it.copy(flowerList = result)
+            when(result){
+                is ResultWrapper.Success ->{
+                    _uiState.update {
+                        it.copy(flowerList = result.data)
+                    }
+                }
+                is ResultWrapper.Error -> {
+
+                }
             }
         }
     }

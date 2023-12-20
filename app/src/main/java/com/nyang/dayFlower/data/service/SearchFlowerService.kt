@@ -12,14 +12,14 @@ interface SearchFlowerService {
         @Query("serviceKey") serviceKey: String,
         @Query("fMonth") fMonth: Int,
         @Query("fDay") fDay: Int
-    ): Response<ResponseFlowerDetail>
+    ): Result<ResponseFlowerDetail>
 
     @GET("selectTodayFlowerList01?")
     suspend fun getFlowerMonth(
         @Query("serviceKey") serviceKey: String,
         @Query("numOfRows") numOfRows:Int,
         @Query("fMonth") fMonth: Int,
-    ): Response<ResponseFlowerMonth>
+    ): Result<ResponseFlowerMonth>
 
     @GET("selectTodayFlowerList01?")
     suspend fun getFlowerList(
@@ -28,5 +28,5 @@ interface SearchFlowerService {
         @Query("searchWord") searchWord: String,
         @Query("pageNo") pageNo: Int,
         @Query("numOfRows") numOfRows:Int,
-    ): Response<ResponseFlowerMonth>
+    ): Result<ResponseFlowerMonth>
 }
