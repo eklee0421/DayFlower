@@ -15,45 +15,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-//region dark
-private val darkColorScheme = darkColorScheme(
-    primary = Primary60,
-    onPrimary = Neutral100,
-    primaryContainer = Primary90,
-    onPrimaryContainer = Primary20,
-
-    secondary = Secondary60,
-    onSecondary = Neutral100,
-    secondaryContainer = Secondary90,
-    onSecondaryContainer = Secondary20,
-
-    tertiary = Tertiary60,
-    onTertiary = Neutral100,
-    tertiaryContainer = Tertiary90,
-    onTertiaryContainer = Tertiary20,
-
-
-    background = Neutral100,
-    surface = Neutral99,
-    surfaceVariant = Neutral95,
-    onSurfaceVariant = Neutral80,
-    onBackground = Neutral20,
-    onSurface = Neutral40,
-
-    error = Tertiary50,
-
-    outline = Neutral95,
-    outlineVariant = Neutral90,
-
-    inverseSurface = Neutral20,
-    inverseOnSurface = Neutral100,
-    inversePrimary = Primary80,
-
-    scrim = Primary30
+private val colorScheme = lightColorScheme(
+    primary = Primary,
+    secondary = Secondary,
+    background = Background
 )
-//endregion
 
-private val lightColorScheme = lightColorScheme(
+/*private val colorScheme = lightColorScheme(
     primary = Primary60,
     onPrimary = Neutral100,
     primaryContainer = Primary90,
@@ -86,7 +54,7 @@ private val lightColorScheme = lightColorScheme(
     inversePrimary = Primary80,
 
     scrim = Primary30
-)
+)*/
 
 @Composable
 fun DayFlowerTheme(
@@ -95,15 +63,6 @@ fun DayFlowerTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> darkColorScheme
-        else -> lightColorScheme
-    }
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

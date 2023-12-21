@@ -63,3 +63,26 @@ val Neutral92 = Color(0xFFD3D3D3)
 val Neutral95 = Color(0xFFDEDEDE)
 val Neutral99 = Color(0xFFF3F3F3)
 val Neutral100 = Color(0xFFFFFFFF)
+
+
+val Primary = Color(0xFFFFD300)
+val Secondary = Color(0xFF5C75FF)
+val Background = Color(0xFFF6F6F6)
+val SystemRed = Color(0xFFF6656A)
+val SystemBlue = Color(0xFF3E9EFF)
+
+val Gray11 = Color(0xFF111119)
+val Gray10 = Color(0xFF191925)
+val Gray9 = Color(0xFF21212F)
+val Gray8 = Color(0xFF464656)
+val Gray7 = Color(0xFF626273)
+val Gray6 = Color(0xFF9090A0)
+val Gray5 = Color(0xFFAEAEB2)
+val Gray4 = Color(0xFFC7C7CC)
+val Gray3 = Color(0xFFD1D1D6)
+val Gray2 = Color(0xFFE5E5EA)
+val Gray1 = Color(0xFFF1F1F4)
+val White = Color(0xFFFFFFFF)
+
+
+
