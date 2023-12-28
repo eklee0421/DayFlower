@@ -2,12 +2,12 @@ package com.nyang.dayFlower.presentation.feature.mainFlower
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -58,26 +57,20 @@ fun MainFlowerScreen(
 
     val navController = rememberNavController()
 
-    Scaffold(
-        bottomBar = {
-            FlowerBaseContent(navController = navController)
-        }
-    ) {
-
-
+    Column {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .weight(1f)
         ) {
-
-
             HomeNavGraph(
                 navController
             )
         }
 
+        FlowerBaseContent(navController = navController)
     }
+
 
     /*FlowerBaseContent(
         flowerDetail = uiState.flowerDetail,
@@ -110,17 +103,23 @@ private fun FlowerBaseContent(navController: NavHostController) {
                 icon = {
                     Icon(
                         painter = painterResource(id = item.icon),
-                        tint = if (currentRoute == item.route.route) MaterialTheme.colorScheme.primary else Gray5,
+                        tint = if (currentRoute == item.screen.route) MaterialTheme.colorScheme.primary else Gray5,
                         contentDescription = stringResource(id = item.title),
                         modifier = Modifier
-                            .width(24.dp)
-                            .height(24.dp)
+                            .size(24.dp)
+                            .padding(bottom = 2.dp)
                     )
                 },
-                label = { Text(stringResource(id = item.title), fontSize = 9.sp) },
-                selected = currentRoute == item.route.route,
+                label = {
+                    Text(
+                        stringResource(id = item.title),
+                        color = if (currentRoute == item.screen.route) MaterialTheme.colorScheme.primary else Gray5,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                },
+                selected = currentRoute == item.screen.route,
                 onClick = {
-                    navController.navigateSingleTopTo(item.route.route)
+                    navController.navigateSingleTopTo(item.screen.route)
                 }
             )
         }

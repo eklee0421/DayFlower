@@ -41,7 +41,7 @@ val Typography = Typography(
     ),
 
     //Heading4
-    headlineLarge =  TextStyle(
+    headlineLarge = TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.Medium,
         fontSize = 32.sp,
@@ -51,28 +51,28 @@ val Typography = Typography(
 
     //region Title
     //Title1
-    headlineMedium =  TextStyle(
+    headlineMedium = TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.Medium,
         fontSize = 28.sp,
         lineHeight = 36.sp,
     ),
     //Title2
-    headlineSmall =  TextStyle(
+    headlineSmall = TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.Medium,
         fontSize = 24.sp,
         lineHeight = 32.sp,
     ),
     //Title3
-    titleLarge =  TextStyle(
+    titleLarge = TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.Medium,
         fontSize = 22.sp,
         lineHeight = 28.sp,
     ),
     //Title4
-    titleMedium =  TextStyle(
+    titleMedium = TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
@@ -82,28 +82,28 @@ val Typography = Typography(
 
     //region Body
     //Body1
-    titleSmall =  TextStyle(
+    titleSmall = TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
         lineHeight = 20.sp,
     ),
     //Body2
-    bodyLarge =  TextStyle(
+    bodyLarge = TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 20.sp,
     ),
     //Body3
-    bodyMedium =  TextStyle(
+    bodyMedium = TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 18.sp,
     ),
     //Body4
-    bodySmall =  TextStyle(
+    bodySmall = TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.Normal,
         fontSize = 13.sp,
@@ -113,25 +113,25 @@ val Typography = Typography(
 
     //region Caption
     //Caption1
-    labelLarge =  TextStyle(
+    labelLarge = TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
         lineHeight = 20.sp,
     ),
     //Caption2
-    labelMedium =  TextStyle(
+    labelMedium = TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         lineHeight = 18.sp,
     ),
     //Caption3
-    labelSmall =  TextStyle(
+    labelSmall = TextStyle(
         fontFamily = pretendard,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
-        lineHeight = 16.sp,
+        lineHeight = 14.sp,
     ),
     //endregion
 )
