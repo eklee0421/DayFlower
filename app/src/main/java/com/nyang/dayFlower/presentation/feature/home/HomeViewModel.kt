@@ -2,7 +2,6 @@ package com.nyang.dayFlower.presentation.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nyang.dayFlower.data.network.ResultWrapper
 import com.nyang.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
 import com.nyang.dayFlower.domain.usecase.GetFlowerDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,16 +32,8 @@ class HomeViewModel @Inject constructor(
                 fDay = _uiState.value.localDate.dayOfMonth
             )
         ).collect { result ->
-            when (result) {
-                is ResultWrapper.Success -> {
-                    _uiState.update {
-                        it.copy(flowerDetail = result.data)
-                    }
-                }
-
-                is ResultWrapper.Error -> {
-
-                }
+            _uiState.update {
+                it.copy(flowerDetail = result)
             }
         }
     }

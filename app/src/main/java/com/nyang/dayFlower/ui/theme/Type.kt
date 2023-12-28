@@ -76,7 +76,7 @@ val Typography = Typography(
         fontFamily = pretendard,
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
-        lineHeight = 22.sp,
+        lineHeight = 20.sp,
     ),
     //endregion
 

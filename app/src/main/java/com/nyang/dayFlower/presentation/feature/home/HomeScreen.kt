@@ -2,6 +2,7 @@ package com.nyang.dayFlower.presentation.feature.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +25,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nyang.dayFlower.R
+import com.nyang.dayFlower.data.network.ResultWrapper
+import com.nyang.dayFlower.domain.model.common.FlowerDetail
+import com.nyang.dayFlower.presentation.base.component.FlowerCard
+import com.nyang.dayFlower.ui.theme.Gray10
+import com.nyang.dayFlower.ui.theme.Gray11
 import com.nyang.dayFlower.ui.theme.White
+import java.time.LocalDate
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
@@ -42,13 +49,13 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
             contentDescription = null
         )
 
-        HomeContent()
+        HomeContent(uiState = uiState)
     }
 
 }
 
 @Composable
-private fun HomeContent() {
+private fun HomeContent(uiState: HomeUiState) {
 
     Column(
         modifier = Modifier
@@ -58,7 +65,7 @@ private fun HomeContent() {
     ) {
         HomeTop()
         Spacer(modifier = Modifier.height(14.dp))
-        TodayFlower()
+        TodayFlower(localDate = uiState.localDate, flowerDetail = uiState.flowerDetail)
     }
 }
 
@@ -84,12 +91,27 @@ private fun HomeTop() {
         Text(
             text = "OOO님, 오늘도 좋은 날이에요.\n오늘의 꽃을 추천드릴게요.",
             style = MaterialTheme.typography.headlineSmall,
+            color = Gray11,
             modifier = Modifier.padding(top = 65.dp, start = 20.dp)
         )
     }
 }
 
 @Composable
-private fun TodayFlower() {
-    
+private fun TodayFlower(localDate: LocalDate, flowerDetail: ResultWrapper<FlowerDetail>) {
+    Column(
+        modifier = Modifier.padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+
+        Text(
+            text = "${localDate.year} ${localDate.month?.value}월 ${localDate.dayOfMonth}일",
+            style = MaterialTheme.typography.titleMedium,
+            color = Gray10
+        )
+
+        FlowerCard(flower = flowerDetail)
+
+
+    }
 }
