@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.nyang.dayFlower"
+    namespace = "com.nyangzzi.dayFlower"
     compileSdk = DefaultConfig.COMPLIE_SDK
 
     defaultConfig {
-        applicationId = "com.nyang.dayFlower"
+        applicationId = "com.nyangzzi.dayFlower"
         minSdk = DefaultConfig.MIN_SDK
         targetSdk = DefaultConfig.TARGET_SDK
         versionCode = DefaultConfig.VERSION_CODE
@@ -118,5 +118,6 @@ kapt {
 
 
 fun getApiKey(propertyKey: String): String {
-    return com.android.build.gradle.internal.cxx.configure.gradleLocalProperties(rootDir).getProperty(propertyKey)
+    return com.android.build.gradle.internal.cxx.configure.gradleLocalProperties(rootDir)
+        .getProperty(propertyKey)
 }
