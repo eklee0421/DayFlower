@@ -1,8 +1,11 @@
 package com.nyang.dayFlower.presentation.base.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,27 +15,44 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.HorizontalPagerIndicator
+import com.google.accompanist.pager.rememberPagerState
+import com.nyang.dayFlower.R
 import com.nyang.dayFlower.data.network.ResultWrapper
 import com.nyang.dayFlower.domain.model.common.FlowerDetail
 import com.nyang.dayFlower.presentation.base.Utils
 import com.nyang.dayFlower.ui.theme.Gray1
+import com.nyang.dayFlower.ui.theme.Gray5
 import com.nyang.dayFlower.ui.theme.Gray6
+import com.nyang.dayFlower.ui.theme.Gray9
 import com.nyang.dayFlower.ui.theme.White
 
 @Composable
-fun FlowerCard(flower: ResultWrapper<FlowerDetail>) {
+fun FlowerCardLarge(
+    flower: ResultWrapper<FlowerDetail>,
+    showDetail: () -> Unit = {}
+) {
 
     when (flower) {
         is ResultWrapper.Loading -> {
@@ -40,7 +60,7 @@ fun FlowerCard(flower: ResultWrapper<FlowerDetail>) {
         }
 
         is ResultWrapper.Success -> {
-            SuccessContent(flower.data)
+            SuccessContent(flower.data, showDetail = showDetail)
         }
 
         is ResultWrapper.Error -> {
@@ -52,12 +72,13 @@ fun FlowerCard(flower: ResultWrapper<FlowerDetail>) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-private fun SuccessContent(flower: FlowerDetail) {
+private fun SuccessContent(flower: FlowerDetail, showDetail: () -> Unit = {}) {
 
     Column(
         modifier = Modifier
             .background(color = White, shape = RoundedCornerShape(12.dp))
             .border(width = 2.dp, color = Gray1, shape = RoundedCornerShape(12.dp))
+            .clickable { showDetail() }
     ) {
 
         val imgList = listOf(
@@ -66,20 +87,36 @@ private fun SuccessContent(flower: FlowerDetail) {
             flower.imgUrl3
         )
 
-        HorizontalPager(
-            count = imgList.size,
-            modifier = Modifier.clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+        val imgState = rememberPagerState()
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .height(220.dp)
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(Utils.setImageUrl(imgList[it]))
-                    .crossfade(true)
-                    .build(),
-                contentDescription = flower.fileName1,
-                contentScale = ContentScale.Crop,
+            HorizontalPager(
+                count = imgList.size,
+                state = imgState,
+                modifier = Modifier.clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(Utils.setImageUrl(imgList[it]))
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = flower.fileName1,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            HorizontalPagerIndicator(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .height(220.dp)
+                    .align(Alignment.BottomCenter)
+                    .padding(20.dp),
+                pagerState = imgState,
+                activeColor = MaterialTheme.colorScheme.primary,
+                inactiveColor = Color(0x50FFD300)
             )
         }
 
@@ -89,7 +126,9 @@ private fun SuccessContent(flower: FlowerDetail) {
         ) {
 
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-
+                flower.flowLang?.replace(" ", "")?.split(',')?.map {
+                    Badge(it)
+                }
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -97,7 +136,14 @@ private fun SuccessContent(flower: FlowerDetail) {
                 flower.fEngNm?.let { Text(text = it, color = Gray6) }
             }
 
-            flower.fContent?.let { Text(text = "${it.substringBefore('.')}.", color = Gray6) }
+            flower.fContent?.let {
+                Text(
+                    text = "${it.substringBefore('.')}.",
+                    color = Gray6,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
 
         }
     }
@@ -152,9 +198,63 @@ private fun LoadingContent() {
     }
 }
 
+@Composable
+private fun ErrorContent() {
+    Column(
+        modifier = Modifier
+            .background(color = White, shape = RoundedCornerShape(12.dp))
+            .border(width = 2.dp, color = Gray1, shape = RoundedCornerShape(12.dp)),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(220.dp)
+                .background(Gray1, shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_empty_img),
+                contentDescription = "empty_img"
+            )
+        }
+
+        Column(
+            modifier = Modifier.height(130.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            IconButton(onClick = { }) {
+                Icon(imageVector = Icons.Rounded.Refresh, contentDescription = null, tint = Gray5)
+            }
+            Text("조회에 실패했습니다. 다시 시도해주세요", color = Gray9)
+        }
+    }
+}
+
 
 @Preview
 @Composable
-fun PreviewFlowerCard() {
-    SuccessContent(flower = FlowerDetail())
+fun PreviewSuccessFlowerCard() {
+    SuccessContent(
+        flower = FlowerDetail(
+            flowLang = "꽃말1, 꽃말2",
+            flowNm = "꽃명",
+            fEngNm = "영문",
+            fContent = "설명입니다."
+        )
+    )
+}
+
+@Preview
+@Composable
+fun PreviewLoadingFlowerCard() {
+    LoadingContent()
+}
+
+@Preview
+@Composable
+fun PreviewErrorFlowerCard() {
+    ErrorContent()
 }

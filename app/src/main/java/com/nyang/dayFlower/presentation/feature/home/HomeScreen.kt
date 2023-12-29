@@ -27,7 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nyang.dayFlower.R
 import com.nyang.dayFlower.data.network.ResultWrapper
 import com.nyang.dayFlower.domain.model.common.FlowerDetail
-import com.nyang.dayFlower.presentation.base.component.FlowerCard
+import com.nyang.dayFlower.presentation.base.component.FlowerCardLarge
 import com.nyang.dayFlower.ui.theme.Gray10
 import com.nyang.dayFlower.ui.theme.Gray11
 import com.nyang.dayFlower.ui.theme.White
@@ -110,7 +110,7 @@ private fun TodayFlower(localDate: LocalDate, flowerDetail: ResultWrapper<Flower
             color = Gray10
         )
 
-        FlowerCard(flower = flowerDetail)
+        FlowerCardLarge(flower = flowerDetail)
 
 
     }
