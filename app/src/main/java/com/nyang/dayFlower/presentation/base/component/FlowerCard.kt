@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,12 +45,14 @@ import com.nyang.dayFlower.ui.theme.Gray1
 import com.nyang.dayFlower.ui.theme.Gray5
 import com.nyang.dayFlower.ui.theme.Gray6
 import com.nyang.dayFlower.ui.theme.Gray9
+import com.nyang.dayFlower.ui.theme.PrimaryAlpha50
 import com.nyang.dayFlower.ui.theme.White
 
 @Composable
 fun FlowerCardLarge(
     flower: ResultWrapper<FlowerDetail>,
-    showDetail: () -> Unit = {}
+    showDetail: () -> Unit = {},
+    onRefresh: () -> Unit = {}
 ) {
 
     when (flower) {
@@ -64,7 +65,7 @@ fun FlowerCardLarge(
         }
 
         is ResultWrapper.Error -> {
-
+            ErrorContent(onRefresh = onRefresh)
         }
     }
 
@@ -116,7 +117,7 @@ private fun SuccessContent(flower: FlowerDetail, showDetail: () -> Unit = {}) {
                     .padding(20.dp),
                 pagerState = imgState,
                 activeColor = MaterialTheme.colorScheme.primary,
-                inactiveColor = Color(0x50FFD300)
+                inactiveColor = PrimaryAlpha50
             )
         }
 
@@ -199,7 +200,7 @@ private fun LoadingContent() {
 }
 
 @Composable
-private fun ErrorContent() {
+private fun ErrorContent(onRefresh: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .background(color = White, shape = RoundedCornerShape(12.dp))
@@ -225,7 +226,7 @@ private fun ErrorContent() {
             verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(onClick = { }) {
+            IconButton(onClick = { onRefresh() }) {
                 Icon(imageVector = Icons.Rounded.Refresh, contentDescription = null, tint = Gray5)
             }
             Text("조회에 실패했습니다. 다시 시도해주세요", color = Gray9)

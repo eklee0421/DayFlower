@@ -71,6 +71,8 @@ val Background = Color(0xFFF6F6F6)
 val SystemRed = Color(0xFFF6656A)
 val SystemBlue = Color(0xFF3E9EFF)
 
+val PrimaryAlpha50 = Color(0x50FFD300)
+
 val Gray11 = Color(0xFF111119)
 val Gray10 = Color(0xFF191925)
 val Gray9 = Color(0xFF21212F)
