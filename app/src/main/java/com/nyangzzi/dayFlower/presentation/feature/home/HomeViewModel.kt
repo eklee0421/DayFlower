@@ -25,6 +25,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onEvent(event: HomeEvent) {
+        viewModelScope.launch {
+            when (event) {
+                is HomeEvent.GetFlowerDetail -> getFlowerDetail()
+                is HomeEvent.SetShowDetail -> _uiState.update { it.copy(isShowDetail = event.isShown) }
+            }
+        }
+    }
+
     private suspend fun getFlowerDetail() {
         flowerDetailUseCase(
             requestFlowerDetail = RequestFlowerDetail(
@@ -37,4 +46,5 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
 }

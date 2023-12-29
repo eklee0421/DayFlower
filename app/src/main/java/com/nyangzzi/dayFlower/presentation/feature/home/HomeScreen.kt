@@ -49,13 +49,13 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
             contentDescription = null
         )
 
-        HomeContent(uiState = uiState)
+        HomeContent(uiState = uiState, onEvent = viewModel::onEvent)
     }
 
 }
 
 @Composable
-private fun HomeContent(uiState: HomeUiState) {
+private fun HomeContent(uiState: HomeUiState, onEvent: (HomeEvent) -> Unit) {
 
     Column(
         modifier = Modifier
@@ -65,7 +65,12 @@ private fun HomeContent(uiState: HomeUiState) {
     ) {
         HomeTop()
         Spacer(modifier = Modifier.height(14.dp))
-        TodayFlower(localDate = uiState.localDate, flowerDetail = uiState.flowerDetail)
+        TodayFlower(
+            localDate = uiState.localDate,
+            flowerDetail = uiState.flowerDetail,
+            onRefresh = { onEvent(HomeEvent.GetFlowerDetail) },
+            isShowDetail = uiState.isShowDetail,
+            setShowDetail = { onEvent(HomeEvent.SetShowDetail(it)) })
     }
 }
 
@@ -98,7 +103,13 @@ private fun HomeTop() {
 }
 
 @Composable
-private fun TodayFlower(localDate: LocalDate, flowerDetail: ResultWrapper<FlowerDetail>) {
+private fun TodayFlower(
+    localDate: LocalDate,
+    flowerDetail: ResultWrapper<FlowerDetail>,
+    onRefresh: () -> Unit,
+    isShowDetail: Boolean,
+    setShowDetail: (Boolean) -> Unit
+) {
     Column(
         modifier = Modifier.padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -110,7 +121,11 @@ private fun TodayFlower(localDate: LocalDate, flowerDetail: ResultWrapper<Flower
             color = Gray10
         )
 
-        FlowerCardLarge(flower = flowerDetail)
+        FlowerCardLarge(
+            flower = flowerDetail,
+            onRefresh = onRefresh,
+            isShowDetail = isShowDetail,
+            setShowDetail = { setShowDetail(it) })
 
 
     }

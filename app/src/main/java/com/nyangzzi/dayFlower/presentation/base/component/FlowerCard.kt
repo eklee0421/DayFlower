@@ -41,6 +41,7 @@ import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.base.Utils
+import com.nyangzzi.dayFlower.presentation.base.dialog.FlowerDetailDialog
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray5
 import com.nyangzzi.dayFlower.ui.theme.Gray6
@@ -51,8 +52,9 @@ import com.nyangzzi.dayFlower.ui.theme.White
 @Composable
 fun FlowerCardLarge(
     flower: ResultWrapper<FlowerDetail>,
-    showDetail: () -> Unit = {},
-    onRefresh: () -> Unit = {}
+    onRefresh: () -> Unit = {},
+    isShowDetail: Boolean,
+    setShowDetail: (Boolean) -> Unit
 ) {
 
     when (flower) {
@@ -61,7 +63,12 @@ fun FlowerCardLarge(
         }
 
         is ResultWrapper.Success -> {
-            SuccessContent(flower.data, showDetail = showDetail)
+            SuccessContent(flower.data, showDetail = { setShowDetail(true) })
+            if (isShowDetail) {
+                FlowerDetailDialog(flowerDetail = flower.data) {
+                    setShowDetail(false)
+                }
+            }
         }
 
         is ResultWrapper.Error -> {
@@ -79,6 +86,7 @@ private fun SuccessContent(flower: FlowerDetail, showDetail: () -> Unit = {}) {
         modifier = Modifier
             .background(color = White, shape = RoundedCornerShape(12.dp))
             .border(width = 2.dp, color = Gray1, shape = RoundedCornerShape(12.dp))
+            .clip(shape = RoundedCornerShape(12.dp))
             .clickable { showDetail() }
     ) {
 

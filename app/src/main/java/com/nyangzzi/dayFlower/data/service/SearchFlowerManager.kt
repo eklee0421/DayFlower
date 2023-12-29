@@ -33,8 +33,8 @@ object SearchFlowerManager {
 
     private var okHttpClient = getUnsafeOkHttpClient()
         .connectTimeout(10, TimeUnit.MINUTES)
-        .readTimeout(50, TimeUnit.SECONDS)
-        .writeTimeout(50, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
     fun getService(): SearchFlowerService = getInstance().create(SearchFlowerService::class.java)
