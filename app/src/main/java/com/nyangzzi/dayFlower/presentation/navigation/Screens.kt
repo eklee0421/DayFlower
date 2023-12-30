@@ -2,6 +2,7 @@ package com.nyangzzi.dayFlower.presentation.navigation
 
 sealed class Screens(val route: String, val argumentKey: String = "") {
     object MainFlower : Screens(route = "mainFlower")
+    object Login : Screens(route = "login")
     object Home : Screens(route = "home")
     object Search : Screens(route = "search")
     object Locker : Screens(route = "locker")

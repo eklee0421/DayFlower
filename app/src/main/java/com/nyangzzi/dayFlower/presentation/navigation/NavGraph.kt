@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.nyangzzi.dayFlower.presentation.feature.home.HomeScreen
 import com.nyangzzi.dayFlower.presentation.feature.locker.LockerScreen
+import com.nyangzzi.dayFlower.presentation.feature.login.LoginScreen
 import com.nyangzzi.dayFlower.presentation.feature.mainFlower.MainFlowerScreen
 import com.nyangzzi.dayFlower.presentation.feature.profile.ProfileScreen
 import com.nyangzzi.dayFlower.presentation.feature.search.SearchScreen
@@ -16,9 +17,12 @@ fun NavGraph(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = Screens.MainFlower.route
+        startDestination = Screens.Login.route
     ) {
 
+        composable(route = Screens.Login.route) {
+            LoginScreen()
+        }
         composable(route = Screens.MainFlower.route) {
             MainFlowerScreen(onNavigate = { navController.navigateSingleTopTo(it.route) })
         }
