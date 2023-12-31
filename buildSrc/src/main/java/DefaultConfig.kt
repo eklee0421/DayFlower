@@ -7,5 +7,5 @@ object DefaultConfig {
 
     const val API_KEY_TYPE = "String"
     const val SEARCH_FLOWER = "search_flower_api_key"
-
+    const val KAKAO = "kakao_api_key"
 }

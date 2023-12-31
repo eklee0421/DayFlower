@@ -23,17 +23,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.ui.theme.White
 
 @Composable
-fun LoginScreen() {
-    LoginContent()
+fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
+    LoginContent(login = {})
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LoginContent() {
+private fun LoginContent(login: () -> Unit) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -42,7 +43,9 @@ private fun LoginContent() {
         bottomBar = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Button(
-                    onClick = { },
+                    onClick = {
+
+                    },
                     modifier = Modifier
                         .height(50.dp)
                         .fillMaxWidth(),

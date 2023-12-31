@@ -22,6 +22,14 @@ android {
             getApiKey(DefaultConfig.SEARCH_FLOWER)
         )
 
+        /*buildConfigField(
+            DefaultConfig.API_KEY_TYPE,
+            DefaultConfig.KAKAO,
+            getApiKey(DefaultConfig.KAKAO)
+        )*/
+
+        manifestPlaceholders[DefaultConfig.KAKAO] = getApiKey(DefaultConfig.KAKAO)
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -110,6 +118,9 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    //login
+    implementation("com.kakao.sdk:v2-user:2.19.0") // 카카오 로그인
 }
 
 kapt {
