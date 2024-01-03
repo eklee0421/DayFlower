@@ -24,6 +24,26 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
+    fun onEvent(event: CalendarOnEvent) {
+        viewModelScope.launch {
+            when (event) {
+                CalendarOnEvent.OnNextMonth -> {
+                    _uiState.update { it.copy(localDate = _uiState.value.localDate.plusMonths(1)) }
+                    getFlowerMonth()
+                }
+
+                CalendarOnEvent.OnPrevMonth -> {
+                    _uiState.update { it.copy(localDate = _uiState.value.localDate.minusMonths(1)) }
+                    getFlowerMonth()
+                }
+
+                CalendarOnEvent.OnSearchMonth -> {
+                    getFlowerMonth()
+                }
+            }
+        }
+    }
+
     private suspend fun getFlowerMonth() {
         flowerMonthUseCase(
             requestFlowerMonth = RequestFlowerMonth(

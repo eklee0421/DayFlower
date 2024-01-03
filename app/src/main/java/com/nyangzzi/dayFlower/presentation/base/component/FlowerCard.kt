@@ -72,7 +72,7 @@ fun FlowerCardLarge(
         }
 
         is ResultWrapper.Error -> {
-            ErrorContent(onRefresh = onRefresh)
+            ErrorContent(msg = flower.errorMessage, onRefresh = onRefresh)
         }
     }
 
@@ -208,7 +208,7 @@ private fun LoadingContent() {
 }
 
 @Composable
-private fun ErrorContent(onRefresh: () -> Unit = {}) {
+private fun ErrorContent(msg: String?, onRefresh: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .background(color = White, shape = RoundedCornerShape(12.dp))
@@ -237,7 +237,7 @@ private fun ErrorContent(onRefresh: () -> Unit = {}) {
             IconButton(onClick = { onRefresh() }) {
                 Icon(imageVector = Icons.Rounded.Refresh, contentDescription = null, tint = Gray5)
             }
-            Text("조회에 실패했습니다. 다시 시도해주세요", color = Gray9)
+            Text(msg ?: "조회에 실패했습니다. 다시 시도해주세요", color = Gray9)
         }
     }
 }
@@ -265,5 +265,5 @@ fun PreviewLoadingFlowerCard() {
 @Preview
 @Composable
 fun PreviewErrorFlowerCard() {
-    ErrorContent()
+    ErrorContent(msg = "오류 발생")
 }

@@ -1,5 +1,6 @@
 package com.nyangzzi.dayFlower.presentation.feature.calendar
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,16 +33,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.base.Utils
 import com.nyangzzi.dayFlower.presentation.base.component.loadingShimmerEffect
+import com.nyangzzi.dayFlower.ui.theme.Gray1
+import com.nyangzzi.dayFlower.ui.theme.Gray5
 import com.nyangzzi.dayFlower.ui.theme.Gray9
 import com.nyangzzi.dayFlower.ui.theme.SystemBlue
 import com.nyangzzi.dayFlower.ui.theme.SystemRed
@@ -53,13 +59,18 @@ import java.util.Locale
 @Composable
 fun CalendarScreen(viewModel: CalendarViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    CalendarContent(flowerMonth = uiState.flowerMonth, localDate = uiState.localDate)
+    CalendarContent(
+        flowerMonth = uiState.flowerMonth,
+        localDate = uiState.localDate,
+        onEvent = viewModel::onEvent
+    )
 }
 
 @Composable
 private fun CalendarContent(
     flowerMonth: ResultWrapper<List<FlowerDetail>> = ResultWrapper.Loading,
     localDate: LocalDate = LocalDate.now(),
+    onEvent: (CalendarOnEvent) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -72,7 +83,10 @@ private fun CalendarContent(
                 .fillMaxSize()
         ) {
 
-            FlowerMonthTopBar(localDate = localDate, onPrevMonth = {}, onNextMonth = {})
+            FlowerMonthTopBar(
+                localDate = localDate,
+                onPrevMonth = { onEvent(CalendarOnEvent.OnPrevMonth) },
+                onNextMonth = { onEvent(CalendarOnEvent.OnNextMonth) })
 
             Column(modifier = Modifier.padding(horizontal = 20.dp)) {
 
@@ -80,7 +94,9 @@ private fun CalendarContent(
 
                 when (flowerMonth) {
                     is ResultWrapper.Error -> {
-                        //todo
+                        ErrorFlowerCalendar(
+                            msg = flowerMonth.errorMessage,
+                            onRefresh = { onEvent(CalendarOnEvent.OnSearchMonth) })
                     }
 
                     ResultWrapper.Loading -> {
@@ -209,6 +225,44 @@ private fun LoadingFlowerCalendar() {
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ErrorFlowerCalendar(msg: String?, onRefresh: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(220.dp)
+                .background(Gray1, shape = RoundedCornerShape(12.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_empty_img),
+                contentDescription = "empty_img"
+            )
+        }
+
+        Column(
+            modifier = Modifier.height(130.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            androidx.compose.material.IconButton(onClick = { onRefresh() }) {
+                androidx.compose.material.Icon(
+                    imageVector = Icons.Rounded.Refresh,
+                    contentDescription = null,
+                    tint = Gray5
+                )
+            }
+            Text(msg ?: "조회에 실패했습니다. 다시 시도해주세요", color = Gray9)
         }
     }
 }
