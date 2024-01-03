@@ -67,9 +67,7 @@ class MainFlowerViewModel @Inject constructor(
                 }
 
                 is MainFlowerEvent.IsChangeView -> {
-                    _uiState.update {
-                        it.copy(isCalendar = event.isCalendar)
-                    }
+
                     setLocalDate(
                         LocalDate.of(
                             _uiState.value.localDate.year,

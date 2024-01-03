@@ -5,6 +5,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.nyangzzi.dayFlower.presentation.feature.calendar.CalendarScreen
 import com.nyangzzi.dayFlower.presentation.feature.home.HomeScreen
 import com.nyangzzi.dayFlower.presentation.feature.locker.LockerScreen
 import com.nyangzzi.dayFlower.presentation.feature.login.LoginScreen
@@ -17,7 +18,7 @@ fun NavGraph(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = Screens.Login.route
+        startDestination = Screens.MainFlower.route
     ) {
 
         composable(route = Screens.Login.route) {
@@ -38,6 +39,9 @@ fun HomeNavGraph(navController: NavHostController) {
 
         composable(route = Screens.Home.route) {
             HomeScreen()
+        }
+        composable(route = Screens.Calendar.route) {
+            CalendarScreen()
         }
         composable(route = Screens.Search.route) {
             SearchScreen()

@@ -34,7 +34,6 @@ import androidx.navigation.compose.rememberNavController
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.feature.mainFlower.flowerDetail.FlowerDetailView
-import com.nyangzzi.dayFlower.presentation.feature.mainFlower.flowerMonth.FlowerMonthView
 import com.nyangzzi.dayFlower.presentation.navigation.HomeNavGraph
 import com.nyangzzi.dayFlower.presentation.navigation.Screens
 import com.nyangzzi.dayFlower.presentation.navigation.navigateSingleTopTo
@@ -172,20 +171,15 @@ private fun FlowerBaseContents(
                 .fillMaxSize()
                 .padding(it)
         ) {
-            if (isCalendar) {
-                FlowerMonthView(
-                    flowerMonth = flowerMonth,
-                    localDate = localDate,
-                    onEvent = onEvent
-                )
-            } else {
-                FlowerDetailView(
-                    flowerDetail = flowerDetail,
-                    localDate = localDate,
-                    isDatePicker = isDatePicker,
-                    onEvent = onEvent
-                )
-            }
+
+
+            FlowerDetailView(
+                flowerDetail = flowerDetail,
+                localDate = localDate,
+                isDatePicker = isDatePicker,
+                onEvent = onEvent
+            )
+
         }
     }
 }

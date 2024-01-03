@@ -10,5 +10,4 @@ data class MainFlowerUiState(
     val flowerMonth: List<FlowerDetail> = emptyList(),
     val flowerList: List<FlowerDetail> = emptyList(),
     val localDate: LocalDate = LocalDate.now(),
-    val isCalendar: Boolean = false
 )
