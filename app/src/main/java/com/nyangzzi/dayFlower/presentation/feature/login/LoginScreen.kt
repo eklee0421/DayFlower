@@ -29,12 +29,12 @@ import com.nyangzzi.dayFlower.ui.theme.White
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
-    LoginContent(login = {})
+    LoginContent(onEvent = viewModel::onEvent)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LoginContent(login: () -> Unit) {
+private fun LoginContent(onEvent: (LoginEvent) -> Unit) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -44,7 +44,7 @@ private fun LoginContent(login: () -> Unit) {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Button(
                     onClick = {
-
+                        onEvent(LoginEvent.kakaoLogin)
                     },
                     modifier = Modifier
                         .height(50.dp)

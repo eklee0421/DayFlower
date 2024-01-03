@@ -22,11 +22,11 @@ android {
             getApiKey(DefaultConfig.SEARCH_FLOWER)
         )
 
-        /*buildConfigField(
+        buildConfigField(
             DefaultConfig.API_KEY_TYPE,
-            DefaultConfig.KAKAO,
-            getApiKey(DefaultConfig.KAKAO)
-        )*/
+            DefaultConfig.KAKAO_STRING,
+            getApiKey(DefaultConfig.KAKAO_STRING)
+        )
 
         manifestPlaceholders[DefaultConfig.KAKAO] = getApiKey(DefaultConfig.KAKAO)
 

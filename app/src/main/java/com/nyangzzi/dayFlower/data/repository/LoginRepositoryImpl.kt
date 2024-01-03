@@ -3,9 +3,11 @@ package com.nyangzzi.dayFlower.data.repository
 import android.content.Context
 import android.util.Log
 import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.nyangzzi.dayFlower.BuildConfig
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.repository.LoginRepository
 import kotlinx.coroutines.Dispatchers
@@ -14,9 +16,16 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 
-class LoginRepositoryImpl : LoginRepository {
-    override suspend fun kaKaoLogin(context: Context): Flow<ResultWrapper<Unit>> = flow {
+class LoginRepositoryImpl(
+    private val context: Context
+) : LoginRepository {
+    override suspend fun kaKaoLogin(): Flow<ResultWrapper<Unit>> = flow {
         emit(ResultWrapper.Loading) //todo
+
+        val result: ResultWrapper<Unit>
+
+        KakaoSdk.init(context, BuildConfig.kakao_api_key_string)
+
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
                 if (error != null) {
@@ -29,18 +38,18 @@ class LoginRepositoryImpl : LoginRepository {
                     }
 
                     // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                    UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
+                    UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
                 } else if (token != null) {
-                    
+
                     Log.i("kakao", "카카오톡으로 로그인 성공 ${token.accessToken}")
                 }
             }
         } else {
-            UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
+            UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
         }
     }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
 
-    val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+    private val kakaoCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
             Log.e("kakao", "카카오계정으로 로그인 실패", error)
         } else if (token != null) {
