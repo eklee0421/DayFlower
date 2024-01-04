@@ -6,5 +6,6 @@ import java.time.LocalDate
 
 data class CalendarUiState(
     val localDate: LocalDate = LocalDate.now(),
-    val flowerMonth: ResultWrapper<List<FlowerDetail>> = ResultWrapper.Loading
+    val flowerMonth: ResultWrapper<List<FlowerDetail>> = ResultWrapper.Loading,
+    val isDetail: Boolean = false
 )

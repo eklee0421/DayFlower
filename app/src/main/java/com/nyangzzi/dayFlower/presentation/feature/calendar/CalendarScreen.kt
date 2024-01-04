@@ -28,6 +28,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +48,7 @@ import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.base.Utils
 import com.nyangzzi.dayFlower.presentation.base.component.loadingShimmerEffect
+import com.nyangzzi.dayFlower.presentation.base.dialog.FlowerDetailDialog
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray5
 import com.nyangzzi.dayFlower.ui.theme.Gray9
@@ -61,6 +65,7 @@ fun CalendarScreen(viewModel: CalendarViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     CalendarContent(
         flowerMonth = uiState.flowerMonth,
+        isDetail = uiState.isDetail,
         localDate = uiState.localDate,
         onEvent = viewModel::onEvent
     )
@@ -69,9 +74,19 @@ fun CalendarScreen(viewModel: CalendarViewModel = hiltViewModel()) {
 @Composable
 private fun CalendarContent(
     flowerMonth: ResultWrapper<List<FlowerDetail>> = ResultWrapper.Loading,
+    isDetail: Boolean,
     localDate: LocalDate = LocalDate.now(),
     onEvent: (CalendarOnEvent) -> Unit
 ) {
+
+    var selectedFlower by remember { mutableStateOf(FlowerDetail()) }
+
+    if (isDetail) {
+        FlowerDetailDialog(flowerDetail = selectedFlower) {
+            onEvent(CalendarOnEvent.SetDetailDialog(false))
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -106,7 +121,10 @@ private fun CalendarContent(
                     is ResultWrapper.Success -> {
                         SuccessFlowerCalendar(
                             flowerMonth = flowerMonth.data,
-                            onEvent = { },
+                            onSelected = {
+                                selectedFlower = it
+                                onEvent(CalendarOnEvent.SetDetailDialog(true))
+                            },
                             firstDayOfWeek = LocalDate.of(
                                 localDate.year,
                                 localDate.month,
@@ -132,10 +150,12 @@ fun FlowerMonthTopBar(
     Box(
         Modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .padding(top = 16.dp)
+            .height(68.dp),
     ) {
 
         Text("${localDate?.year}년 ${localDate?.month?.value}월",
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .align(Alignment.Center)
                 .clickable { /*onEvent(MainFlowerEvent.ShowDatePicker)*/ })
@@ -270,7 +290,7 @@ private fun ErrorFlowerCalendar(msg: String?, onRefresh: () -> Unit) {
 @Composable
 private fun SuccessFlowerCalendar(
     flowerMonth: List<FlowerDetail>,
-    onEvent: () -> Unit,
+    onSelected: (FlowerDetail) -> Unit,
     firstDayOfWeek: Int
 ) {
     LazyVerticalGrid(
@@ -292,6 +312,7 @@ private fun SuccessFlowerCalendar(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clickable { onSelected(item) }
                     .padding(vertical = 6.dp, horizontal = 4.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -305,7 +326,8 @@ private fun SuccessFlowerCalendar(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(36.dp)
-                        .clip(shape = RoundedCornerShape(6.dp))
+                        .clip(shape = RoundedCornerShape(6.dp)),
+                    placeholder = painterResource(id = R.drawable.ic_loading_image)
                 )
                 Text(
                     text = "${index + 1}",

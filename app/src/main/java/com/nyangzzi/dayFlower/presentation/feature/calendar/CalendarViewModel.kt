@@ -40,6 +40,10 @@ class CalendarViewModel @Inject constructor(
                 CalendarOnEvent.OnSearchMonth -> {
                     getFlowerMonth()
                 }
+
+                is CalendarOnEvent.SetDetailDialog -> {
+                    _uiState.update { it.copy(isDetail = event.isShown) }
+                }
             }
         }
     }

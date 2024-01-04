@@ -116,7 +116,8 @@ private fun SuccessContent(flower: FlowerDetail, showDetail: () -> Unit = {}) {
                         .build(),
                     contentDescription = flower.fileName1,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    placeholder = painterResource(id = R.drawable.ic_loading_image)
                 )
             }
 
@@ -163,7 +164,7 @@ private fun SuccessContent(flower: FlowerDetail, showDetail: () -> Unit = {}) {
 
             flower.fContent?.let {
                 Text(
-                    text = "${it.substringBefore('.')}.",
+                    text = it,
                     color = Gray6,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

@@ -135,7 +135,8 @@ private fun Body(flower: FlowerDetail) {
                         .build(),
                     contentDescription = flower.fileName1,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    placeholder = painterResource(id = R.drawable.ic_loading_image)
                 )
             }
 
