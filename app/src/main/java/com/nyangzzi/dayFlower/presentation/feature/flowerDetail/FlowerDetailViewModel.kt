@@ -23,6 +23,9 @@ class FlowerDetailViewModel @Inject constructor(
         viewModelScope.launch {
             when (event) {
                 is FlowerDetailOnEvent.OnSearchDetail -> getDetailFlower(event.dataNo)
+                FlowerDetailOnEvent.OnDismiss -> {
+                    _uiState.update { it.copy(flowerDetail = ResultWrapper.Loading) }
+                }
             }
         }
     }

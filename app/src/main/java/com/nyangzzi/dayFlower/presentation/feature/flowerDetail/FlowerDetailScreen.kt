@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,8 +47,11 @@ import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.base.Utils
 import com.nyangzzi.dayFlower.presentation.base.component.Badge
+import com.nyangzzi.dayFlower.presentation.base.component.loadingShimmerEffect
+import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray10
 import com.nyangzzi.dayFlower.ui.theme.Gray11
+import com.nyangzzi.dayFlower.ui.theme.Gray5
 import com.nyangzzi.dayFlower.ui.theme.Gray6
 import com.nyangzzi.dayFlower.ui.theme.Gray9
 import com.nyangzzi.dayFlower.ui.theme.PrimaryAlpha50
@@ -65,7 +71,10 @@ fun FlowerDetailScreen(
     }
 
     Dialog(
-        onDismissRequest = { onDismiss() },
+        onDismissRequest = {
+            onDismiss()
+            viewModel.onEvent(FlowerDetailOnEvent.OnDismiss)
+        },
         properties = DialogProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = false,
@@ -74,14 +83,24 @@ fun FlowerDetailScreen(
     ) {
         Content(
             flowerDetail = uiState.flowerDetail,
-            onDismiss = onDismiss
+            onRefresh = {
+                viewModel.onEvent(FlowerDetailOnEvent.OnSearchDetail(dataNo))
+            },
+            onDismiss = {
+                onDismiss()
+                viewModel.onEvent(FlowerDetailOnEvent.OnDismiss)
+            }
         )
     }
 
 }
 
 @Composable
-private fun Content(flowerDetail: ResultWrapper<FlowerDetail>, onDismiss: () -> Unit) {
+private fun Content(
+    flowerDetail: ResultWrapper<FlowerDetail>,
+    onRefresh: () -> Unit,
+    onDismiss: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,11 +109,11 @@ private fun Content(flowerDetail: ResultWrapper<FlowerDetail>, onDismiss: () -> 
         Top(onDismiss = onDismiss)
         when (flowerDetail) {
             is ResultWrapper.Error -> {
-
+                ErrorContent(flowerDetail.errorMessage, onRefresh = onRefresh)
             }
 
             is ResultWrapper.Loading -> {
-
+                LoadingContent()
             }
 
             is ResultWrapper.Success -> {
@@ -110,17 +129,134 @@ private fun Top(onDismiss: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(68.dp)
     ) {
-        IconButton(onClick = onDismiss, modifier = Modifier.size(56.dp)) {
+        IconButton(onClick = onDismiss, modifier = Modifier.size(68.dp)) {
             Image(painter = painterResource(id = R.drawable.ic_close), contentDescription = null)
         }
         Text(
             text = stringResource(id = R.string.app_name),
+            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.align(Alignment.Center)
         )
     }
 }
+
+@Composable
+private fun ErrorContent(msg: String?, onRefresh: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(220.dp)
+                .background(Gray1, shape = RoundedCornerShape(12.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_empty_img),
+                contentDescription = "empty_img"
+            )
+        }
+
+        Column(
+            modifier = Modifier.height(130.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            IconButton(onClick = { onRefresh() }) {
+                androidx.compose.material.Icon(
+                    imageVector = Icons.Rounded.Refresh,
+                    contentDescription = null,
+                    tint = Gray5
+                )
+            }
+            Text(msg ?: "조회에 실패했습니다. 다시 시도해주세요", color = Gray9)
+        }
+    }
+}
+
+@Composable
+private fun LoadingContent() {
+
+    val brush = loadingShimmerEffect()
+    Column(
+        modifier = Modifier.verticalScroll(
+            rememberScrollState()
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .height(58.dp)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(132.dp, 20.dp)
+                    .background(brush = brush, shape = RoundedCornerShape(6.dp))
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .fillMaxWidth()
+                .height(180.dp)
+                .background(brush = brush, shape = RoundedCornerShape(6.dp))
+        )
+
+        Column(
+            modifier = Modifier
+                .padding(vertical = 20.dp, horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp),
+        ) {
+
+            Spacer(
+                modifier = Modifier
+                    .height(26.dp)
+                    .width(200.dp)
+                    .background(brush, shape = RoundedCornerShape(12.dp))
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .height(26.dp)
+                    .width(125.dp)
+                    .background(brush, shape = RoundedCornerShape(12.dp))
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .height(26.dp)
+                    .fillMaxWidth()
+                    .background(brush, shape = RoundedCornerShape(12.dp))
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .height(26.dp)
+                    .fillMaxWidth()
+                    .background(brush, shape = RoundedCornerShape(12.dp))
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .height(26.dp)
+                    .fillMaxWidth()
+                    .background(brush, shape = RoundedCornerShape(12.dp))
+            )
+
+        }
+    }
+}
+
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -136,7 +272,10 @@ private fun SuccessContent(flower: FlowerDetail) {
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            Text("${flower.fMonth}월 ${flower.fDay}일")
+            Text(
+                text = "${flower.fMonth}월 ${flower.fDay}일",
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
 
         val imgList = listOf(
@@ -150,7 +289,6 @@ private fun SuccessContent(flower: FlowerDetail) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .width(320.dp)
                 .height(180.dp)
                 .padding(horizontal = 20.dp)
         ) {
@@ -235,6 +373,17 @@ private fun SuccessContent(flower: FlowerDetail) {
 
             flower.fGrow?.let {
                 ChildContent(title = "키우는 방법", content = it)
+            }
+
+            flower.publishOrg?.let {
+                Text(
+                    text = "[출처] $it",
+                    color = Gray5,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(vertical = 16.dp, horizontal = 4.dp)
+                )
             }
         }
     }

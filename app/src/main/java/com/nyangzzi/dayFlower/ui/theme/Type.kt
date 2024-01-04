@@ -68,8 +68,8 @@ val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.Medium,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
+        fontSize = 20.sp,
+        lineHeight = 24.sp,
     ),
     //Title4
     titleMedium = TextStyle(
