@@ -284,8 +284,8 @@ private fun ErrorFlowerCalendar(msg: String?, onRefresh: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            androidx.compose.material.IconButton(onClick = { onRefresh() }) {
-                androidx.compose.material.Icon(
+            IconButton(onClick = { onRefresh() }) {
+                Icon(
                     imageVector = Icons.Rounded.Refresh,
                     contentDescription = null,
                     tint = Gray5
