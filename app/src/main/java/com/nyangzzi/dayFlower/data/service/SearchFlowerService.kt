@@ -1,17 +1,25 @@
 package com.nyangzzi.dayFlower.data.service
 
+import com.nyangzzi.dayFlower.domain.model.flowerDay.ResponseFlowerDay
 import com.nyangzzi.dayFlower.domain.model.flowerDetail.ResponseFlowerDetail
 import com.nyangzzi.dayFlower.domain.model.flowerMonth.ResponseFlowerMonth
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface SearchFlowerService {
-    @GET("selectTodayFlower01?")
+
+    @GET("selectTodayFlowerView01?")
     suspend fun getFlowerDetail(
+        @Query("serviceKey") serviceKey: String,
+        @Query("dataNo") dataNo: Int,
+    ): Result<ResponseFlowerDetail>
+
+    @GET("selectTodayFlower01?")
+    suspend fun getFlowerDay(
         @Query("serviceKey") serviceKey: String,
         @Query("fMonth") fMonth: Int,
         @Query("fDay") fDay: Int
-    ): Result<ResponseFlowerDetail>
+    ): Result<ResponseFlowerDay>
 
     @GET("selectTodayFlowerList01?")
     suspend fun getFlowerMonth(

@@ -68,7 +68,7 @@ private fun HomeContent(uiState: HomeUiState, onEvent: (HomeEvent) -> Unit) {
         TodayFlower(
             localDate = uiState.localDate,
             flowerDetail = uiState.flowerDetail,
-            onRefresh = { onEvent(HomeEvent.GetFlowerDetail) },
+            onRefresh = { onEvent(HomeEvent.GetDayFlower) },
             isShowDetail = uiState.isShowDetail,
             setShowDetail = { onEvent(HomeEvent.SetShowDetail(it)) })
     }
@@ -116,7 +116,7 @@ private fun TodayFlower(
     ) {
 
         Text(
-            text = "${localDate.year} ${localDate.month?.value}월 ${localDate.dayOfMonth}일",
+            text = "${localDate.year}년 ${localDate.month?.value}월 ${localDate.dayOfMonth}일",
             style = MaterialTheme.typography.titleMedium,
             color = Gray10
         )

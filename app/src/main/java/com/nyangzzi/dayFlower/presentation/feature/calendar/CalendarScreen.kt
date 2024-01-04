@@ -48,7 +48,7 @@ import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.base.Utils
 import com.nyangzzi.dayFlower.presentation.base.component.loadingShimmerEffect
-import com.nyangzzi.dayFlower.presentation.base.dialog.FlowerDetailDialog
+import com.nyangzzi.dayFlower.presentation.feature.flowerDetail.FlowerDetailScreen
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray5
 import com.nyangzzi.dayFlower.ui.theme.Gray9
@@ -82,9 +82,9 @@ private fun CalendarContent(
     var selectedFlower by remember { mutableStateOf(FlowerDetail()) }
 
     if (isDetail) {
-        FlowerDetailDialog(flowerDetail = selectedFlower) {
-            onEvent(CalendarOnEvent.SetDetailDialog(false))
-        }
+        FlowerDetailScreen(
+            dataNo = selectedFlower.dataNo,
+            onDismiss = { onEvent(CalendarOnEvent.SetDetailDialog(false)) })
     }
 
     Box(

@@ -2,8 +2,8 @@ package com.nyangzzi.dayFlower.presentation.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nyangzzi.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
-import com.nyangzzi.dayFlower.domain.usecase.GetFlowerDetailUseCase
+import com.nyangzzi.dayFlower.domain.model.flowerDay.RequestFlowerDay
+import com.nyangzzi.dayFlower.domain.usecase.GetFlowerDayUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val flowerDetailUseCase: GetFlowerDetailUseCase,
+    private val dayFlowerUseCase: GetFlowerDayUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -21,22 +21,22 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getFlowerDetail()
+            getDayFlower()
         }
     }
 
     fun onEvent(event: HomeEvent) {
         viewModelScope.launch {
             when (event) {
-                is HomeEvent.GetFlowerDetail -> getFlowerDetail()
+                is HomeEvent.GetDayFlower -> getDayFlower()
                 is HomeEvent.SetShowDetail -> _uiState.update { it.copy(isShowDetail = event.isShown) }
             }
         }
     }
 
-    private suspend fun getFlowerDetail() {
-        flowerDetailUseCase(
-            requestFlowerDetail = RequestFlowerDetail(
+    private suspend fun getDayFlower() {
+        dayFlowerUseCase(
+            requestFlowerDay = RequestFlowerDay(
                 fMonth = _uiState.value.localDate.month.value,
                 fDay = _uiState.value.localDate.dayOfMonth
             )

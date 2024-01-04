@@ -5,6 +5,7 @@ import com.nyangzzi.dayFlower.BuildConfig
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.data.service.SearchFlowerManager
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
+import com.nyangzzi.dayFlower.domain.model.flowerDay.RequestFlowerDay
 import com.nyangzzi.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
 import com.nyangzzi.dayFlower.domain.model.flowerList.RequestFlowerList
 import com.nyangzzi.dayFlower.domain.model.flowerMonth.RequestFlowerMonth
@@ -16,13 +17,30 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 
 class SearchFlowerRepositoryImpl : SearchFlowerRepository {
+
     override suspend fun getFlowerDetail(requestFlowerDetail: RequestFlowerDetail): Flow<ResultWrapper<FlowerDetail>> =
         flow {
 
             SearchFlowerManager.getService().getFlowerDetail(
                 serviceKey = BuildConfig.search_flower_api_key,
-                fMonth = requestFlowerDetail.fMonth ?: 1,
-                fDay = requestFlowerDetail.fDay ?: 1
+                dataNo = requestFlowerDetail.dataNo ?: 1,
+            )
+                .onSuccess {
+                    emit(ResultWrapper.Success(it.root?.result ?: FlowerDetail()))
+                }.onFailure {
+                    Log.d("detail", it.message ?: "")
+                    emit(ResultWrapper.Error(it.message ?: "error: Failure Get flower detail"))
+                }
+
+        }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
+
+    override suspend fun getFlowerDay(requestFlowerDay: RequestFlowerDay): Flow<ResultWrapper<FlowerDetail>> =
+        flow {
+
+            SearchFlowerManager.getService().getFlowerDay(
+                serviceKey = BuildConfig.search_flower_api_key,
+                fMonth = requestFlowerDay.fMonth ?: 1,
+                fDay = requestFlowerDay.fDay ?: 1
             )
                 .onSuccess {
                     emit(ResultWrapper.Success(it.root?.result ?: FlowerDetail()))

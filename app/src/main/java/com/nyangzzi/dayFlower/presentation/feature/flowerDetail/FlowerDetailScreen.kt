@@ -1,4 +1,4 @@
-package com.nyangzzi.dayFlower.presentation.base.dialog
+package com.nyangzzi.dayFlower.presentation.feature.flowerDetail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +19,8 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -36,6 +40,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.nyangzzi.dayFlower.R
+import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.base.Utils
 import com.nyangzzi.dayFlower.presentation.base.component.Badge
@@ -47,7 +52,17 @@ import com.nyangzzi.dayFlower.ui.theme.PrimaryAlpha50
 import com.nyangzzi.dayFlower.ui.theme.White
 
 @Composable
-fun FlowerDetailDialog(flowerDetail: FlowerDetail, onDismiss: () -> Unit) {
+fun FlowerDetailScreen(
+    dataNo: Int?,
+    onDismiss: () -> Unit,
+    viewModel: FlowerDetailViewModel = hiltViewModel()
+) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = dataNo) {
+        viewModel.onEvent(FlowerDetailOnEvent.OnSearchDetail(dataNo))
+    }
 
     Dialog(
         onDismissRequest = { onDismiss() },
@@ -57,22 +72,38 @@ fun FlowerDetailDialog(flowerDetail: FlowerDetail, onDismiss: () -> Unit) {
             usePlatformDefaultWidth = false
         )
     ) {
-        FlowerDetailContent(flowerDetail = flowerDetail, onDismiss = onDismiss)
+        Content(
+            flowerDetail = uiState.flowerDetail,
+            onDismiss = onDismiss
+        )
     }
 
 }
 
 @Composable
-private fun FlowerDetailContent(flowerDetail: FlowerDetail, onDismiss: () -> Unit) {
+private fun Content(flowerDetail: ResultWrapper<FlowerDetail>, onDismiss: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = White)
     ) {
         Top(onDismiss = onDismiss)
-        Body(flowerDetail)
+        when (flowerDetail) {
+            is ResultWrapper.Error -> {
+
+            }
+
+            is ResultWrapper.Loading -> {
+
+            }
+
+            is ResultWrapper.Success -> {
+                SuccessContent(flowerDetail.data)
+            }
+        }
     }
 }
+
 
 @Composable
 private fun Top(onDismiss: () -> Unit) {
@@ -93,7 +124,7 @@ private fun Top(onDismiss: () -> Unit) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-private fun Body(flower: FlowerDetail) {
+private fun SuccessContent(flower: FlowerDetail) {
     Column(
         modifier = Modifier.verticalScroll(
             rememberScrollState()

@@ -4,10 +4,10 @@ package com.nyangzzi.dayFlower.presentation.feature.mainFlower
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
-import com.nyangzzi.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
+import com.nyangzzi.dayFlower.domain.model.flowerDay.RequestFlowerDay
 import com.nyangzzi.dayFlower.domain.model.flowerList.RequestFlowerList
 import com.nyangzzi.dayFlower.domain.model.flowerMonth.RequestFlowerMonth
-import com.nyangzzi.dayFlower.domain.usecase.GetFlowerDetailUseCase
+import com.nyangzzi.dayFlower.domain.usecase.GetFlowerDayUseCase
 import com.nyangzzi.dayFlower.domain.usecase.GetFlowerListUseCase
 import com.nyangzzi.dayFlower.domain.usecase.GetFlowerMonthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainFlowerViewModel @Inject constructor(
-    private val flowerDetailUseCase: GetFlowerDetailUseCase,
+    private val flowerDetailUseCase: GetFlowerDayUseCase,
     private val flowerMonthUseCase: GetFlowerMonthUseCase,
     private val flowerListUseCase: GetFlowerListUseCase
 ) : ViewModel() {
@@ -106,7 +106,7 @@ class MainFlowerViewModel @Inject constructor(
 
     private suspend fun getFlowerDetail() {
         flowerDetailUseCase(
-            requestFlowerDetail = RequestFlowerDetail(
+            requestFlowerDay = RequestFlowerDay(
                 fMonth = _uiState.value.localDate.month.value,
                 fDay = _uiState.value.localDate.dayOfMonth
             )

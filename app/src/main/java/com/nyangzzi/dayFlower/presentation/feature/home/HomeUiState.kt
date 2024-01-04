@@ -7,6 +7,5 @@ import java.time.LocalDate
 data class HomeUiState(
     val flowerDetail: ResultWrapper<FlowerDetail> = ResultWrapper.Loading,
     val localDate: LocalDate = LocalDate.now(),
-
     val isShowDetail: Boolean = false
 )
