@@ -193,7 +193,16 @@ fun DayOfWeek() {
             .fillMaxWidth()
             .padding(top = 22.dp)
     ) {
-        DayOfWeek.values().forEach { dayOfWeek ->
+        //요일 순서 일요일부터
+        listOf(
+            DayOfWeek.SUNDAY,
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY,
+            DayOfWeek.SATURDAY
+        ).forEach { dayOfWeek ->
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -202,9 +211,9 @@ fun DayOfWeek() {
                 text = dayOfWeek.getDisplayName(TextStyle.NARROW, Locale.KOREAN),
                 style = MaterialTheme.typography.labelSmall,
                 textAlign = TextAlign.Center,
-                color = when (dayOfWeek.value) {
-                    6 -> SystemBlue
-                    7 -> SystemRed
+                color = when (dayOfWeek) {
+                    DayOfWeek.SATURDAY -> SystemBlue
+                    DayOfWeek.SUNDAY -> SystemRed
                     else -> Gray9
                 }
             )
@@ -299,7 +308,7 @@ private fun SuccessFlowerCalendar(
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
 
-        for (i in 1 until firstDayOfWeek) {
+        for (i in 0 until firstDayOfWeek) {
             item {
                 Box {}
             }
