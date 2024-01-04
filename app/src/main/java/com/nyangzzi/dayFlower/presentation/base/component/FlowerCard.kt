@@ -43,6 +43,7 @@ import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.base.Utils
 import com.nyangzzi.dayFlower.presentation.base.dialog.FlowerDetailDialog
 import com.nyangzzi.dayFlower.ui.theme.Gray1
+import com.nyangzzi.dayFlower.ui.theme.Gray11
 import com.nyangzzi.dayFlower.ui.theme.Gray5
 import com.nyangzzi.dayFlower.ui.theme.Gray6
 import com.nyangzzi.dayFlower.ui.theme.Gray9
@@ -140,9 +141,24 @@ private fun SuccessContent(flower: FlowerDetail, showDetail: () -> Unit = {}) {
                 }
             }
 
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                flower.flowNm?.let { Text(text = it) }
-                flower.fEngNm?.let { Text(text = it, color = Gray6) }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                flower.flowNm?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Gray11
+                    )
+                }
+                flower.fEngNm?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Gray6
+                    )
+                }
             }
 
             flower.fContent?.let {

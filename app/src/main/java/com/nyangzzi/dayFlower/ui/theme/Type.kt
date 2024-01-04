@@ -100,7 +100,7 @@ val Typography = Typography(
         fontFamily = pretendard,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        lineHeight = 18.sp,
+        lineHeight = 16.sp,
     ),
     //Body4
     bodySmall = TextStyle(
@@ -124,7 +124,7 @@ val Typography = Typography(
         fontFamily = pretendard,
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
-        lineHeight = 18.sp,
+        lineHeight = 16.sp,
     ),
     //Caption3
     labelSmall = TextStyle(
