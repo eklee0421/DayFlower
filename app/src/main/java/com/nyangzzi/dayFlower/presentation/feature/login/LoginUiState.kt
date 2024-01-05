@@ -1,4 +1,7 @@
 package com.nyangzzi.dayFlower.presentation.feature.login
 
-class LoginUiState {
-}
+data class LoginUiState(
+    val toastMsg: String? = null,
+    val bottomMsg: String? = null,
+    val isBtnVisible: Boolean = true
+)
