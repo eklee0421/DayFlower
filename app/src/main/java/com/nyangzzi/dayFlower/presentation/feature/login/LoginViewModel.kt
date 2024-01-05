@@ -1,5 +1,6 @@
 package com.nyangzzi.dayFlower.presentation.feature.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
@@ -15,7 +16,6 @@ class LoginViewModel @Inject constructor(
     private val kakaoLoginUseCase: KakaoLoginUseCase,
     private val naverLoginUseCase: NaverLoginUseCase
 ) : ViewModel() {
-
 
     fun onEvent(event: LoginEvent) {
         viewModelScope.launch {
@@ -35,15 +35,15 @@ class LoginViewModel @Inject constructor(
         kakaoLoginUseCase().collect { result ->
             when (result) {
                 is ResultWrapper.Error -> {
-
+                    Log.d("카카오", "화면 실패")
                 }
 
                 ResultWrapper.Loading -> {
-
+                    Log.d("카카오", "화면 로딩")
                 }
 
                 is ResultWrapper.Success -> {
-
+                    Log.d("카카오", "화면 성공")
                 }
             }
         }
@@ -53,15 +53,15 @@ class LoginViewModel @Inject constructor(
         naverLoginUseCase().collect { result ->
             when (result) {
                 is ResultWrapper.Error -> {
-
+                    Log.d("네이버", "화면 실패")
                 }
 
                 ResultWrapper.Loading -> {
-
+                    Log.d("네이버", "화면 로딩")
                 }
 
                 is ResultWrapper.Success -> {
-
+                    Log.d("네이버", "화면 성공")
                 }
             }
         }

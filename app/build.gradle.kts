@@ -3,6 +3,7 @@ plugins {
     id(Plugins.KOTLIN_ANDROID)
     kotlin(Plugins.KAPT)
     id(Plugins.HILT_ANDROID)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -28,6 +29,18 @@ android {
             getApiKey(DefaultConfig.KAKAO_STRING)
         )
 
+        buildConfigField(
+            DefaultConfig.API_KEY_TYPE,
+            DefaultConfig.NAVER_CLIENT_ID,
+            getApiKey(DefaultConfig.NAVER_CLIENT_ID)
+        )
+
+        buildConfigField(
+            DefaultConfig.API_KEY_TYPE,
+            DefaultConfig.NAVER_CLIENT_SECRET,
+            getApiKey(DefaultConfig.NAVER_CLIENT_SECRET)
+        )
+
         manifestPlaceholders[DefaultConfig.KAKAO] = getApiKey(DefaultConfig.KAKAO)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -39,10 +52,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
+            /*proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
-            )
+            )*/
         }
     }
     compileOptions {
@@ -87,6 +100,7 @@ dependencies {
 
     //hilt
     implementation(Dependencies.hiltAndroid)
+    implementation("com.google.firebase:firebase-database:20.3.0")
     kapt(Dependencies.hiltAndroidComplier)
     implementation(Dependencies.hiltNavigationCompose)
 
@@ -121,6 +135,12 @@ dependencies {
 
     //login
     implementation("com.kakao.sdk:v2-user:2.19.0") // 카카오 로그인
+    implementation("com.navercorp.nid:oauth:5.9.0") //네이버 로그인
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx")
 }
 
 kapt {

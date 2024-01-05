@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -16,18 +15,18 @@ import com.nyangzzi.dayFlower.BuildConfig
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.repository.LoginRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 
 class LoginRepositoryImpl(
     private val context: Context
 ) : LoginRepository {
-    override suspend fun kaKaoLogin(): Flow<ResultWrapper<Unit>> = flow {
-        emit(ResultWrapper.Loading) //todo
+    override suspend fun kaKaoLogin(): Flow<ResultWrapper<Unit>> = callbackFlow {
 
-        val result: ResultWrapper<Unit>
+        //trySend(ResultWrapper.Loading)
 
         KakaoSdk.init(context, BuildConfig.kakao_api_key_string)
 
@@ -36,6 +35,8 @@ class LoginRepositoryImpl(
                 if (error != null) {
                     Log.e("kakao", "카카오톡으로 로그인 실패", error)
 
+                    trySend(ResultWrapper.Error("카카오톡으로 로그인 실패"))
+
                     // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
                     // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
                     if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
@@ -43,27 +44,39 @@ class LoginRepositoryImpl(
                     }
 
                     // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                    UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
+                    UserApiClient.instance.loginWithKakaoAccount(
+                        context,
+                        callback = { token1, error1 ->
+                            if (error1 != null) {
+                                trySend(ResultWrapper.Error("카카오톡으로 로그인 실패"))
+                                Log.e("kakao", "카카오계정으로 로그인 실패", error1)
+                            } else if (token1 != null) {
+                                trySend(ResultWrapper.Success(Unit))
+                                Log.i("kakao", "카카오계정으로 로그인 성공 ${token1.accessToken}")
+                            }
+                        })
                 } else if (token != null) {
 
+                    trySend(ResultWrapper.Success(Unit))
                     Log.i("kakao", "카카오톡으로 로그인 성공 ${token.accessToken}")
                 }
             }
         } else {
-            UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoCallback)
+            UserApiClient.instance.loginWithKakaoAccount(context, callback = { token1, error1 ->
+                if (error1 != null) {
+                    trySend(ResultWrapper.Error("카카오톡으로 로그인 실패"))
+                    Log.e("kakao", "카카오계정으로 로그인 실패", error1)
+                } else if (token1 != null) {
+                    trySend(ResultWrapper.Success(Unit))
+                    Log.i("kakao", "카카오계정으로 로그인 성공 ${token1.accessToken}")
+                }
+            })
         }
+
+        awaitClose { channel.close() }
     }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
 
-    private val kakaoCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error != null) {
-            Log.e("kakao", "카카오계정으로 로그인 실패", error)
-        } else if (token != null) {
-            Log.i("kakao", "카카오계정으로 로그인 성공 ${token.accessToken}")
-        }
-    }
-
-    override suspend fun NaverLogin(): Flow<ResultWrapper<Unit>> = flow {
-        emit(ResultWrapper.Loading) //todo
+    override suspend fun NaverLogin(): Flow<ResultWrapper<Unit>> = callbackFlow {
 
         NaverIdLoginSDK.initialize(
             context,
@@ -71,6 +84,32 @@ class LoginRepositoryImpl(
             BuildConfig.naver_client_secret,
             "하루 한 송이"
         )
+
+        val naverLoginCallback = object : OAuthLoginCallback {
+            override fun onSuccess() {
+                trySend(ResultWrapper.Success(Unit))
+                Log.i("naver", "네이버로 로그인 성공 ${NaverIdLoginSDK.getAccessToken()}")
+                // 네이버 로그인 인증이 성공했을 때 수행할 코드 추가
+                /*binding.tvAccessToken.text = NaverIdLoginSDK.getAccessToken()
+                binding.tvRefreshToken.text = NaverIdLoginSDK.getRefreshToken()
+                binding.tvExpires.text = NaverIdLoginSDK.getExpiresAt().toString()
+                binding.tvType.text = NaverIdLoginSDK.getTokenType()
+                binding.tvState.text = NaverIdLoginSDK.getState().toString()*/
+            }
+
+            override fun onFailure(httpStatus: Int, message: String) {
+                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+                trySend(ResultWrapper.Error("$errorDescription"))
+                Log.e("naver", "네이버로 로그인 실패 $errorDescription")
+                //Toast.makeText(context,"errorCode:$errorCode, errorDesc:$errorDescription",Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onError(errorCode: Int, message: String) {
+                onFailure(errorCode, message)
+                Log.e("naver", "네이버로 로그인 실패 $message")
+            }
+        }
 
         NaverIdLoginSDK.oauthLoginCallback = naverLoginCallback
 
@@ -83,30 +122,8 @@ class LoginRepositoryImpl(
         (context as? Activity)?.overridePendingTransition(0, 0)
         //NaverIdLoginSDK.authenticate(context, naverLoginCallback)
 
+        awaitClose { channel.close() }
     }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
 
-    private val naverLoginCallback = object : OAuthLoginCallback {
-        override fun onSuccess() {
-            Log.i("naver", "네이버로 로그인 성공 ${NaverIdLoginSDK.getAccessToken()}")
-            // 네이버 로그인 인증이 성공했을 때 수행할 코드 추가
-            /*binding.tvAccessToken.text = NaverIdLoginSDK.getAccessToken()
-            binding.tvRefreshToken.text = NaverIdLoginSDK.getRefreshToken()
-            binding.tvExpires.text = NaverIdLoginSDK.getExpiresAt().toString()
-            binding.tvType.text = NaverIdLoginSDK.getTokenType()
-            binding.tvState.text = NaverIdLoginSDK.getState().toString()*/
-        }
-
-        override fun onFailure(httpStatus: Int, message: String) {
-            val errorCode = NaverIdLoginSDK.getLastErrorCode().code
-            val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
-            Log.e("naver", "네이버로 로그인 실패 $errorDescription")
-            //Toast.makeText(context,"errorCode:$errorCode, errorDesc:$errorDescription",Toast.LENGTH_SHORT).show()
-        }
-
-        override fun onError(errorCode: Int, message: String) {
-            onFailure(errorCode, message)
-            Log.e("naver", "네이버로 로그인 실패 $message")
-        }
-    }
 
 }
