@@ -25,16 +25,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nyangzzi.dayFlower.R
+import com.nyangzzi.dayFlower.presentation.navigation.Screens
 import com.nyangzzi.dayFlower.ui.theme.White
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
-    LoginContent(onEvent = viewModel::onEvent)
+fun LoginScreen(
+    onNavigate: (Screens) -> Unit,
+    viewModel: LoginViewModel = hiltViewModel()
+) {
+    LoginContent(onNavigate = onNavigate, onEvent = viewModel::onEvent)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LoginContent(onEvent: (LoginEvent) -> Unit) {
+private fun LoginContent(onNavigate: (Screens) -> Unit, onEvent: (LoginEvent) -> Unit) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +70,7 @@ private fun LoginContent(onEvent: (LoginEvent) -> Unit) {
                 }
 
                 Button(
-                    onClick = { },
+                    onClick = { onEvent(LoginEvent.naverLogin) },
                     modifier = Modifier
                         .height(50.dp)
                         .fillMaxWidth(),

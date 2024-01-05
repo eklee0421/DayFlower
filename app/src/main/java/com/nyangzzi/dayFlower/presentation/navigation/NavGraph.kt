@@ -18,11 +18,11 @@ fun NavGraph(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = Screens.MainFlower.route
+        startDestination = Screens.Login.route
     ) {
 
         composable(route = Screens.Login.route) {
-            LoginScreen()
+            LoginScreen(onNavigate = { navController.navigateSingleTopTo(it.route) })
         }
         composable(route = Screens.MainFlower.route) {
             MainFlowerScreen(onNavigate = { navController.navigateSingleTopTo(it.route) })
@@ -69,9 +69,22 @@ fun NavHostController.navigateSingleTopTo(route: String) {
         //동일한 항목을 선택할때 여러번 복사를 방지
         launchSingleTop = true
         //하단 탐색 항목 간 전환시 상태와 백 스택이 복원
+        //restoreState = true
+    }
+}
+
+fun NavHostController.navigateBottom(route: String) {
+    this.navigate(route) {
+        this@navigateBottom.graph.startDestinationRoute?.let {
+            popUpTo(it) { saveState = true }
+        }
+        //동일한 항목을 선택할때 여러번 복사를 방지
+        launchSingleTop = true
+        //하단 탐색 항목 간 전환시 상태와 백 스택이 복원
         restoreState = true
     }
 }
+
 
 fun NavHostController.onNavigateNext(
     nowScreen: Screens,

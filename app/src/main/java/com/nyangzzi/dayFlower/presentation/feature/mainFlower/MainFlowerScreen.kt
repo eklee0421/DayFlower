@@ -26,7 +26,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.nyangzzi.dayFlower.presentation.navigation.HomeNavGraph
 import com.nyangzzi.dayFlower.presentation.navigation.Screens
-import com.nyangzzi.dayFlower.presentation.navigation.navigateSingleTopTo
+import com.nyangzzi.dayFlower.presentation.navigation.navigateBottom
 import com.nyangzzi.dayFlower.ui.theme.Gray5
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,7 +96,7 @@ private fun FlowerBaseContent(navController: NavHostController) {
                 },
                 selected = currentRoute == item.screen.route,
                 onClick = {
-                    navController.navigateSingleTopTo(item.screen.route)
+                    navController.navigateBottom(item.screen.route)
                 }
             )
         }

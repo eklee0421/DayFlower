@@ -9,4 +9,6 @@ object DefaultConfig {
     const val SEARCH_FLOWER = "search_flower_api_key"
     const val KAKAO = "kakao_api_key"
     const val KAKAO_STRING = "kakao_api_key_string"
+    const val NAVER_CLIENT_ID = "naver_client_id"
+    const val NAVER_CLIENT_SECRET = "naver_client_secret"
 }

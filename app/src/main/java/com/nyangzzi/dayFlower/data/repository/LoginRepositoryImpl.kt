@@ -1,12 +1,17 @@
 package com.nyangzzi.dayFlower.data.repository
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.NidOAuthBridgeActivity
+import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.nyangzzi.dayFlower.BuildConfig
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.repository.LoginRepository
@@ -54,6 +59,53 @@ class LoginRepositoryImpl(
             Log.e("kakao", "카카오계정으로 로그인 실패", error)
         } else if (token != null) {
             Log.i("kakao", "카카오계정으로 로그인 성공 ${token.accessToken}")
+        }
+    }
+
+    override suspend fun NaverLogin(): Flow<ResultWrapper<Unit>> = flow {
+        emit(ResultWrapper.Loading) //todo
+
+        NaverIdLoginSDK.initialize(
+            context,
+            BuildConfig.naver_client_id,
+            BuildConfig.naver_client_secret,
+            "하루 한 송이"
+        )
+
+        NaverIdLoginSDK.oauthLoginCallback = naverLoginCallback
+
+        val orientation = context.resources.configuration.orientation
+        val intent = Intent(context, NidOAuthBridgeActivity::class.java).apply {
+            putExtra("orientation", orientation)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
+        (context as? Activity)?.overridePendingTransition(0, 0)
+        //NaverIdLoginSDK.authenticate(context, naverLoginCallback)
+
+    }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
+
+    private val naverLoginCallback = object : OAuthLoginCallback {
+        override fun onSuccess() {
+            Log.i("naver", "네이버로 로그인 성공 ${NaverIdLoginSDK.getAccessToken()}")
+            // 네이버 로그인 인증이 성공했을 때 수행할 코드 추가
+            /*binding.tvAccessToken.text = NaverIdLoginSDK.getAccessToken()
+            binding.tvRefreshToken.text = NaverIdLoginSDK.getRefreshToken()
+            binding.tvExpires.text = NaverIdLoginSDK.getExpiresAt().toString()
+            binding.tvType.text = NaverIdLoginSDK.getTokenType()
+            binding.tvState.text = NaverIdLoginSDK.getState().toString()*/
+        }
+
+        override fun onFailure(httpStatus: Int, message: String) {
+            val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+            val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+            Log.e("naver", "네이버로 로그인 실패 $errorDescription")
+            //Toast.makeText(context,"errorCode:$errorCode, errorDesc:$errorDescription",Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onError(errorCode: Int, message: String) {
+            onFailure(errorCode, message)
+            Log.e("naver", "네이버로 로그인 실패 $message")
         }
     }
 
