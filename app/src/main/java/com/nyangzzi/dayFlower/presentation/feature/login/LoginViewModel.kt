@@ -1,5 +1,6 @@
 package com.nyangzzi.dayFlower.presentation.feature.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
@@ -49,6 +50,9 @@ class LoginViewModel @Inject constructor(
 
                 is ResultWrapper.Success -> {
                     _uiState.update { it.copy(toastMsg = "카카오 로그인에 성공했습니다.") }
+
+                    Log.d("kakao", "${result.data}")
+
                 }
             }
         }
@@ -67,6 +71,7 @@ class LoginViewModel @Inject constructor(
 
                 is ResultWrapper.Success -> {
                     _uiState.update { it.copy(toastMsg = "네이버 로그인에 성공했습니다.") }
+                    Log.d("naver", "${result.data}")
                 }
             }
         }

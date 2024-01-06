@@ -10,9 +10,15 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthBridgeActivity
+import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
+import com.navercorp.nid.profile.NidProfileCallback
+import com.navercorp.nid.profile.data.NidProfileResponse
 import com.nyangzzi.dayFlower.BuildConfig
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
+import com.nyangzzi.dayFlower.domain.model.common.PLATFORM_KAKAO
+import com.nyangzzi.dayFlower.domain.model.common.PLATFORM_NAVER
+import com.nyangzzi.dayFlower.domain.model.common.User
 import com.nyangzzi.dayFlower.domain.repository.LoginRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -24,11 +30,15 @@ import kotlinx.coroutines.flow.onStart
 class LoginRepositoryImpl(
     private val context: Context
 ) : LoginRepository {
-    override suspend fun kaKaoLogin(): Flow<ResultWrapper<Unit>> = callbackFlow {
+    override suspend fun kaKaoLogin(): Flow<ResultWrapper<User>> = callbackFlow {
 
         //trySend(ResultWrapper.Loading)
 
         KakaoSdk.init(context, BuildConfig.kakao_api_key_string)
+
+        var userResult = User(
+            platform = PLATFORM_KAKAO
+        )
 
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
@@ -51,13 +61,37 @@ class LoginRepositoryImpl(
                                 trySend(ResultWrapper.Error("카카오톡으로 로그인 실패"))
                                 Log.e("kakao", "카카오계정으로 로그인 실패", error1)
                             } else if (token1 != null) {
-                                trySend(ResultWrapper.Success(Unit))
+
+                                UserApiClient.instance.me { user, error ->
+
+                                    trySend(
+                                        ResultWrapper.Success(
+                                            userResult.copy(
+                                                token = token1.accessToken,
+                                                nickname = user?.kakaoAccount?.profile?.nickname,
+                                                profileImg = user?.kakaoAccount?.profile?.profileImageUrl
+                                            )
+                                        )
+                                    )
+                                }
+
                                 Log.i("kakao", "카카오계정으로 로그인 성공 ${token1.accessToken}")
                             }
                         })
                 } else if (token != null) {
 
-                    trySend(ResultWrapper.Success(Unit))
+                    UserApiClient.instance.me { user, error ->
+
+                        trySend(
+                            ResultWrapper.Success(
+                                userResult.copy(
+                                    token = token.accessToken,
+                                    nickname = user?.kakaoAccount?.profile?.nickname,
+                                    profileImg = user?.kakaoAccount?.profile?.profileImageUrl
+                                )
+                            )
+                        )
+                    }
                     Log.i("kakao", "카카오톡으로 로그인 성공 ${token.accessToken}")
                 }
             }
@@ -67,7 +101,20 @@ class LoginRepositoryImpl(
                     trySend(ResultWrapper.Error("카카오톡으로 로그인 실패"))
                     Log.e("kakao", "카카오계정으로 로그인 실패", error1)
                 } else if (token1 != null) {
-                    trySend(ResultWrapper.Success(Unit))
+
+                    UserApiClient.instance.me { user, error ->
+
+                        trySend(
+                            ResultWrapper.Success(
+                                userResult.copy(
+                                    token = token1.accessToken,
+                                    nickname = user?.kakaoAccount?.profile?.nickname,
+                                    profileImg = user?.kakaoAccount?.profile?.profileImageUrl
+                                )
+                            )
+                        )
+                    }
+
                     Log.i("kakao", "카카오계정으로 로그인 성공 ${token1.accessToken}")
                 }
             })
@@ -76,7 +123,7 @@ class LoginRepositoryImpl(
         awaitClose { channel.close() }
     }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
 
-    override suspend fun NaverLogin(): Flow<ResultWrapper<Unit>> = callbackFlow {
+    override suspend fun NaverLogin(): Flow<ResultWrapper<User>> = callbackFlow {
 
         NaverIdLoginSDK.initialize(
             context,
@@ -85,16 +132,42 @@ class LoginRepositoryImpl(
             "하루 한 송이"
         )
 
+        var userResult = User(
+            platform = PLATFORM_NAVER
+        )
+
+        val profileCallback = object : NidProfileCallback<NidProfileResponse> {
+            override fun onSuccess(result: NidProfileResponse) {
+                trySend(
+                    ResultWrapper.Success(
+                        userResult.copy(
+                            token = NaverIdLoginSDK.getAccessToken(),
+                            nickname = result.profile?.nickname,
+                            profileImg = result.profile?.profileImage
+                        )
+                    )
+                )
+            }
+
+            override fun onFailure(httpStatus: Int, message: String) {
+                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+                trySend(ResultWrapper.Error("$errorDescription"))
+            }
+
+            override fun onError(errorCode: Int, message: String) {
+                onFailure(errorCode, message)
+            }
+        }
+
         val naverLoginCallback = object : OAuthLoginCallback {
             override fun onSuccess() {
-                trySend(ResultWrapper.Success(Unit))
+
+                userResult = userResult.copy(token = NaverIdLoginSDK.getAccessToken())
+
+                NidOAuthLogin().callProfileApi(profileCallback)
+
                 Log.i("naver", "네이버로 로그인 성공 ${NaverIdLoginSDK.getAccessToken()}")
-                // 네이버 로그인 인증이 성공했을 때 수행할 코드 추가
-                /*binding.tvAccessToken.text = NaverIdLoginSDK.getAccessToken()
-                binding.tvRefreshToken.text = NaverIdLoginSDK.getRefreshToken()
-                binding.tvExpires.text = NaverIdLoginSDK.getExpiresAt().toString()
-                binding.tvType.text = NaverIdLoginSDK.getTokenType()
-                binding.tvState.text = NaverIdLoginSDK.getState().toString()*/
             }
 
             override fun onFailure(httpStatus: Int, message: String) {
