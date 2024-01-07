@@ -1,8 +1,10 @@
 package com.nyangzzi.dayFlower.presentation.feature.profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,10 +14,13 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -30,6 +35,7 @@ import com.nyangzzi.dayFlower.ui.theme.Gray11
 import com.nyangzzi.dayFlower.ui.theme.Gray3
 import com.nyangzzi.dayFlower.ui.theme.Gray4
 import com.nyangzzi.dayFlower.ui.theme.Gray5
+import com.nyangzzi.dayFlower.ui.theme.Gray8
 import com.nyangzzi.dayFlower.ui.theme.White
 
 @Composable
@@ -50,9 +56,11 @@ private fun ProfileContent() {
             .statusBarsPadding()
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         User(name = "000")
+        AppInfo()
     }
 }
 
@@ -150,4 +158,42 @@ private fun User(name: String) {
             )
         }
     }
+}
+
+@Composable
+private fun AppInfo() {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        ProfileBtn(text = "앱 정보", onClick = {})
+        ProfileBtn(text = "로그아웃", onClick = {})
+        ProfileBtn(text = "앱 탈퇴", onClick = {})
+    }
+}
+
+@Composable
+private fun ProfileBtn(text: String, onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            contentColor = Gray8,
+            containerColor = Gray1
+        ),
+        shape = RoundedCornerShape(12.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 18.dp)
+    ) {
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = text, style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.align(Alignment.CenterStart)
+            )
+            Icon(
+                imageVector = Icons.Rounded.KeyboardArrowRight,
+                contentDescription = "",
+                modifier = Modifier.align(Alignment.CenterEnd)
+            )
+        }
+
+    }
+
 }
