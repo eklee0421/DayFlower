@@ -16,6 +16,8 @@ import com.nyangzzi.dayFlower.presentation.feature.search.SearchScreen
 @Composable
 fun NavGraph(navController: NavHostController) {
 
+    navController.stackLog("main")
+
     NavHost(
         navController = navController,
         startDestination = Screens.Login.route
@@ -32,6 +34,9 @@ fun NavGraph(navController: NavHostController) {
 
 @Composable
 fun HomeNavGraph(navController: NavHostController) {
+
+    navController.stackLog("home bottom")
+
     NavHost(
         navController = navController,
         startDestination = Screens.Home.route
@@ -57,6 +62,7 @@ fun HomeNavGraph(navController: NavHostController) {
 }
 
 fun NavHostController.navigateSingleTopTo(route: String) {
+    this.popBackStack()
     this.navigate(route) {
         popUpTo(
             this@navigateSingleTopTo.graph.findStartDestination().id,
@@ -74,14 +80,29 @@ fun NavHostController.navigateSingleTopTo(route: String) {
 }
 
 fun NavHostController.navigateBottom(route: String) {
+    this.popBackStack()
     this.navigate(route) {
-        this@navigateBottom.graph.startDestinationRoute?.let {
+        popUpTo(
+            this@navigateBottom.graph.findStartDestination().id,
+        ) {
+            saveState = true
+        }
+
+        /*this@navigateBottom.graph.startDestinationRoute?.let {
             popUpTo(it) { saveState = true }
         }
         //동일한 항목을 선택할때 여러번 복사를 방지
         launchSingleTop = true
         //하단 탐색 항목 간 전환시 상태와 백 스택이 복원
         restoreState = true
+    }
+}
+
+fun NavHostController.stackLog(nav: String) {
+    this.addOnDestinationChangedListener { controller, _, _ ->
+        val routes = controller.backQueue.map { it.destination.route }.joinToString(", ")
+
+        Log.d("$nav BackStackLog", "BackStack: $routes")
     }
 }
 
