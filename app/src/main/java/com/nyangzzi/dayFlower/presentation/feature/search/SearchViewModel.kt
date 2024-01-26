@@ -2,6 +2,7 @@ package com.nyangzzi.dayFlower.presentation.feature.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.flowerList.RequestFlowerList
 import com.nyangzzi.dayFlower.domain.usecase.GetFlowerListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,16 @@ class SearchViewModel @Inject constructor(
                 is SearchEvent.SearchFlowerList -> getFlowerList()
                 is SearchEvent.UpdateSelectedType -> updateSelectedType(event.selectedType)
                 is SearchEvent.UpdateSearchWord -> updateSearchWord(event.text)
+                is SearchEvent.ClearFlowerList -> clearFlowerList()
             }
+        }
+    }
+
+    private fun clearFlowerList() {
+        _uiState.update {
+            it.copy(
+                flowerList = ResultWrapper.None
+            )
         }
     }
 
