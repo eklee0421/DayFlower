@@ -1,4 +1,4 @@
-package com.nyangzzi.dayFlower.presentation.base.component
+package com.nyangzzi.dayFlower.presentation.base.util
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode

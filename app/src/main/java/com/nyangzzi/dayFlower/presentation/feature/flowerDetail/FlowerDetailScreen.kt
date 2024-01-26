@@ -46,9 +46,9 @@ import com.google.accompanist.pager.rememberPagerState
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
-import com.nyangzzi.dayFlower.presentation.base.Utils
+import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.presentation.base.component.Badge
-import com.nyangzzi.dayFlower.presentation.base.component.loadingShimmerEffect
+import com.nyangzzi.dayFlower.presentation.base.util.loadingShimmerEffect
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray10
 import com.nyangzzi.dayFlower.ui.theme.Gray11

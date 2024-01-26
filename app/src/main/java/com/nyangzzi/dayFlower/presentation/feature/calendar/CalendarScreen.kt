@@ -46,8 +46,8 @@ import coil.request.ImageRequest
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
-import com.nyangzzi.dayFlower.presentation.base.Utils
-import com.nyangzzi.dayFlower.presentation.base.component.loadingShimmerEffect
+import com.nyangzzi.dayFlower.presentation.base.util.Utils
+import com.nyangzzi.dayFlower.presentation.base.util.loadingShimmerEffect
 import com.nyangzzi.dayFlower.presentation.feature.flowerDetail.FlowerDetailScreen
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray5
