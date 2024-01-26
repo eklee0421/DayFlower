@@ -113,7 +113,6 @@ private fun CalendarContent(
                             msg = flowerMonth.errorMessage,
                             onRefresh = { onEvent(CalendarOnEvent.OnSearchMonth) })
                     }
-
                     ResultWrapper.Loading -> {
                         LoadingFlowerCalendar()
                     }
@@ -132,6 +131,7 @@ private fun CalendarContent(
                             ).dayOfWeek.value
                         )
                     }
+                    ResultWrapper.None -> {}
                 }
 
             }

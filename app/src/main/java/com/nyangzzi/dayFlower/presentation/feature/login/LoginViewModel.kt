@@ -54,6 +54,8 @@ class LoginViewModel @Inject constructor(
                     Log.d("kakao", "${result.data}")
 
                 }
+
+                ResultWrapper.None -> {}
             }
         }
     }
@@ -73,6 +75,8 @@ class LoginViewModel @Inject constructor(
                     _uiState.update { it.copy(toastMsg = "네이버 로그인에 성공했습니다.") }
                     Log.d("naver", "${result.data}")
                 }
+
+                ResultWrapper.None -> {}
             }
         }
     }
