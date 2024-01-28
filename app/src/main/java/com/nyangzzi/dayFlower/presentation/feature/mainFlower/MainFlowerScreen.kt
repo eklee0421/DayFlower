@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,19 +28,12 @@ import com.nyangzzi.dayFlower.presentation.navigation.Screens
 import com.nyangzzi.dayFlower.presentation.navigation.navigateBottom
 import com.nyangzzi.dayFlower.ui.theme.Gray5
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainFlowerScreen(
     onNavigate: (Screens) -> Unit,
     viewModel: MainFlowerViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    /*SearchFlowerScreen(isShown = uiState.isSearch,
-        onDismiss = {viewModel.onEvent(MainFlowerEvent.IsSearchDialog(false))},
-        flowerList = uiState.flowerList,
-        onSearch = { type, word-> viewModel.onEvent(MainFlowerEvent.SearchFlowerList(type,word)) }
-    )*/
 
     val navController = rememberNavController()
 
