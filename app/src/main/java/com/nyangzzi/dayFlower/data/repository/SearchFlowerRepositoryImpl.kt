@@ -79,7 +79,7 @@ class SearchFlowerRepositoryImpl : SearchFlowerRepository {
                 searchType = requestFlowerList.searchType ?: 1,
                 searchWord = requestFlowerList.searchWord ?: "",
                 pageNo = requestFlowerList.pageNo ?: 1,
-                numOfRows = 10,
+                numOfRows = 1000,
             ).onSuccess {
                 emit(ResultWrapper.Success(it.root?.result ?: emptyList()))
             }

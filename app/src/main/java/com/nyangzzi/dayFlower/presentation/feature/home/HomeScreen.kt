@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,7 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
-import com.nyangzzi.dayFlower.presentation.base.component.FlowerCardLarge
+import com.nyangzzi.dayFlower.presentation.base.component.FlowerCard
 import com.nyangzzi.dayFlower.ui.theme.Gray10
 import com.nyangzzi.dayFlower.ui.theme.Gray11
 import com.nyangzzi.dayFlower.ui.theme.White
@@ -121,7 +121,7 @@ private fun TodayFlower(
             color = Gray10
         )
 
-        FlowerCardLarge(
+        FlowerCard(
             flower = flowerDetail,
             onRefresh = onRefresh,
             isShowDetail = isShowDetail,

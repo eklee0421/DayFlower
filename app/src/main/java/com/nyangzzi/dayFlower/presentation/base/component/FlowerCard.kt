@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
@@ -30,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -40,8 +43,8 @@ import com.google.accompanist.pager.rememberPagerState
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
-import com.nyangzzi.dayFlower.presentation.base.util.loadingShimmerEffect
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
+import com.nyangzzi.dayFlower.presentation.base.util.loadingShimmerEffect
 import com.nyangzzi.dayFlower.presentation.feature.flowerDetail.FlowerDetailScreen
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray11
@@ -52,20 +55,21 @@ import com.nyangzzi.dayFlower.ui.theme.PrimaryAlpha50
 import com.nyangzzi.dayFlower.ui.theme.White
 
 @Composable
-fun FlowerCardLarge(
+fun FlowerCard(
     flower: ResultWrapper<FlowerDetail>,
     onRefresh: () -> Unit = {},
-    isShowDetail: Boolean,
-    setShowDetail: (Boolean) -> Unit
+    isShowDetail: Boolean = false,
+    setShowDetail: (Boolean) -> Unit = {},
+    cardSize: FlowerCardSize = FlowerCardSize.LARGE
 ) {
 
     when (flower) {
         is ResultWrapper.Loading -> {
-            LoadingContent()
+            LoadingContent(cardSize = cardSize)
         }
 
         is ResultWrapper.Success -> {
-            SuccessContent(flower.data, showDetail = { setShowDetail(true) })
+            SuccessContent(flower.data, cardSize = cardSize, showDetail = { setShowDetail(true) })
             if (isShowDetail) {
                 FlowerDetailScreen(
                     dataNo = flower.data.dataNo,
@@ -74,7 +78,7 @@ fun FlowerCardLarge(
         }
 
         is ResultWrapper.Error -> {
-            ErrorContent(msg = flower.errorMessage, onRefresh = onRefresh)
+            ErrorContent(msg = flower.errorMessage, cardSize = cardSize, onRefresh = onRefresh)
         }
 
         ResultWrapper.None -> {}
@@ -84,7 +88,11 @@ fun FlowerCardLarge(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-private fun SuccessContent(flower: FlowerDetail, showDetail: () -> Unit = {}) {
+private fun SuccessContent(
+    flower: FlowerDetail,
+    cardSize: FlowerCardSize = FlowerCardSize.LARGE,
+    showDetail: () -> Unit = {}
+) {
 
     Column(
         modifier = Modifier
@@ -105,7 +113,7 @@ private fun SuccessContent(flower: FlowerDetail, showDetail: () -> Unit = {}) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .height(220.dp)
+                .height(cardSize.imgHeight)
         ) {
             HorizontalPager(
                 count = imgList.size,
@@ -139,9 +147,18 @@ private fun SuccessContent(flower: FlowerDetail, showDetail: () -> Unit = {}) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.horizontalScroll(rememberScrollState())
+            ) {
                 flower.flowLang?.replace(" ", "")?.split(',')?.map {
-                    Badge(it)
+                    Badge(
+                        text = it,
+                        style = when (cardSize) {
+                            FlowerCardSize.LARGE -> MaterialTheme.typography.labelSmall
+                            FlowerCardSize.SMALL -> MaterialTheme.typography.labelSmall
+                        }
+                    )
                 }
             }
 
@@ -152,15 +169,22 @@ private fun SuccessContent(flower: FlowerDetail, showDetail: () -> Unit = {}) {
                 flower.flowNm?.let {
                     Text(
                         text = it,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Gray11
+                        style = when (cardSize) {
+                            FlowerCardSize.LARGE -> MaterialTheme.typography.titleMedium
+                            FlowerCardSize.SMALL -> MaterialTheme.typography.bodyMedium
+                        },
+                        color = Gray11,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
                 flower.fEngNm?.let {
                     Text(
                         text = it,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Gray6
+                        color = Gray6,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
@@ -181,7 +205,7 @@ private fun SuccessContent(flower: FlowerDetail, showDetail: () -> Unit = {}) {
 
 
 @Composable
-private fun LoadingContent() {
+private fun LoadingContent(cardSize: FlowerCardSize = FlowerCardSize.LARGE) {
 
     val brush = loadingShimmerEffect()
 
@@ -194,7 +218,7 @@ private fun LoadingContent() {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(220.dp)
+                .height(cardSize.imgHeight)
                 .background(brush, shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
         )
 
@@ -205,21 +229,21 @@ private fun LoadingContent() {
 
             Spacer(
                 modifier = Modifier
-                    .height(26.dp)
-                    .width(200.dp)
+                    .height(cardSize.textHeight)
+                    .width(cardSize.textWidth * 2)
                     .background(brush, shape = RoundedCornerShape(12.dp))
             )
 
             Spacer(
                 modifier = Modifier
-                    .height(26.dp)
-                    .width(125.dp)
+                    .height(cardSize.textHeight)
+                    .width(cardSize.textWidth)
                     .background(brush, shape = RoundedCornerShape(12.dp))
             )
 
             Spacer(
                 modifier = Modifier
-                    .height(26.dp)
+                    .height(cardSize.textHeight)
                     .fillMaxWidth()
                     .background(brush, shape = RoundedCornerShape(12.dp))
             )
@@ -228,7 +252,11 @@ private fun LoadingContent() {
 }
 
 @Composable
-private fun ErrorContent(msg: String?, onRefresh: () -> Unit = {}) {
+private fun ErrorContent(
+    msg: String?,
+    cardSize: FlowerCardSize = FlowerCardSize.LARGE,
+    onRefresh: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .background(color = White, shape = RoundedCornerShape(12.dp))
@@ -239,7 +267,7 @@ private fun ErrorContent(msg: String?, onRefresh: () -> Unit = {}) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(220.dp)
+                .height(cardSize.imgHeight)
                 .background(Gray1, shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
             contentAlignment = Alignment.Center
         ) {
@@ -286,4 +314,10 @@ fun PreviewLoadingFlowerCard() {
 @Composable
 fun PreviewErrorFlowerCard() {
     ErrorContent(msg = "오류 발생")
+}
+
+
+enum class FlowerCardSize(val imgHeight: Dp, val textHeight: Dp, val textWidth: Dp) {
+    LARGE(imgHeight = 220.dp, textHeight = 26.dp, textWidth = 100.dp),
+    SMALL(imgHeight = 132.dp, textHeight = 16.dp, textWidth = 50.dp)
 }

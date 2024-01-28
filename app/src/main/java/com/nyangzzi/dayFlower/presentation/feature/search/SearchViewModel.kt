@@ -6,6 +6,7 @@ import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.flowerList.RequestFlowerList
 import com.nyangzzi.dayFlower.domain.usecase.GetFlowerListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -20,6 +21,8 @@ class SearchViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState
 
+    private var job: Job? = null
+
     fun onEvent(event: SearchEvent) {
         viewModelScope.launch {
             when (event) {
@@ -32,9 +35,11 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun clearFlowerList() {
+        job?.cancel()
         _uiState.update {
             it.copy(
-                flowerList = ResultWrapper.None
+                flowerList = ResultWrapper.None,
+                searchWord = ""
             )
         }
     }
@@ -56,13 +61,15 @@ class SearchViewModel @Inject constructor(
     }
 
     private suspend fun getFlowerList() {
-        flowerListUseCase(
-            requestFlowerList = RequestFlowerList(
-                searchType = uiState.value.selectedType.type,
-                searchWord = uiState.value.searchWord
-            )
-        ).collect { result ->
-            _uiState.update { it.copy(flowerList = result) }
+        job = viewModelScope.launch {
+            flowerListUseCase(
+                requestFlowerList = RequestFlowerList(
+                    searchType = uiState.value.selectedType.type,
+                    searchWord = uiState.value.searchWord
+                )
+            ).collect { result ->
+                _uiState.update { it.copy(flowerList = result) }
+            }
         }
     }
 
