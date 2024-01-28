@@ -1,5 +1,6 @@
 package com.nyangzzi.dayFlower.presentation.feature.search
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,6 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
+import com.nyangzzi.dayFlower.presentation.base.component.Badge
 import com.nyangzzi.dayFlower.presentation.base.component.FlowerCard
 import com.nyangzzi.dayFlower.presentation.base.component.FlowerCardSize
 import com.nyangzzi.dayFlower.presentation.base.component.SearchTextField
@@ -81,6 +84,7 @@ private fun SearchContent(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun BeforeSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit) {
 
@@ -106,7 +110,34 @@ private fun BeforeSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit)
             placeholder = "찾고 싶은 ${uiState.selectedType.title}을 검색해보세요",
             onSearch = { onEvent(SearchEvent.SearchFlowerList) })
 
-        //todo
+
+        if (uiState.selectedType == SearchTapType.MEAN) {
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.padding(top = 20.dp)
+            ) {
+
+                Text("추천 검색어", style = MaterialTheme.typography.labelMedium, color = Gray11)
+
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(73.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    itemsIndexed(uiState.recommendedWords) { _, item ->
+                        Badge(
+                            text = item, style = MaterialTheme.typography.labelSmall,
+                            background = Color(0xFFEFF1FF)
+                        ) {
+                            onEvent(SearchEvent.UpdateSearchWord(item))
+                            onEvent(SearchEvent.SearchFlowerList)
+                        }
+                    }
+                }
+            }
+
+        }
     }
 }
 

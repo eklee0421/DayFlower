@@ -97,10 +97,12 @@ dependencies {
     implementation(Dependencies.composeUiToolingPreview)
     implementation(Dependencies.composeMaterial3)
     implementation(Dependencies.navigationCompose)
+    implementation("androidx.compose.foundation:foundation:1.3.0")
 
     //hilt
     implementation(Dependencies.hiltAndroid)
     implementation("com.google.firebase:firebase-database:20.3.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.10.1")
     kapt(Dependencies.hiltAndroidComplier)
     implementation(Dependencies.hiltNavigationCompose)
 

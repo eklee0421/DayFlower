@@ -1,8 +1,10 @@
 package com.nyangzzi.dayFlower.data.di
 
 import android.content.Context
+import com.nyangzzi.dayFlower.data.repository.GetFirebaseRepositoryImpl
 import com.nyangzzi.dayFlower.data.repository.LoginRepositoryImpl
 import com.nyangzzi.dayFlower.data.repository.SearchFlowerRepositoryImpl
+import com.nyangzzi.dayFlower.domain.repository.GetFirebaseRepository
 import com.nyangzzi.dayFlower.domain.repository.LoginRepository
 import com.nyangzzi.dayFlower.domain.repository.SearchFlowerRepository
 import dagger.Module
@@ -27,6 +29,12 @@ class RepositoryProvideModule {
         @ApplicationContext context: Context
     ): LoginRepository {
         return LoginRepositoryImpl(context)
+    }
+
+    @Provides
+    fun bindGetFirebaseRepository(
+    ): GetFirebaseRepository {
+        return GetFirebaseRepositoryImpl()
     }
 
 }

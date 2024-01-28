@@ -36,7 +36,7 @@ class LoginRepositoryImpl(
 
         KakaoSdk.init(context, BuildConfig.kakao_api_key_string)
 
-        var userResult = User(
+        val userResult = User(
             platform = PLATFORM_KAKAO
         )
 
