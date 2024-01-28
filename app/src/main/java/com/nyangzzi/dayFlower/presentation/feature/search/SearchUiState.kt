@@ -6,7 +6,8 @@ import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 data class SearchUiState(
     val flowerList: ResultWrapper<List<FlowerDetail>> = ResultWrapper.None,
     val selectedType: SearchTapType = SearchTapType.NAME,
-    val searchWord: String = "사랑"
+    val searchWord: String = "사랑",
+    val isShowDetail: Boolean = false
 )
 
 enum class SearchTapType(val type: Int, val title: String) {

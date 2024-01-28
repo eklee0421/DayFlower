@@ -30,6 +30,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -102,6 +105,8 @@ private fun BeforeSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit)
             onValueChange = { onEvent(SearchEvent.UpdateSearchWord(it)) },
             placeholder = "찾고 싶은 ${uiState.selectedType.title}을 검색해보세요",
             onSearch = { onEvent(SearchEvent.SearchFlowerList) })
+
+        //todo
     }
 }
 
@@ -145,7 +150,13 @@ private fun AfterSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit) 
             }
 
             is ResultWrapper.Loading -> LoadingFlower()
-            is ResultWrapper.Success -> SuccessSearchFlower(uiState.flowerList.data)
+            is ResultWrapper.Success -> SuccessSearchFlower(
+                uiState.flowerList.data,
+                uiState.isShowDetail
+            ) {
+                onEvent(SearchEvent.SetShowDetail(it))
+            }
+
             else -> {}
         }
     }
@@ -153,7 +164,11 @@ private fun AfterSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit) 
 }
 
 @Composable
-private fun SuccessSearchFlower(flower: List<FlowerDetail>) {
+private fun SuccessSearchFlower(
+    flower: List<FlowerDetail>,
+    isShowDetail: Boolean,
+    setShowDetail: (Boolean) -> Unit
+) {
 
     Column(
         modifier = Modifier
@@ -187,9 +202,11 @@ private fun SuccessSearchFlower(flower: List<FlowerDetail>) {
             }
         }
 
+        var selectedItem by remember { mutableStateOf(-1) }
+
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.TopCenter
         ) {
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(152.dp),
@@ -200,7 +217,12 @@ private fun SuccessSearchFlower(flower: List<FlowerDetail>) {
                 itemsIndexed(flower) { _, item ->
                     FlowerCard(
                         flower = ResultWrapper.Success(item),
-                        cardSize = FlowerCardSize.SMALL
+                        cardSize = FlowerCardSize.SMALL,
+                        isShowDetail = isShowDetail && item.dataNo == selectedItem,
+                        setShowDetail = { isShown, dataNo ->
+                            selectedItem = dataNo
+                            setShowDetail(isShown)
+                        }
                     )
                 }
             }

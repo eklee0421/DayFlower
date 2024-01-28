@@ -59,7 +59,7 @@ fun FlowerCard(
     flower: ResultWrapper<FlowerDetail>,
     onRefresh: () -> Unit = {},
     isShowDetail: Boolean = false,
-    setShowDetail: (Boolean) -> Unit = {},
+    setShowDetail: (Boolean, Int) -> Unit = { _, _ -> },
     cardSize: FlowerCardSize = FlowerCardSize.LARGE
 ) {
 
@@ -69,11 +69,14 @@ fun FlowerCard(
         }
 
         is ResultWrapper.Success -> {
-            SuccessContent(flower.data, cardSize = cardSize, showDetail = { setShowDetail(true) })
+            SuccessContent(
+                flower.data,
+                cardSize = cardSize,
+                showDetail = { setShowDetail(true, flower.data.dataNo ?: -1) })
             if (isShowDetail) {
                 FlowerDetailScreen(
                     dataNo = flower.data.dataNo,
-                    onDismiss = { setShowDetail(false) })
+                    onDismiss = { setShowDetail(false, -1) })
             }
         }
 

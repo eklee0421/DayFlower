@@ -22,7 +22,6 @@ class SearchViewModel @Inject constructor(
     val uiState: StateFlow<SearchUiState> = _uiState
 
     private var job: Job? = null
-
     fun onEvent(event: SearchEvent) {
         viewModelScope.launch {
             when (event) {
@@ -30,6 +29,7 @@ class SearchViewModel @Inject constructor(
                 is SearchEvent.UpdateSelectedType -> updateSelectedType(event.selectedType)
                 is SearchEvent.UpdateSearchWord -> updateSearchWord(event.text)
                 is SearchEvent.ClearFlowerList -> clearFlowerList()
+                is SearchEvent.SetShowDetail -> _uiState.update { it.copy(isShowDetail = event.isShown) }
             }
         }
     }

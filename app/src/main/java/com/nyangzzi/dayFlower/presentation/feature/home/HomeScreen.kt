@@ -125,7 +125,7 @@ private fun TodayFlower(
             flower = flowerDetail,
             onRefresh = onRefresh,
             isShowDetail = isShowDetail,
-            setShowDetail = { setShowDetail(it) })
+            setShowDetail = { it, _ -> setShowDetail(it) })
 
 
     }
