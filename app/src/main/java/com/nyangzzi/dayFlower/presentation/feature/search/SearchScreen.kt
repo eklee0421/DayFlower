@@ -1,6 +1,5 @@
 package com.nyangzzi.dayFlower.presentation.feature.search
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
@@ -38,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,6 +47,7 @@ import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.base.component.Badge
+import com.nyangzzi.dayFlower.presentation.base.component.DeletedBadge
 import com.nyangzzi.dayFlower.presentation.base.component.FlowerCard
 import com.nyangzzi.dayFlower.presentation.base.component.FlowerCardSize
 import com.nyangzzi.dayFlower.presentation.base.component.SearchTextField
@@ -84,7 +87,6 @@ private fun SearchContent(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit
 
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun BeforeSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit) {
 
@@ -111,7 +113,70 @@ private fun BeforeSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit)
             onSearch = { onEvent(SearchEvent.SearchFlowerList) })
 
 
-        if (uiState.selectedType == SearchTapType.MEAN) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .fillMaxWidth()
+        ) {
+
+            val item = when (uiState.selectedType) {
+                SearchTapType.NAME -> uiState.recentName
+                SearchTapType.MEAN -> uiState.recentMean
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.height(48.dp)
+            ) {
+                Text("최근 검색어", style = MaterialTheme.typography.labelMedium, color = Gray11)
+
+                if (item.isNotEmpty()) {
+                    TextButton(onClick = { onEvent(SearchEvent.RemoveRecentWord(all = true)) }) {
+                        Text(
+                            "전체삭제",
+                            color = Gray5,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
+            }
+
+            if (item.isEmpty()) {
+                Text(
+                    "최근 검색한 내용이 없습니다",
+                    color = Gray5,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(26.dp),
+                    textAlign = TextAlign.Center
+                )
+            } else {
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(26.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+
+                    itemsIndexed(item) { _, item ->
+                        DeletedBadge(
+                            text = item,
+                            style = MaterialTheme.typography.labelSmall
+                        ) {
+                            onEvent(SearchEvent.RemoveRecentWord(item = item))
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+
+        if (uiState.selectedType == SearchTapType.MEAN && uiState.recommendedWords.isNotEmpty()) {
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),

@@ -29,4 +29,7 @@ object Versions {
 
     //view pager
     const val ACCOMPANIST_PAGER = "0.20.1"
+
+    //datastore
+    const val DATASTORE = "1.0.0"
 }

@@ -24,6 +24,8 @@ class RepositoryProvideModule {
         return SearchFlowerRepositoryImpl()
     }
 
+
+    @Singleton
     @Provides
     fun bindLoginRepository(
         @ApplicationContext context: Context
@@ -31,6 +33,7 @@ class RepositoryProvideModule {
         return LoginRepositoryImpl(context)
     }
 
+    @Singleton
     @Provides
     fun bindGetFirebaseRepository(
     ): GetFirebaseRepository {

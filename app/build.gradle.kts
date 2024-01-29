@@ -101,8 +101,6 @@ dependencies {
 
     //hilt
     implementation(Dependencies.hiltAndroid)
-    implementation("com.google.firebase:firebase-database:20.3.0")
-    implementation("com.google.firebase:firebase-firestore-ktx:24.10.1")
     kapt(Dependencies.hiltAndroidComplier)
     implementation(Dependencies.hiltNavigationCompose)
 
@@ -143,6 +141,11 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-database:20.3.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.10.1")
+
+    //datastore
+    implementation(Dependencies.datastore)
 }
 
 kapt {

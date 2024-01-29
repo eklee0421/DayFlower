@@ -8,7 +8,9 @@ data class SearchUiState(
     val selectedType: SearchTapType = SearchTapType.NAME,
     val searchWord: String = "",
     val isShowDetail: Boolean = false,
-    val recommendedWords: List<String> = emptyList()
+    val recommendedWords: List<String> = emptyList(),
+    val recentName: List<String> = emptyList(),
+    val recentMean: List<String> = emptyList()
 )
 
 enum class SearchTapType(val type: Int, val title: String) {
