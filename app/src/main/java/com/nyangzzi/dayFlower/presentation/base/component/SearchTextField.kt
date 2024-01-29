@@ -111,7 +111,10 @@ fun SearchTextField(
         )
 
         if (text.isNotEmpty()) {
-            IconButton(onClick = { onValueChange("") }) {
+            IconButton(onClick = {
+                onValueChange("")
+                focusRequester.requestFocus()
+            }) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_cancel),
                     contentDescription = null,
