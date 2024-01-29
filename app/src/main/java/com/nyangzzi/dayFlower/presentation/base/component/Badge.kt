@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalTextStyle
@@ -61,14 +63,15 @@ fun DeletedBadge(
         modifier = Modifier
             .background(color = background, shape = RoundedCornerShape(32.dp))
             .border(width = 1.dp, color = Gray1, shape = RoundedCornerShape(32.dp))
-            .padding(horizontal = 11.dp, vertical = 6.dp)
+            .padding(horizontal = 11.dp)
     ) {
-        Text(
-            text = text,
-            color = Gray9,
-            style = style,
-            textAlign = TextAlign.Center
-        )
+        Box(modifier = Modifier.height(26.dp), contentAlignment = Alignment.Center) {
+            Text(
+                text = text,
+                color = Gray9,
+                style = style,
+            )
+        }
         Image(painter = painterResource(id = R.drawable.ic_close_circle),
             contentDescription = null,
             modifier = Modifier
