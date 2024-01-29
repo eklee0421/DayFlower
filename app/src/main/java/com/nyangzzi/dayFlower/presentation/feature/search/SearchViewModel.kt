@@ -159,18 +159,19 @@ class SearchViewModel @Inject constructor(
 
     private suspend fun getFlowerList() {
         job = viewModelScope.launch {
-
-            addRecentWord()
-
-            flowerListUseCase(
-                requestFlowerList = RequestFlowerList(
-                    searchType = uiState.value.selectedType.type,
-                    searchWord = uiState.value.searchWord
-                )
-            ).collect { result ->
-                _uiState.update { it.copy(flowerList = result) }
+            launch {
+                addRecentWord()
+            }
+            launch {
+                flowerListUseCase(
+                    requestFlowerList = RequestFlowerList(
+                        searchType = uiState.value.selectedType.type,
+                        searchWord = uiState.value.searchWord
+                    )
+                ).collect { result ->
+                    _uiState.update { it.copy(flowerList = result) }
+                }
             }
         }
     }
-
 }
