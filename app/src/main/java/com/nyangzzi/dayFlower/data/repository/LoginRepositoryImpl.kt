@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -30,6 +32,11 @@ import kotlinx.coroutines.flow.onStart
 class LoginRepositoryImpl(
     private val context: Context
 ) : LoginRepository {
+
+    companion object {
+        val auth = FirebaseAuth.getInstance()
+    }
+
     override suspend fun kaKaoLogin(): Flow<ResultWrapper<User>> = callbackFlow {
 
         KakaoSdk.init(context, BuildConfig.kakao_api_key_string)
@@ -66,6 +73,7 @@ class LoginRepositoryImpl(
                                         ResultWrapper.Success(
                                             userResult.copy(
                                                 token = token1.accessToken,
+                                                id = user?.id.toString(),
                                                 nickname = user?.kakaoAccount?.profile?.nickname,
                                                 profileImg = user?.kakaoAccount?.profile?.profileImageUrl,
                                                 email = user?.kakaoAccount?.email
@@ -85,6 +93,7 @@ class LoginRepositoryImpl(
                             ResultWrapper.Success(
                                 userResult.copy(
                                     token = token.accessToken,
+                                    id = user?.id.toString(),
                                     nickname = user?.kakaoAccount?.profile?.nickname,
                                     profileImg = user?.kakaoAccount?.profile?.profileImageUrl,
                                     email = user?.kakaoAccount?.email
@@ -108,6 +117,7 @@ class LoginRepositoryImpl(
                             ResultWrapper.Success(
                                 userResult.copy(
                                     token = token1.accessToken,
+                                    id = user?.id.toString(),
                                     nickname = user?.kakaoAccount?.profile?.nickname,
                                     profileImg = user?.kakaoAccount?.profile?.profileImageUrl,
                                     email = user?.kakaoAccount?.email
@@ -124,7 +134,7 @@ class LoginRepositoryImpl(
         awaitClose { channel.close() }
     }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
 
-    override suspend fun NaverLogin(): Flow<ResultWrapper<User>> = callbackFlow {
+    override suspend fun naverLogin(): Flow<ResultWrapper<User>> = callbackFlow {
 
         NaverIdLoginSDK.initialize(
             context,
@@ -143,6 +153,7 @@ class LoginRepositoryImpl(
                     ResultWrapper.Success(
                         userResult.copy(
                             token = NaverIdLoginSDK.getAccessToken(),
+                            id = result.profile?.id,
                             nickname = result.profile?.nickname,
                             profileImg = result.profile?.profileImage,
                             email = result.profile?.email
@@ -196,6 +207,55 @@ class LoginRepositoryImpl(
         context.startActivity(intent)
         (context as? Activity)?.overridePendingTransition(0, 0)
         //NaverIdLoginSDK.authenticate(context, naverLoginCallback)
+
+        awaitClose { channel.close() }
+    }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
+
+    override suspend fun createFirebaseUser(user: User): Flow<ResultWrapper<Unit>> =
+        callbackFlow {
+
+            auth.createUserWithEmailAndPassword("${user.platform}_${user.email}", user.id ?: "")
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        //Registration OK
+                        //val firebaseUser = auth.currentUser
+                        //firebaseUser?.uid
+                        trySend(ResultWrapper.Success(Unit))
+
+                    } else {
+                        when ((task.exception as FirebaseAuthException).errorCode) {
+                            "ERROR_EMAIL_ALREADY_IN_USE" -> trySend(ResultWrapper.Success(Unit))
+                            else -> trySend(
+                                ResultWrapper.Error(
+                                    task.exception?.message ?: "오류가 발생했습니다"
+                                )
+                            )
+                        }
+                    }
+                }
+
+            awaitClose { channel.close() }
+        }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
+
+    override suspend fun loginFirebaseUser(user: User): Flow<ResultWrapper<User>> = callbackFlow {
+
+        auth.signInWithEmailAndPassword("${user.platform}_${user.email}", user.id ?: "")
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    trySend(
+                        ResultWrapper.Success(
+                            user.copy(
+                                uid = auth.currentUser?.uid
+                            )
+                        )
+                    )
+                } else {
+                    trySend(ResultWrapper.Error("오류가 발생했습니다"))
+                }
+            }
+            .addOnFailureListener { err ->
+                trySend(ResultWrapper.Error(err.message ?: "오류가 발생했습니다"))
+            }
 
         awaitClose { channel.close() }
     }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)

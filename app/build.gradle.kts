@@ -101,6 +101,7 @@ dependencies {
 
     //hilt
     implementation(Dependencies.hiltAndroid)
+    implementation("com.google.firebase:firebase-auth:22.3.1")
     kapt(Dependencies.hiltAndroidComplier)
     implementation(Dependencies.hiltNavigationCompose)
 

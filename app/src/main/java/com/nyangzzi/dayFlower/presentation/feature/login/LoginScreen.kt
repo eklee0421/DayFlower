@@ -47,6 +47,13 @@ fun LoginScreen(
     LaunchedEffect(uiState.toastMsg) {
         uiState.toastMsg?.let {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            viewModel.onEvent(LoginEvent.clearToasMsg)
+        }
+    }
+
+    LaunchedEffect(key1 = uiState.isSuccessLogin){
+        if(uiState.isSuccessLogin){
+            onNavigate(Screens.MainFlower)
         }
     }
 
