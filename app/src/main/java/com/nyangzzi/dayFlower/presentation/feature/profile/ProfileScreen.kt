@@ -1,6 +1,8 @@
 package com.nyangzzi.dayFlower.presentation.feature.profile
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -26,10 +30,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.nyangzzi.dayFlower.R
+import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray11
 import com.nyangzzi.dayFlower.ui.theme.Gray3
@@ -40,17 +55,21 @@ import com.nyangzzi.dayFlower.ui.theme.White
 
 @Composable
 fun ProfileScreen() {
+
+    val viewModel: ProfileViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(White)
     ) {
-        ProfileContent()
+        ProfileContent(uiState = uiState)
     }
 }
 
 @Composable
-private fun ProfileContent() {
+private fun ProfileContent(uiState: ProfileUiState) {
     Column(
         modifier = Modifier
             .statusBarsPadding()
@@ -59,14 +78,14 @@ private fun ProfileContent() {
             .padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
-        User(name = "000")
+        User(name = uiState.nickname, uiState.imgUrl)
         AppInfo()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun User(name: String) {
+private fun User(name: String, urlImg: String?) {
     Column {
         Box(
             modifier = Modifier
@@ -87,6 +106,27 @@ private fun User(name: String) {
                 .height(106.dp),
             contentAlignment = Alignment.Center
         ) {
+
+            if (urlImg.isNullOrEmpty()) {
+                Image(painter = painterResource(id = R.drawable.ic_none_profile_img),
+                    contentDescription = null)
+
+            } else {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(Utils.setImageUrl(urlImg))
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(70.dp)
+                        .clip(CircleShape)
+                        .border(width = 1.dp, color = Color(0xFFAFB1B6), shape = CircleShape),
+                    placeholder = painterResource(id = R.drawable.ic_loading_image)
+                )
+            }
+
 
         }
 
