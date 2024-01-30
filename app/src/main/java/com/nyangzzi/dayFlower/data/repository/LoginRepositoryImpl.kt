@@ -32,8 +32,6 @@ class LoginRepositoryImpl(
 ) : LoginRepository {
     override suspend fun kaKaoLogin(): Flow<ResultWrapper<User>> = callbackFlow {
 
-        //trySend(ResultWrapper.Loading)
-
         KakaoSdk.init(context, BuildConfig.kakao_api_key_string)
 
         val userResult = User(
@@ -69,7 +67,8 @@ class LoginRepositoryImpl(
                                             userResult.copy(
                                                 token = token1.accessToken,
                                                 nickname = user?.kakaoAccount?.profile?.nickname,
-                                                profileImg = user?.kakaoAccount?.profile?.profileImageUrl
+                                                profileImg = user?.kakaoAccount?.profile?.profileImageUrl,
+                                                email = user?.kakaoAccount?.email
                                             )
                                         )
                                     )
@@ -87,7 +86,8 @@ class LoginRepositoryImpl(
                                 userResult.copy(
                                     token = token.accessToken,
                                     nickname = user?.kakaoAccount?.profile?.nickname,
-                                    profileImg = user?.kakaoAccount?.profile?.profileImageUrl
+                                    profileImg = user?.kakaoAccount?.profile?.profileImageUrl,
+                                    email = user?.kakaoAccount?.email
                                 )
                             )
                         )
@@ -109,7 +109,8 @@ class LoginRepositoryImpl(
                                 userResult.copy(
                                     token = token1.accessToken,
                                     nickname = user?.kakaoAccount?.profile?.nickname,
-                                    profileImg = user?.kakaoAccount?.profile?.profileImageUrl
+                                    profileImg = user?.kakaoAccount?.profile?.profileImageUrl,
+                                    email = user?.kakaoAccount?.email
                                 )
                             )
                         )
@@ -143,7 +144,8 @@ class LoginRepositoryImpl(
                         userResult.copy(
                             token = NaverIdLoginSDK.getAccessToken(),
                             nickname = result.profile?.nickname,
-                            profileImg = result.profile?.profileImage
+                            profileImg = result.profile?.profileImage,
+                            email = result.profile?.email
                         )
                     )
                 )
