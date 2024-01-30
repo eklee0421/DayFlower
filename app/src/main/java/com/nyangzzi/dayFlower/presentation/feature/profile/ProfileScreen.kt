@@ -3,10 +3,12 @@ package com.nyangzzi.dayFlower.presentation.feature.profile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,10 +32,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -44,14 +53,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.nyangzzi.dayFlower.R
+import com.nyangzzi.dayFlower.domain.model.common.PLATFORM_KAKAO
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray11
 import com.nyangzzi.dayFlower.ui.theme.Gray3
 import com.nyangzzi.dayFlower.ui.theme.Gray4
 import com.nyangzzi.dayFlower.ui.theme.Gray5
+import com.nyangzzi.dayFlower.ui.theme.Gray6
 import com.nyangzzi.dayFlower.ui.theme.Gray8
 import com.nyangzzi.dayFlower.ui.theme.White
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen() {
@@ -64,12 +77,12 @@ fun ProfileScreen() {
             .fillMaxWidth()
             .background(White)
     ) {
-        ProfileContent(uiState = uiState)
+        ProfileContent(uiState = uiState, onEvent = viewModel::onEvent)
     }
 }
 
 @Composable
-private fun ProfileContent(uiState: ProfileUiState) {
+private fun ProfileContent(uiState: ProfileUiState, onEvent: (ProfileEvent) -> Unit) {
     Column(
         modifier = Modifier
             .statusBarsPadding()
@@ -78,14 +91,26 @@ private fun ProfileContent(uiState: ProfileUiState) {
             .padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
-        User(name = uiState.nickname, uiState.imgUrl)
+        User(name = uiState.nickname, uiState.imgUrl, uiState.email, uiState.platform) {
+            onEvent(ProfileEvent.UpdateUserName(it))
+        }
         AppInfo()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun User(name: String, urlImg: String?) {
+private fun User(
+    name: String,
+    urlImg: String?,
+    email: String,
+    platform: String,
+    updateName: (String) -> Unit
+) {
+    var isEditName by remember { mutableStateOf(false) }
+    var editName by remember { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
+
     Column {
         Box(
             modifier = Modifier
@@ -108,8 +133,10 @@ private fun User(name: String, urlImg: String?) {
         ) {
 
             if (urlImg.isNullOrEmpty()) {
-                Image(painter = painterResource(id = R.drawable.ic_none_profile_img),
-                    contentDescription = null)
+                Image(
+                    painter = painterResource(id = R.drawable.ic_none_profile_img),
+                    contentDescription = null
+                )
 
             } else {
                 AsyncImage(
@@ -141,9 +168,12 @@ private fun User(name: String, urlImg: String?) {
         val textFieldColor = TextFieldDefaults.textFieldColors(
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
             containerColor = Color.Transparent,
             cursorColor = Gray4,
-            placeholderColor = Gray5
+            placeholderColor = Gray5,
+            disabledTextColor = Gray6,
+            textColor = Gray11
         )
 
         Column(
@@ -153,49 +183,116 @@ private fun User(name: String, urlImg: String?) {
                 .background(color = Gray1, shape = RoundedCornerShape(10.dp))
         ) {
 
-            TextField(
-                value = name,
-                onValueChange = {},
-                singleLine = true,
-                colors = textFieldColor,
-                placeholder = {
-                    Text(text = "닉네임을 입력하세요")
-                },
+            Row(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
-            )
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                val scope = rememberCoroutineScope()
+
+                LaunchedEffect(name) {
+                    editName = name
+                    isEditName = false
+                }
+
+                TextField(
+                    value = editName,
+                    onValueChange = { editName = it },
+                    //readOnly = !isEditName,
+                    enabled = isEditName,
+                    textStyle = MaterialTheme.typography.bodyMedium,
+                    singleLine = true,
+                    colors = textFieldColor,
+                    placeholder = {
+                        Text(text = "닉네임을 입력하세요", style = MaterialTheme.typography.bodyMedium)
+                    },
+                    modifier = Modifier
+                        .focusRequester(focusRequester)
+                        .weight(1f),
+                )
+
+                Image(
+                    painter = painterResource(
+                        id = if (isEditName) R.drawable.ic_close else R.drawable.ic_edit_pen
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = 12.dp)
+                        .size(24.dp)
+                        .clickable {
+                            scope.launch {
+                                isEditName = !isEditName
+                                delay(100)
+                                if (!isEditName) editName = name
+                                else focusRequester.requestFocus()
+                            }
+                        }
+                        .padding(2.dp)
+                )
+
+
+            }
 
             Divider(color = Gray3)
 
-            TextField(
-                value = "",
-                onValueChange = {},
-                singleLine = true,
-                placeholder = {
-                    Text(text = "소개를 입력하세요")
-                },
-                colors = textFieldColor,
+            Row(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-            )
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+
+                Image(
+                    painter = painterResource(
+                        id =
+                        if (platform == PLATFORM_KAKAO) R.drawable.ic_login_kakao
+                        else R.drawable.ic_login_naver
+                    ), contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .background(
+                            color = if (platform == PLATFORM_KAKAO) Color(0xFFFEE500)
+                            else Color(0xFF03C75A),
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .padding(6.dp)
+                )
+
+                Text(
+                    text = email, style = MaterialTheme.typography.bodyMedium,
+                    color = Gray6
+                )
+            }
+
+
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        if (isEditName) {
 
-        Button(
-            onClick = { }, modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = "저장",
-                style = MaterialTheme.typography.titleLarge,
-                color = White
-            )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = {
+                    updateName(editName)
+                }, modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                enabled = editName.isNotBlank() && editName != name,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black
+                ),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = "저장",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = White
+                )
+            }
         }
     }
 }
