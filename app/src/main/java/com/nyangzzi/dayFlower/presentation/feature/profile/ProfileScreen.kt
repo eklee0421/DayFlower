@@ -1,5 +1,6 @@
 package com.nyangzzi.dayFlower.presentation.feature.profile
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -55,6 +56,7 @@ import coil.request.ImageRequest
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.domain.model.common.PLATFORM_KAKAO
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
+import com.nyangzzi.dayFlower.presentation.navigation.Screens
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray11
 import com.nyangzzi.dayFlower.ui.theme.Gray3
@@ -67,10 +69,24 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(onNavigate: (Screens) -> Unit) {
 
     val viewModel: ProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+    LaunchedEffect(uiState.toastMsg) {
+        uiState.toastMsg?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            viewModel.onEvent(ProfileEvent.ClearToastMsg)
+        }
+    }
+
+    LaunchedEffect(uiState.isLogout) {
+        if (uiState.isLogout) {
+            onNavigate(Screens.Login)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -94,7 +110,7 @@ private fun ProfileContent(uiState: ProfileUiState, onEvent: (ProfileEvent) -> U
         User(name = uiState.nickname, uiState.imgUrl, uiState.email, uiState.platform) {
             onEvent(ProfileEvent.UpdateUserName(it))
         }
-        AppInfo()
+        AppInfo(onEvent = onEvent)
     }
 }
 
@@ -298,10 +314,12 @@ private fun User(
 }
 
 @Composable
-private fun AppInfo() {
+private fun AppInfo(onEvent: (ProfileEvent) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ProfileBtn(text = "앱 정보", onClick = {})
-        ProfileBtn(text = "로그아웃", onClick = {})
+        ProfileBtn(text = "로그아웃", onClick = {
+            onEvent(ProfileEvent.Logout)
+        })
         ProfileBtn(text = "앱 탈퇴", onClick = {})
     }
 }

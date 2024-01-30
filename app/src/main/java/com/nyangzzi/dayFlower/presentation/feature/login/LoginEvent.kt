@@ -1,7 +1,7 @@
 package com.nyangzzi.dayFlower.presentation.feature.login
 
 sealed class LoginEvent {
-    object kakaoLogin : LoginEvent()
-    object naverLogin : LoginEvent()
-    object clearToasMsg: LoginEvent()
+    object KakaoLogin : LoginEvent()
+    object NaverLogin : LoginEvent()
+    object ClearToastMsg : LoginEvent()
 }

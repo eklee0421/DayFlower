@@ -2,6 +2,7 @@ package com.nyangzzi.dayFlower.presentation.navigation
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -34,7 +35,7 @@ fun NavGraph(navController: NavHostController) {
 }
 
 @Composable
-fun HomeNavGraph(navController: NavHostController) {
+fun HomeNavGraph(navController: NavHostController, onNavigate: (Screens) -> Unit) {
 
     navController.stackLog("home bottom")
 
@@ -56,7 +57,7 @@ fun HomeNavGraph(navController: NavHostController) {
             LockerScreen()
         }
         composable(route = Screens.Profile.route) {
-            ProfileScreen()
+            ProfileScreen(onNavigate = onNavigate)
         }
 
     }

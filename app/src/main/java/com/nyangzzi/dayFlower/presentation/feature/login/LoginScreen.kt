@@ -47,12 +47,12 @@ fun LoginScreen(
     LaunchedEffect(uiState.toastMsg) {
         uiState.toastMsg?.let {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-            viewModel.onEvent(LoginEvent.clearToasMsg)
+            viewModel.onEvent(LoginEvent.ClearToastMsg)
         }
     }
 
-    LaunchedEffect(key1 = uiState.isSuccessLogin){
-        if(uiState.isSuccessLogin){
+    LaunchedEffect(key1 = uiState.isSuccessLogin) {
+        if (uiState.isSuccessLogin) {
             onNavigate(Screens.MainFlower)
         }
     }
@@ -77,7 +77,7 @@ private fun LoginContent(
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Button(
                         onClick = {
-                            onEvent(LoginEvent.kakaoLogin)
+                            onEvent(LoginEvent.KakaoLogin)
                         },
                         modifier = Modifier
                             .height(50.dp)
@@ -99,7 +99,7 @@ private fun LoginContent(
                     }
 
                     Button(
-                        onClick = { onEvent(LoginEvent.naverLogin) },
+                        onClick = { onEvent(LoginEvent.NaverLogin) },
                         modifier = Modifier
                             .height(50.dp)
                             .fillMaxWidth(),

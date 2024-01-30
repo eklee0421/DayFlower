@@ -50,15 +50,15 @@ class LoginViewModel @Inject constructor(
     fun onEvent(event: LoginEvent) {
         viewModelScope.launch {
             when (event) {
-                is LoginEvent.kakaoLogin -> {
+                is LoginEvent.KakaoLogin -> {
                     kakaoLogin()
                 }
 
-                is LoginEvent.naverLogin -> {
+                is LoginEvent.NaverLogin -> {
                     naverLogin()
                 }
 
-                LoginEvent.clearToasMsg -> _uiState.update {
+                LoginEvent.ClearToastMsg -> _uiState.update {
                     it.copy(
                         toastMsg = null
                     )
@@ -192,6 +192,12 @@ class LoginViewModel @Inject constructor(
                     _uiState.update { it.copy(bottomMsg = "사용자 로그인에 성공했습니다") }
                     Log.d("login", "${result.data}")
                     if (isFirst) updateFirebaseUser(user)
+                    else _uiState.update {
+                        it.copy(
+                            toastMsg = "${user.nickname}님, 환영합니다!",
+                            isSuccessLogin = true
+                        )
+                    }
                 }
 
                 ResultWrapper.None -> {}

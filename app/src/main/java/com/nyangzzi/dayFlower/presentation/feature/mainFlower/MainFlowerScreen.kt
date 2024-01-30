@@ -44,7 +44,8 @@ fun MainFlowerScreen(
                 .weight(1f)
         ) {
             HomeNavGraph(
-                navController
+                navController,
+                onNavigate = onNavigate
             )
         }
 

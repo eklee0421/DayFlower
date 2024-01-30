@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.withContext
 
 class LoginRepositoryImpl(
     private val context: Context
@@ -191,7 +192,6 @@ class LoginRepositoryImpl(
                 val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
                 trySend(ResultWrapper.Error("$errorDescription"))
                 Log.e("naver", "네이버로 로그인 실패 $errorDescription")
-                //Toast.makeText(context,"errorCode:$errorCode, errorDesc:$errorDescription",Toast.LENGTH_SHORT).show()
             }
 
             override fun onError(errorCode: Int, message: String) {
@@ -214,15 +214,37 @@ class LoginRepositoryImpl(
         awaitClose { channel.close() }
     }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
 
+    override suspend fun kakaoLogout() {
+        UserApiClient.instance.logout { error ->
+            if (error != null) {
+                Log.e("kakao", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+            } else {
+                Log.i("kakao", "로그아웃 성공. SDK에서 토큰 삭제됨")
+            }
+        }
+    }
+
+    override suspend fun naverLogout() = withContext(Dispatchers.IO) {
+
+        NaverIdLoginSDK.initialize(
+            context,
+            BuildConfig.naver_client_id,
+            BuildConfig.naver_client_secret,
+            "하루 한 송이"
+        )
+
+        Log.d("naver", "logout")
+
+        NaverIdLoginSDK.logout()
+
+    }
+
     override suspend fun createFirebaseUser(user: User): Flow<ResultWrapper<Boolean>> =
         callbackFlow {
 
             auth.createUserWithEmailAndPassword("${user.platform}_${user.email}", user.id ?: "")
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        //Registration OK
-                        //val firebaseUser = auth.currentUser
-                        //firebaseUser?.uid
                         trySend(ResultWrapper.Success(true))
 
                     } else {
