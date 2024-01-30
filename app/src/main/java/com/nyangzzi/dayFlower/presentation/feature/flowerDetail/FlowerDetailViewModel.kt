@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
-import com.nyangzzi.dayFlower.domain.usecase.GetFlowerDetailUseCase
+import com.nyangzzi.dayFlower.domain.usecase.network.GetFlowerDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

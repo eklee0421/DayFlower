@@ -1,4 +1,4 @@
-package com.nyangzzi.dayFlower.domain.usecase
+package com.nyangzzi.dayFlower.domain.usecase.network
 
 
 import com.nyangzzi.dayFlower.data.network.ResultWrapper

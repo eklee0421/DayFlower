@@ -3,7 +3,7 @@ package com.nyangzzi.dayFlower.presentation.feature.calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.domain.model.flowerMonth.RequestFlowerMonth
-import com.nyangzzi.dayFlower.domain.usecase.GetFlowerMonthUseCase
+import com.nyangzzi.dayFlower.domain.usecase.network.GetFlowerMonthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

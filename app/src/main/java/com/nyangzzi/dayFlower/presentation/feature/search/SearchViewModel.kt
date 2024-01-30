@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.flowerList.RequestFlowerList
-import com.nyangzzi.dayFlower.domain.usecase.GetFlowerListUseCase
-import com.nyangzzi.dayFlower.domain.usecase.GetRecommendedSearchMeaningUseCase
-import com.nyangzzi.dayFlower.domain.usecase.RecentSearchMeanUseCase
-import com.nyangzzi.dayFlower.domain.usecase.RecentSearchNameUseCase
+import com.nyangzzi.dayFlower.domain.usecase.datastore.RecentSearchMeanUseCase
+import com.nyangzzi.dayFlower.domain.usecase.datastore.RecentSearchNameUseCase
+import com.nyangzzi.dayFlower.domain.usecase.firebase.GetRecommendedSearchMeaningUseCase
+import com.nyangzzi.dayFlower.domain.usecase.network.GetFlowerListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

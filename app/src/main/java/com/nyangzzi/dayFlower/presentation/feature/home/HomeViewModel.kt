@@ -3,7 +3,7 @@ package com.nyangzzi.dayFlower.presentation.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.domain.model.flowerDay.RequestFlowerDay
-import com.nyangzzi.dayFlower.domain.usecase.GetFlowerDayUseCase
+import com.nyangzzi.dayFlower.domain.usecase.network.GetFlowerDayUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,4 +1,4 @@
-package com.nyangzzi.dayFlower.domain.usecase
+package com.nyangzzi.dayFlower.domain.usecase.datastore
 
 import com.nyangzzi.dayFlower.domain.repository.DataStoreRepository
 import kotlinx.coroutines.flow.Flow

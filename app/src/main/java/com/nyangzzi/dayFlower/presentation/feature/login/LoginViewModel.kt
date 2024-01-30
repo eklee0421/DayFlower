@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.User
-import com.nyangzzi.dayFlower.domain.usecase.CreateFirebaseUserUseCase
-import com.nyangzzi.dayFlower.domain.usecase.KakaoLoginUseCase
-import com.nyangzzi.dayFlower.domain.usecase.LoginFirebaseUserUseCase
-import com.nyangzzi.dayFlower.domain.usecase.NaverLoginUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.CreateFirebaseUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.KakaoLoginUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.LoginFirebaseUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.NaverLoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,9 +39,11 @@ class LoginViewModel @Inject constructor(
                     naverLogin()
                 }
 
-                LoginEvent.clearToasMsg -> _uiState.update { it.copy(
-                    toastMsg = null
-                ) }
+                LoginEvent.clearToasMsg -> _uiState.update {
+                    it.copy(
+                        toastMsg = null
+                    )
+                }
             }
         }
     }
@@ -54,7 +56,12 @@ class LoginViewModel @Inject constructor(
                 }
 
                 ResultWrapper.Loading -> {
-                    _uiState.update { it.copy(isBtnVisible = false, bottomMsg = "카카오 인증 정보를 확인 중입니다") }
+                    _uiState.update {
+                        it.copy(
+                            isBtnVisible = false,
+                            bottomMsg = "카카오 인증 정보를 확인 중입니다"
+                        )
+                    }
                 }
 
                 is ResultWrapper.Success -> {
@@ -78,7 +85,12 @@ class LoginViewModel @Inject constructor(
                 }
 
                 ResultWrapper.Loading -> {
-                    _uiState.update { it.copy(isBtnVisible = false, bottomMsg = "네이버 인증 정보를 확인 중입니다") }
+                    _uiState.update {
+                        it.copy(
+                            isBtnVisible = false,
+                            bottomMsg = "네이버 인증 정보를 확인 중입니다"
+                        )
+                    }
                 }
 
                 is ResultWrapper.Success -> {
