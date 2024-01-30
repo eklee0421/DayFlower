@@ -6,9 +6,9 @@ import com.nyangzzi.dayFlower.domain.repository.LoginRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class CreateFirebaseUserUseCase @Inject constructor(
+class UpdateFirebaseUserUseCase @Inject constructor(
     private val repository: LoginRepository,
 ) {
-    suspend operator fun invoke(user: User): Flow<ResultWrapper<Boolean>> =
-        repository.createFirebaseUser(user)
+    suspend operator fun invoke(user: User): Flow<ResultWrapper<Unit>> =
+        repository.updateFirebaseUser(user)
 }

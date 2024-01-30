@@ -79,6 +79,7 @@ class SearchViewModel @Inject constructor(
                     item = event.item,
                     all = event.all
                 )
+                else -> {}
             }
         }
     }

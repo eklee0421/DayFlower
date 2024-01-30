@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.core.net.toUri
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.userProfileChangeRequest
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -26,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 
@@ -211,7 +214,7 @@ class LoginRepositoryImpl(
         awaitClose { channel.close() }
     }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
 
-    override suspend fun createFirebaseUser(user: User): Flow<ResultWrapper<Unit>> =
+    override suspend fun createFirebaseUser(user: User): Flow<ResultWrapper<Boolean>> =
         callbackFlow {
 
             auth.createUserWithEmailAndPassword("${user.platform}_${user.email}", user.id ?: "")
@@ -220,11 +223,11 @@ class LoginRepositoryImpl(
                         //Registration OK
                         //val firebaseUser = auth.currentUser
                         //firebaseUser?.uid
-                        trySend(ResultWrapper.Success(Unit))
+                        trySend(ResultWrapper.Success(true))
 
                     } else {
                         when ((task.exception as FirebaseAuthException).errorCode) {
-                            "ERROR_EMAIL_ALREADY_IN_USE" -> trySend(ResultWrapper.Success(Unit))
+                            "ERROR_EMAIL_ALREADY_IN_USE" -> trySend(ResultWrapper.Success(false))
                             else -> trySend(
                                 ResultWrapper.Error(
                                     task.exception?.message ?: "오류가 발생했습니다"
@@ -256,6 +259,34 @@ class LoginRepositoryImpl(
             .addOnFailureListener { err ->
                 trySend(ResultWrapper.Error(err.message ?: "오류가 발생했습니다"))
             }
+
+        awaitClose { channel.close() }
+    }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
+
+    override suspend fun logoutFirebaseUser(): Flow<ResultWrapper<Unit>> = flow {
+        auth.signOut()
+
+        if (auth.currentUser == null) {
+            emit(ResultWrapper.Success(Unit))
+        } else {
+            emit(ResultWrapper.Error("로그아웃 실패"))
+        }
+    }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
+
+    override suspend fun updateFirebaseUser(user: User): Flow<ResultWrapper<Unit>> = callbackFlow {
+        val profileUpdates = userProfileChangeRequest {
+            displayName = user.nickname
+            user.profileImg?.let { photoUri = it.toUri() }
+
+        }
+
+        auth.currentUser?.updateProfile(profileUpdates)?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                trySend(ResultWrapper.Success(Unit))
+            } else {
+                trySend(ResultWrapper.Error(task.exception?.message ?: "오류가 발생했습니다"))
+            }
+        }
 
         awaitClose { channel.close() }
     }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)

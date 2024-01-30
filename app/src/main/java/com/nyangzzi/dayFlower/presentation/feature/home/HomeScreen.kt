@@ -63,7 +63,7 @@ private fun HomeContent(uiState: HomeUiState, onEvent: (HomeEvent) -> Unit) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        HomeTop()
+        HomeTop(uiState = uiState)
         Spacer(modifier = Modifier.height(14.dp))
         TodayFlower(
             localDate = uiState.localDate,
@@ -75,7 +75,7 @@ private fun HomeContent(uiState: HomeUiState, onEvent: (HomeEvent) -> Unit) {
 }
 
 @Composable
-private fun HomeTop() {
+private fun HomeTop(uiState: HomeUiState) {
 
     Box(modifier = Modifier.fillMaxWidth()) {
 
@@ -94,7 +94,7 @@ private fun HomeTop() {
         )
 
         Text(
-            text = "OOO님, 오늘도 좋은 날이에요.\n오늘의 꽃을 추천드릴게요.",
+            text = "${uiState.user?.displayName}님, 오늘도 좋은 날이에요.\n오늘의 꽃을 추천드릴게요.",
             style = MaterialTheme.typography.headlineSmall,
             color = Gray11,
             modifier = Modifier.padding(top = 65.dp, start = 20.dp)
