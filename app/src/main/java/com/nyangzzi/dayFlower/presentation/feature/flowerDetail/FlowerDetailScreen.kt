@@ -46,12 +46,13 @@ import com.google.accompanist.pager.rememberPagerState
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
-import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.presentation.base.component.Badge
+import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.presentation.base.util.loadingShimmerEffect
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray10
 import com.nyangzzi.dayFlower.ui.theme.Gray11
+import com.nyangzzi.dayFlower.ui.theme.Gray4
 import com.nyangzzi.dayFlower.ui.theme.Gray5
 import com.nyangzzi.dayFlower.ui.theme.Gray6
 import com.nyangzzi.dayFlower.ui.theme.Gray9
@@ -139,7 +140,8 @@ private fun Top(onDismiss: () -> Unit) {
         }
         Text(
             text = stringResource(id = R.string.app_name),
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
+            color = Gray11,
             modifier = Modifier.align(Alignment.Center)
         )
     }
@@ -180,7 +182,11 @@ private fun ErrorContent(msg: String?, onRefresh: () -> Unit) {
                     tint = Gray5
                 )
             }
-            Text(msg ?: "조회에 실패했습니다. 다시 시도해주세요", color = Gray9)
+            Text(
+                msg ?: "조회에 실패했습니다. 다시 시도해주세요",
+                color = Gray9,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }
@@ -277,7 +283,8 @@ private fun SuccessContent(flower: FlowerDetail) {
         ) {
             Text(
                 text = "${flower.fMonth}월 ${flower.fDay}일",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = Gray11
             )
         }
 
@@ -381,11 +388,11 @@ private fun SuccessContent(flower: FlowerDetail) {
             flower.publishOrg?.let {
                 Text(
                     text = "[출처] $it",
-                    color = Gray5,
+                    color = Gray4,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
                         .align(Alignment.End)
-                        .padding(vertical = 16.dp, horizontal = 4.dp)
+                        .padding(bottom = 24.dp, end = 6.dp)
                 )
             }
         }
@@ -395,7 +402,7 @@ private fun SuccessContent(flower: FlowerDetail) {
 @Composable
 private fun ChildContent(title: String, content: String) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(title, style = MaterialTheme.typography.labelMedium, color = Gray10)
+        Text(title, style = MaterialTheme.typography.titleSmall, color = Gray10)
         Text(content, style = MaterialTheme.typography.bodyMedium, color = Gray9)
     }
 }

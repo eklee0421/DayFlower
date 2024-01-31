@@ -53,7 +53,7 @@ fun Badge(
 @Composable
 fun DeletedBadge(
     text: String,
-    style: TextStyle = LocalTextStyle.current,
+    style: TextStyle = MaterialTheme.typography.labelSmall,
     background: Color = White,
     onDeleted: () -> Unit = {}
 ) {

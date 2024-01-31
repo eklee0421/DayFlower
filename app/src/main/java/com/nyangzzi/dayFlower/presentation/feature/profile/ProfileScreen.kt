@@ -55,6 +55,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.domain.model.common.PLATFORM_KAKAO
+import com.nyangzzi.dayFlower.presentation.base.dialog.LogoutDialog
+import com.nyangzzi.dayFlower.presentation.base.dialog.RemoveUserDialog
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.presentation.navigation.Screens
 import com.nyangzzi.dayFlower.ui.theme.Gray1
@@ -82,11 +84,21 @@ fun ProfileScreen(onNavigate: (Screens) -> Unit) {
         }
     }
 
-    LaunchedEffect(uiState.isLogout) {
-        if (uiState.isLogout) {
+    LaunchedEffect(uiState.isLogoutSuccess) {
+        if (uiState.isLogoutSuccess) {
             onNavigate(Screens.Login)
         }
     }
+
+    RemoveUserDialog(
+        isShow = uiState.isRemoveDialog,
+        onConfirm = { viewModel.onEvent(ProfileEvent.RemoveUser) },
+        onDismiss = { viewModel.onEvent(ProfileEvent.SetShowRemoveDialog(false)) })
+
+    LogoutDialog(
+        isShow = uiState.isLogoutDialog,
+        onConfirm = { viewModel.onEvent(ProfileEvent.Logout) },
+        onDismiss = { viewModel.onEvent(ProfileEvent.SetShowLogoutDialog(false)) })
 
     Box(
         modifier = Modifier
@@ -230,26 +242,36 @@ private fun User(
                         .weight(1f),
                 )
 
-                Image(
-                    painter = painterResource(
-                        id = if (isEditName) R.drawable.ic_close else R.drawable.ic_edit_pen
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(end = 12.dp)
-                        .size(24.dp)
-                        .clickable {
-                            scope.launch {
-                                isEditName = !isEditName
-                                delay(100)
-                                if (!isEditName) editName = name
-                                else focusRequester.requestFocus()
-                            }
+
+                Box(modifier = Modifier
+                    .padding(end = 12.dp)
+                    .clip(shape = RoundedCornerShape(6.dp))
+                    .clickable {
+                        scope.launch {
+                            isEditName = !isEditName
+                            delay(100)
+                            if (!isEditName) editName = name
+                            else focusRequester.requestFocus()
                         }
-                        .padding(2.dp)
-                )
-
-
+                    }
+                    .padding(2.dp)
+                ) {
+                    if (isEditName) {
+                        Text(
+                            "취소",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFF9090A0)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(
+                                id = R.drawable.ic_edit_pen
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
             }
 
             Divider(color = Gray3)
@@ -319,9 +341,11 @@ private fun AppInfo(onEvent: (ProfileEvent) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ProfileBtn(text = "앱 정보", onClick = {})
         ProfileBtn(text = "로그아웃", onClick = {
-            onEvent(ProfileEvent.Logout)
+            onEvent(ProfileEvent.SetShowLogoutDialog(true))
         })
-        ProfileBtn(text = "앱 탈퇴", onClick = {})
+        ProfileBtn(text = "앱 탈퇴", onClick = {
+            onEvent(ProfileEvent.SetShowRemoveDialog(true))
+        })
     }
 }
 

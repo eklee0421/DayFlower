@@ -59,6 +59,8 @@ class ProfileViewModel @Inject constructor(
                 is ProfileEvent.Logout -> logout()
                 is ProfileEvent.ClearToastMsg -> _uiState.update { it.copy(toastMsg = null) }
                 is ProfileEvent.RemoveUser -> removeUser()
+                is ProfileEvent.SetShowLogoutDialog -> _uiState.update { it.copy(isLogoutDialog = event.isShown) }
+                is ProfileEvent.SetShowRemoveDialog -> _uiState.update { it.copy(isRemoveDialog = event.isShown) }
             }
         }
     }
@@ -100,7 +102,7 @@ class ProfileViewModel @Inject constructor(
                             naverLogoutUseCase()
                         }
                     }
-                    _uiState.update { it.copy(isLogout = true, toastMsg = "로그아웃 되었습니다") }
+                    _uiState.update { it.copy(isLogoutSuccess = true, toastMsg = "로그아웃 되었습니다") }
                 }
 
                 is ResultWrapper.Error -> _uiState.update { it.copy(toastMsg = "로그아웃에 실패했습니다") }
@@ -130,7 +132,7 @@ class ProfileViewModel @Inject constructor(
                         }
                     }
 
-                    _uiState.update { it.copy(isLogout = true, toastMsg = "이용해주셔서 감사합니다") }
+                    _uiState.update { it.copy(isLogoutSuccess = true, toastMsg = "이용해주셔서 감사합니다") }
                 }
 
                 else -> {}
