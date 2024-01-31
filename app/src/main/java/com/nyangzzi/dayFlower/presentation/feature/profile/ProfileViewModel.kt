@@ -6,10 +6,13 @@ import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.PLATFORM_KAKAO
 import com.nyangzzi.dayFlower.domain.model.common.PLATFORM_NAVER
 import com.nyangzzi.dayFlower.domain.usecase.firebase.GetUserUseCase
-import com.nyangzzi.dayFlower.domain.usecase.login.KakaoLogoutUseCase
-import com.nyangzzi.dayFlower.domain.usecase.login.LogoutFirebaseUserUseCase
-import com.nyangzzi.dayFlower.domain.usecase.login.NaverLogoutUseCase
-import com.nyangzzi.dayFlower.domain.usecase.login.UpdateFirebaseUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.firebase.LogoutFirebaseUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.firebase.RemoveFirebaseUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.firebase.UpdateFirebaseUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.kakao.KakaoLogoutUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.kakao.KakaoRemoveUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.naver.NaverLogoutUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.naver.NaverRemoveUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,7 +30,10 @@ class ProfileViewModel @Inject constructor(
     private val updateFirebaseUserUseCase: UpdateFirebaseUserUseCase,
     private val logoutFirebaseUserUseCase: LogoutFirebaseUserUseCase,
     private val naverLogoutUseCase: NaverLogoutUseCase,
-    private val kakaoLogoutUseCase: KakaoLogoutUseCase
+    private val kakaoLogoutUseCase: KakaoLogoutUseCase,
+    private val removeFirebaseUserUseCase: RemoveFirebaseUserUseCase,
+    private val kakaoRemoveUseCase: KakaoRemoveUseCase,
+    private val naverRemoveUseCase: NaverRemoveUseCase
 ) : ViewModel() {
 
     private var _user = getUserUseCase()
@@ -52,6 +58,7 @@ class ProfileViewModel @Inject constructor(
                 is ProfileEvent.UpdateUserName -> updateUserName(event.newName)
                 is ProfileEvent.Logout -> logout()
                 is ProfileEvent.ClearToastMsg -> _uiState.update { it.copy(toastMsg = null) }
+                is ProfileEvent.RemoveUser -> removeUser()
             }
         }
     }
@@ -87,17 +94,45 @@ class ProfileViewModel @Inject constructor(
                     when (uiState.value.platform) {
                         PLATFORM_KAKAO -> {
                             kakaoLogoutUseCase()
-                            _uiState.update { it.copy(isLogout = true, toastMsg = "로그아웃 되었습니다") }
                         }
 
                         PLATFORM_NAVER -> {
                             naverLogoutUseCase()
-                            _uiState.update { it.copy(isLogout = true, toastMsg = "로그아웃 되었습니다") }
                         }
                     }
+                    _uiState.update { it.copy(isLogout = true, toastMsg = "로그아웃 되었습니다") }
                 }
 
                 is ResultWrapper.Error -> _uiState.update { it.copy(toastMsg = "로그아웃에 실패했습니다") }
+                else -> {}
+            }
+        }
+    }
+
+    private suspend fun removeUser() {
+        removeFirebaseUserUseCase().collect { result ->
+            when (result) {
+                is ResultWrapper.Error -> {
+                    _uiState.update {
+                        it.copy(toastMsg = result.errorMessage)
+                    }
+                }
+
+                is ResultWrapper.Success -> {
+
+                    when (uiState.value.platform) {
+                        PLATFORM_KAKAO -> {
+                            kakaoRemoveUseCase()
+                        }
+
+                        PLATFORM_NAVER -> {
+                            naverRemoveUseCase()
+                        }
+                    }
+
+                    _uiState.update { it.copy(isLogout = true, toastMsg = "이용해주셔서 감사합니다") }
+                }
+
                 else -> {}
             }
         }

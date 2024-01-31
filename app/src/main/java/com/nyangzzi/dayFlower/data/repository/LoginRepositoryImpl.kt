@@ -15,6 +15,7 @@ import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthBridgeActivity
 import com.navercorp.nid.oauth.NidOAuthLogin
+import com.navercorp.nid.oauth.NidOAuthLoginState
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
@@ -224,19 +225,67 @@ class LoginRepositoryImpl(
         }
     }
 
-    override suspend fun naverLogout() = withContext(Dispatchers.IO) {
+    override suspend fun naverLogout(): Unit = withContext(Dispatchers.IO) {
 
-        NaverIdLoginSDK.initialize(
-            context,
-            BuildConfig.naver_client_id,
-            BuildConfig.naver_client_secret,
-            "하루 한 송이"
-        )
+        try {
 
-        Log.d("naver", "logout")
+            NaverIdLoginSDK.initialize(
+                context,
+                BuildConfig.naver_client_id,
+                BuildConfig.naver_client_secret,
+                "하루 한 송이"
+            )
 
-        NaverIdLoginSDK.logout()
+            NaverIdLoginSDK.logout()
 
+            when (NaverIdLoginSDK.getState()) {
+                NidOAuthLoginState.NEED_INIT -> Log.d("naver", "logout: state_init")
+                NidOAuthLoginState.NEED_LOGIN -> Log.d("naver", "logout: state_need_login")
+                NidOAuthLoginState.NEED_REFRESH_TOKEN -> Log.d(
+                    "naver",
+                    "logout: state_need_refresh_token"
+                )
+
+                NidOAuthLoginState.OK -> Log.d("naver", "logout: state_ok")
+            }
+
+        } catch (e: Exception) {
+            Log.e("naver", e.toString())
+
+        }
+
+    }
+
+    override suspend fun kakaoRemove() {
+        UserApiClient.instance.unlink { error ->
+            if (error != null) {
+                Log.e("kakao", "연결 끊기 실패", error)
+            } else {
+                Log.i("kakao", "연결 끊기 성공. SDK에서 토큰 삭제 됨")
+            }
+        }
+    }
+
+    override suspend fun naverRemove() {
+        NidOAuthLogin().callDeleteTokenApi(object : OAuthLoginCallback {
+            override fun onSuccess() {
+                //서버에서 토큰 삭제에 성공한 상태입니다.
+                Log.d("naver", "logout: delete_token")
+            }
+
+            override fun onFailure(httpStatus: Int, message: String) {
+                // 서버에서 토큰 삭제에 실패했어도 클라이언트에 있는 토큰은 삭제되어 로그아웃된 상태입니다.
+                // 클라이언트에 토큰 정보가 없기 때문에 추가로 처리할 수 있는 작업은 없습니다.
+                Log.d("naver", "errorCode: ${NaverIdLoginSDK.getLastErrorCode().code}")
+                Log.d("naver", "errorDesc: ${NaverIdLoginSDK.getLastErrorDescription()}")
+            }
+
+            override fun onError(errorCode: Int, message: String) {
+                // 서버에서 토큰 삭제에 실패했어도 클라이언트에 있는 토큰은 삭제되어 로그아웃된 상태입니다.
+                // 클라이언트에 토큰 정보가 없기 때문에 추가로 처리할 수 있는 작업은 없습니다.
+                onFailure(errorCode, message)
+            }
+        })
     }
 
     override suspend fun createFirebaseUser(user: User): Flow<ResultWrapper<Boolean>> =
@@ -293,6 +342,19 @@ class LoginRepositoryImpl(
         } else {
             emit(ResultWrapper.Error("로그아웃 실패"))
         }
+    }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
+
+    override suspend fun removeFirebaseUser(): Flow<ResultWrapper<Unit>> = callbackFlow {
+
+        auth.currentUser?.delete()?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                trySend(ResultWrapper.Success(Unit))
+            } else {
+                trySend(ResultWrapper.Error("계정 삭제에 실패했습니다"))
+            }
+        }
+
+        awaitClose { channel.close() }
     }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
 
     override suspend fun updateFirebaseUser(user: User): Flow<ResultWrapper<Unit>> = callbackFlow {

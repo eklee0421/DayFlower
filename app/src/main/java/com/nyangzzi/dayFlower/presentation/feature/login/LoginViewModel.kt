@@ -6,11 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.User
 import com.nyangzzi.dayFlower.domain.usecase.firebase.GetUserUseCase
-import com.nyangzzi.dayFlower.domain.usecase.login.CreateFirebaseUserUseCase
-import com.nyangzzi.dayFlower.domain.usecase.login.KakaoLoginUseCase
-import com.nyangzzi.dayFlower.domain.usecase.login.LoginFirebaseUserUseCase
-import com.nyangzzi.dayFlower.domain.usecase.login.NaverLoginUseCase
-import com.nyangzzi.dayFlower.domain.usecase.login.UpdateFirebaseUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.firebase.CreateFirebaseUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.firebase.LoginFirebaseUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.firebase.UpdateFirebaseUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.kakao.KakaoLoginUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.naver.NaverLoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +39,7 @@ class LoginViewModel @Inject constructor(
                 else _uiState.update {
                     it.copy(
                         isSuccessLogin = true,
-                        toastMsg = "${user.displayName}님, 환영합니다!"
+                        //toastMsg = "${user.displayName}님, 환영합니다!"
                     )
                 }
             }
@@ -194,7 +194,7 @@ class LoginViewModel @Inject constructor(
                     if (isFirst) updateFirebaseUser(user)
                     else _uiState.update {
                         it.copy(
-                            toastMsg = "${user.nickname}님, 환영합니다!",
+                            //toastMsg = "${user.nickname}님, 환영합니다!",
                             isSuccessLogin = true
                         )
                     }

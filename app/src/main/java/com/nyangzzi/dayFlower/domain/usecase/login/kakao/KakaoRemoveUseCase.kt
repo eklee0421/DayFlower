@@ -1,11 +1,11 @@
-package com.nyangzzi.dayFlower.domain.usecase.login
+package com.nyangzzi.dayFlower.domain.usecase.login.kakao
 
 import com.nyangzzi.dayFlower.domain.repository.LoginRepository
 import javax.inject.Inject
 
-class KakaoLogoutUseCase @Inject constructor(
+class KakaoRemoveUseCase @Inject constructor(
     private val repository: LoginRepository,
 ) {
     suspend operator fun invoke() =
-        repository.kakaoLogout()
+        repository.kakaoRemove()
 }

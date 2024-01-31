@@ -144,14 +144,15 @@ private fun User(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(106.dp),
+                .padding(vertical = 24.dp),
             contentAlignment = Alignment.Center
         ) {
 
             if (urlImg.isNullOrEmpty()) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_none_profile_img),
-                    contentDescription = null
+                    contentDescription = null,
+                    modifier = Modifier.size(100.dp)
                 )
 
             } else {
@@ -163,7 +164,7 @@ private fun User(
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(70.dp)
+                        .size(100.dp)
                         .clip(CircleShape)
                         .border(width = 1.dp, color = Color(0xFFAFB1B6), shape = CircleShape),
                     placeholder = painterResource(id = R.drawable.ic_loading_image)
