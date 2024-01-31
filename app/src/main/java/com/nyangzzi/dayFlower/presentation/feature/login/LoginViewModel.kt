@@ -10,6 +10,7 @@ import com.nyangzzi.dayFlower.domain.usecase.login.firebase.CreateFirebaseUserUs
 import com.nyangzzi.dayFlower.domain.usecase.login.firebase.LoginFirebaseUserUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.firebase.UpdateFirebaseUserUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.kakao.KakaoLoginUseCase
+import com.nyangzzi.dayFlower.domain.usecase.login.kakao.KakaoTokenCheckUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.naver.NaverLoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +27,7 @@ class LoginViewModel @Inject constructor(
     private val createFirebaseUserUseCase: CreateFirebaseUserUseCase,
     private val loginFirebaseUserUseCase: LoginFirebaseUserUseCase,
     private val getUserUseCase: GetUserUseCase,
-    private val updateFirebaseUserUseCase: UpdateFirebaseUserUseCase
+    private val updateFirebaseUserUseCase: UpdateFirebaseUserUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -34,16 +35,7 @@ class LoginViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getUserUseCase().collect { user ->
-                if (user == null) _uiState.update { it.copy(isBtnVisible = true, bottomMsg = "") }
-                else _uiState.update {
-                    it.copy(
-                        isSuccessLogin = true,
-                        //toastMsg = "${user.displayName}님, 환영합니다!"
-                    )
-                }
-            }
-
+            checkAutoLogin()
         }
     }
 
@@ -67,6 +59,21 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    private suspend fun checkAutoLogin() {
+        getUserUseCase().collect { user ->
+            if (user == null) {
+                _uiState.update { it.copy(isBtnVisible = true, bottomMsg = "") }
+            } else {
+                _uiState.update {
+                    it.copy(
+                        isSuccessLogin = true,
+                        //toastMsg = "${user.displayName}님, 환영합니다!"
+                    )
+                }
+            }
+        }
+    }
+    
     private suspend fun kakaoLogin() {
         kakaoLoginUseCase().collect { result ->
             when (result) {

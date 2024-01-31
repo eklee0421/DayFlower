@@ -13,6 +13,7 @@ import com.nyangzzi.dayFlower.domain.usecase.login.kakao.KakaoLogoutUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.kakao.KakaoRemoveUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.naver.NaverLogoutUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.naver.NaverRemoveUseCase
+import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -42,9 +43,9 @@ class ProfileViewModel @Inject constructor(
     val uiState: StateFlow<ProfileUiState> = combine(_uiState, _user) { state, user ->
         state.copy(
             nickname = user?.displayName ?: "",
-            imgUrl = user?.photoUrl.toString(),
-            email = user?.email?.substringAfter("_") ?: "",
-            platform = user?.email?.substringBefore("_") ?: ""
+            imgUrl = if (user?.photoUrl != null) user.photoUrl.toString() else null,
+            email = Utils.getUserEmail(user?.email),
+            platform = Utils.getUserPlatform(user?.email)
         )
     }.stateIn(
         viewModelScope,
@@ -96,13 +97,24 @@ class ProfileViewModel @Inject constructor(
                     when (uiState.value.platform) {
                         PLATFORM_KAKAO -> {
                             kakaoLogoutUseCase()
+                            _uiState.update {
+                                it.copy(
+                                    isLogoutSuccess = true,
+                                    toastMsg = "로그아웃 되었습니다"
+                                )
+                            }
                         }
 
                         PLATFORM_NAVER -> {
                             naverLogoutUseCase()
+                            _uiState.update {
+                                it.copy(
+                                    isLogoutSuccess = true,
+                                    toastMsg = "로그아웃 되었습니다"
+                                )
+                            }
                         }
                     }
-                    _uiState.update { it.copy(isLogoutSuccess = true, toastMsg = "로그아웃 되었습니다") }
                 }
 
                 is ResultWrapper.Error -> _uiState.update { it.copy(toastMsg = "로그아웃에 실패했습니다") }

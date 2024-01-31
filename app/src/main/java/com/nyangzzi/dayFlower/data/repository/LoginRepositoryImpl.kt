@@ -8,9 +8,11 @@ import androidx.core.net.toUri
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.userProfileChangeRequest
+import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthBridgeActivity
@@ -216,6 +218,9 @@ class LoginRepositoryImpl(
     }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
 
     override suspend fun kakaoLogout() {
+
+        KakaoSdk.init(context, BuildConfig.kakao_api_key_string)
+
         UserApiClient.instance.logout { error ->
             if (error != null) {
                 Log.e("kakao", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
@@ -257,6 +262,9 @@ class LoginRepositoryImpl(
     }
 
     override suspend fun kakaoRemove() {
+
+        KakaoSdk.init(context, BuildConfig.kakao_api_key_string)
+
         UserApiClient.instance.unlink { error ->
             if (error != null) {
                 Log.e("kakao", "연결 끊기 실패", error)
@@ -374,6 +382,38 @@ class LoginRepositoryImpl(
 
         awaitClose { channel.close() }
     }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun kakaoTokenCheck(): Flow<ResultWrapper<Unit>> = callbackFlow {
+
+        KakaoSdk.init(context, BuildConfig.kakao_api_key_string)
+
+        if (AuthApiClient.instance.hasToken()) {
+            UserApiClient.instance.accessTokenInfo { _, error ->
+                if (error != null) {
+                    if (error is KakaoSdkError && error.isInvalidTokenError()) {
+                        //로그인 필요
+                        trySend(ResultWrapper.Error("로그인 필요"))
+                    } else {
+                        //기타 에러
+                        trySend(ResultWrapper.Error("로그인 필요"))
+                    }
+                } else {
+                    trySend(ResultWrapper.Success(Unit))
+                }
+            }
+        } else {
+            //로그인 필요
+            trySend(ResultWrapper.Error("로그인 필요"))
+        }
+
+        awaitClose { channel.close() }
+    }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
+
+
+    override suspend fun naverTokenCheck(): Flow<ResultWrapper<Unit>> {
+        TODO("Not yet implemented")
+    }
 
 
 }

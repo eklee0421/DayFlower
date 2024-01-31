@@ -164,7 +164,8 @@ private fun User(
                 Image(
                     painter = painterResource(id = R.drawable.ic_none_profile_img),
                     contentDescription = null,
-                    modifier = Modifier.size(100.dp)
+                    modifier = Modifier
+                        .size(100.dp)
                 )
 
             } else {
@@ -182,7 +183,6 @@ private fun User(
                     placeholder = painterResource(id = R.drawable.ic_loading_image)
                 )
             }
-
 
         }
 
