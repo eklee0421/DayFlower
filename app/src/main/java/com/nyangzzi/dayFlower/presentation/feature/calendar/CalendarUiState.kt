@@ -7,5 +7,6 @@ import java.time.LocalDate
 data class CalendarUiState(
     val localDate: LocalDate = LocalDate.now(),
     val flowerMonth: ResultWrapper<List<FlowerDetail>> = ResultWrapper.Loading,
-    val isDetail: Boolean = false
+    val isDetail: Boolean = false,
+    val isDatePicker: Boolean = false
 )

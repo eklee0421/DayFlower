@@ -44,6 +44,21 @@ class CalendarViewModel @Inject constructor(
                 is CalendarOnEvent.SetDetailDialog -> {
                     _uiState.update { it.copy(isDetail = event.isShown) }
                 }
+
+                is CalendarOnEvent.SetDatePickerDialog -> {
+                    _uiState.update { it.copy(isDatePicker = event.isShown) }
+                }
+
+                is CalendarOnEvent.SetDate -> {
+                    _uiState.update {
+                        it.copy(
+                            localDate = _uiState.value.localDate.withYear(event.year)
+                                .withMonth(event.month),
+                            isDatePicker = false
+                        )
+                    }
+                    getFlowerMonth()
+                }
             }
         }
     }

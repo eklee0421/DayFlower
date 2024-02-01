@@ -46,6 +46,7 @@ import coil.request.ImageRequest
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
+import com.nyangzzi.dayFlower.presentation.base.dialog.DatePickerDialog
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.presentation.base.util.loadingShimmerEffect
 import com.nyangzzi.dayFlower.presentation.feature.flowerDetail.FlowerDetailScreen
@@ -66,6 +67,7 @@ fun CalendarScreen(viewModel: CalendarViewModel = hiltViewModel()) {
     CalendarContent(
         flowerMonth = uiState.flowerMonth,
         isDetail = uiState.isDetail,
+        isDatePicker = uiState.isDatePicker,
         localDate = uiState.localDate,
         onEvent = viewModel::onEvent
     )
@@ -75,6 +77,7 @@ fun CalendarScreen(viewModel: CalendarViewModel = hiltViewModel()) {
 private fun CalendarContent(
     flowerMonth: ResultWrapper<List<FlowerDetail>> = ResultWrapper.Loading,
     isDetail: Boolean,
+    isDatePicker: Boolean,
     localDate: LocalDate = LocalDate.now(),
     onEvent: (CalendarOnEvent) -> Unit
 ) {
@@ -85,6 +88,14 @@ private fun CalendarContent(
         FlowerDetailScreen(
             dataNo = selectedFlower.dataNo,
             onDismiss = { onEvent(CalendarOnEvent.SetDetailDialog(false)) })
+    }
+
+    DatePickerDialog(
+        isShown = isDatePicker,
+        year = localDate.year, month = localDate.monthValue, onConfirm = { year, month ->
+            onEvent(CalendarOnEvent.SetDate(year = year, month = month))
+        }) {
+        onEvent(CalendarOnEvent.SetDatePickerDialog(false))
     }
 
     Box(
@@ -101,7 +112,8 @@ private fun CalendarContent(
             FlowerMonthTopBar(
                 localDate = localDate,
                 onPrevMonth = { onEvent(CalendarOnEvent.OnPrevMonth) },
-                onNextMonth = { onEvent(CalendarOnEvent.OnNextMonth) })
+                onNextMonth = { onEvent(CalendarOnEvent.OnNextMonth) },
+                setDatePicker = { onEvent(CalendarOnEvent.SetDatePickerDialog(true)) })
 
             Column(modifier = Modifier.padding(horizontal = 20.dp)) {
 
@@ -113,6 +125,7 @@ private fun CalendarContent(
                             msg = flowerMonth.errorMessage,
                             onRefresh = { onEvent(CalendarOnEvent.OnSearchMonth) })
                     }
+
                     ResultWrapper.Loading -> {
                         LoadingFlowerCalendar()
                     }
@@ -131,6 +144,7 @@ private fun CalendarContent(
                             ).dayOfWeek.value
                         )
                     }
+
                     ResultWrapper.None -> {}
                 }
 
@@ -145,6 +159,7 @@ fun FlowerMonthTopBar(
     localDate: LocalDate?,
     onPrevMonth: () -> Unit,
     onNextMonth: () -> Unit,
+    setDatePicker: () -> Unit
 ) {
 
     Box(
@@ -154,11 +169,17 @@ fun FlowerMonthTopBar(
             .height(68.dp),
     ) {
 
-        Text("${localDate?.year}년 ${localDate?.month?.value}월",
+        Text(
+            "${localDate?.year}년 ${localDate?.month?.value}월",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .align(Alignment.Center)
-                .clickable { /*onEvent(MainFlowerEvent.ShowDatePicker)*/ })
+                .padding(4.dp)
+                .clip(shape = RoundedCornerShape(4.dp))
+                .clickable {
+                    setDatePicker()
+                }
+        )
 
         IconButton(
             onClick = { onPrevMonth() },
