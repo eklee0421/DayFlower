@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +23,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -30,6 +32,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -61,11 +64,13 @@ import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.presentation.navigation.Screens
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray11
+import com.nyangzzi.dayFlower.ui.theme.Gray2
 import com.nyangzzi.dayFlower.ui.theme.Gray3
 import com.nyangzzi.dayFlower.ui.theme.Gray4
 import com.nyangzzi.dayFlower.ui.theme.Gray5
 import com.nyangzzi.dayFlower.ui.theme.Gray6
 import com.nyangzzi.dayFlower.ui.theme.Gray8
+import com.nyangzzi.dayFlower.ui.theme.Gray9
 import com.nyangzzi.dayFlower.ui.theme.White
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -116,7 +121,8 @@ private fun ProfileContent(uiState: ProfileUiState, onEvent: (ProfileEvent) -> U
             .statusBarsPadding()
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 20.dp)
+            .padding(bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         User(name = uiState.nickname, uiState.imgUrl, uiState.email, uiState.platform) {
@@ -338,42 +344,131 @@ private fun User(
 
 @Composable
 private fun AppInfo(onEvent: (ProfileEvent) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        ProfileBtn(text = "앱 정보", onClick = {})
-        ProfileBtn(text = "로그아웃", onClick = {
-            onEvent(ProfileEvent.SetShowLogoutDialog(true))
-        })
-        ProfileBtn(text = "앱 탈퇴", onClick = {
-            onEvent(ProfileEvent.SetShowRemoveDialog(true))
-        })
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        ProfileBtn(text = "앱 정보")
+        {
+
+            Column(
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(32.dp)
+            ) {
+                ProfileInfo("버전 정보", "")
+                ProfileInfo("빌드 정보", "")
+
+            }
+            ProfileTextBtn("오픈소스 라이선스", textColor = Gray6) {
+
+            }
+        }
+
+        ProfileBtn(text = "계정설정") {
+            ProfileTextBtn("로그아웃") {
+                onEvent(ProfileEvent.SetShowLogoutDialog(true))
+            }
+            ProfileTextBtn("계정 삭제") {
+                onEvent(ProfileEvent.SetShowRemoveDialog(true))
+            }
+
+        }
+
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            ProfileTextBtn("개인정보 처리방침", textColor = Gray6) {
+
+            }
+        }
+
     }
 }
 
 @Composable
-private fun ProfileBtn(text: String, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            contentColor = Gray8,
-            containerColor = Gray1
-        ),
-        shape = RoundedCornerShape(12.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 18.dp)
+private fun ProfileBtn(
+    text: String,
+    content: @Composable ColumnScope.() -> Unit = {}
+) {
+
+    var isShown by remember { mutableStateOf(true) }
+
+    Column(
+        modifier = Modifier
+            .background(
+                color = Gray1,
+                shape = RoundedCornerShape(12.dp)
+            )
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth()
+
+        Button(
+            modifier = Modifier,
+            onClick = {
+                isShown = !isShown
+            },
+            colors = ButtonDefaults.buttonColors(
+                contentColor = Gray8,
+                containerColor = Gray1
+            ),
+            shape = if (isShown) RoundedCornerShape(
+                topStart = 12.dp,
+                topEnd = 12.dp
+            ) else RoundedCornerShape(12.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 18.dp)
         ) {
-            Text(
-                text = text, style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.align(Alignment.CenterStart)
-            )
-            Icon(
-                imageVector = Icons.Rounded.KeyboardArrowRight,
-                contentDescription = "",
-                modifier = Modifier.align(Alignment.CenterEnd)
-            )
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = text, style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.align(Alignment.CenterStart)
+                )
+                Icon(
+                    imageVector = if (isShown) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown,
+                    contentDescription = "",
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                )
+            }
+
         }
 
+        if (isShown) {
+            Divider(color = Gray2, modifier = Modifier.padding(horizontal = 16.dp))
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 18.dp)) {
+                content()
+            }
+        }
     }
 
+}
+
+@Composable
+private fun ProfileInfo(
+    title: String,
+    content: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.weight(1f),
+            color = Gray9
+        )
+        Text(text = content, style = MaterialTheme.typography.labelSmall, color = Gray6)
+    }
+
+}
+
+@Composable
+private fun ProfileTextBtn(
+    text: String,
+    textColor: Color = Gray9,
+    onClick: () -> Unit
+) {
+    TextButton(
+        onClick = onClick,
+        colors = ButtonDefaults.textButtonColors(contentColor = textColor),
+        shape = RoundedCornerShape(8.dp),
+        contentPadding = PaddingValues(vertical = 4.dp, horizontal = 8.dp)
+    ) {
+        Text(text = text, style = MaterialTheme.typography.labelSmall)
+    }
 }
