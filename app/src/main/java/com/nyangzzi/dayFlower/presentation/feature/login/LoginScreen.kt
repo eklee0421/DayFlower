@@ -57,6 +57,10 @@ fun LoginScreen(
         }
     }
 
+    LaunchedEffect(key1 = uiState.isBtnVisible) {
+        if (uiState.isBtnVisible) viewModel.onEvent(LoginEvent.ClearDataStore)
+    }
+
     LoginContent(onNavigate = onNavigate, uiState = uiState, onEvent = viewModel::onEvent)
 }
 

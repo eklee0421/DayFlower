@@ -4,4 +4,5 @@ sealed class LoginEvent {
     object KakaoLogin : LoginEvent()
     object NaverLogin : LoginEvent()
     object ClearToastMsg : LoginEvent()
+    object ClearDataStore : LoginEvent()
 }

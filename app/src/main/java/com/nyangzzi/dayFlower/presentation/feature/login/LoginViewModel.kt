@@ -5,12 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.User
+import com.nyangzzi.dayFlower.domain.usecase.datastore.ClearRecentWordUseCase
 import com.nyangzzi.dayFlower.domain.usecase.firebase.GetUserUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.firebase.CreateFirebaseUserUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.firebase.LoginFirebaseUserUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.firebase.UpdateFirebaseUserUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.kakao.KakaoLoginUseCase
-import com.nyangzzi.dayFlower.domain.usecase.login.kakao.KakaoTokenCheckUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.naver.NaverLoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +28,7 @@ class LoginViewModel @Inject constructor(
     private val loginFirebaseUserUseCase: LoginFirebaseUserUseCase,
     private val getUserUseCase: GetUserUseCase,
     private val updateFirebaseUserUseCase: UpdateFirebaseUserUseCase,
+    private val clearRecentWordUseCase: ClearRecentWordUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -55,8 +56,15 @@ class LoginViewModel @Inject constructor(
                         toastMsg = null
                     )
                 }
+
+                LoginEvent.ClearDataStore -> clearSearchWord()
             }
         }
+    }
+
+
+    private suspend fun clearSearchWord() {
+        clearRecentWordUseCase.clearWord()
     }
 
     private suspend fun checkAutoLogin() {
@@ -73,7 +81,7 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
-    
+
     private suspend fun kakaoLogin() {
         kakaoLoginUseCase().collect { result ->
             when (result) {
