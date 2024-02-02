@@ -53,9 +53,9 @@ val Typography = Typography(
     //Title1
     headlineMedium = TextStyle(
         fontFamily = pretendard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 28.sp,
-        lineHeight = 36.sp,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 26.sp,
+        lineHeight = 34.sp,
     ),
     //Title2
     headlineSmall = TextStyle(
@@ -93,7 +93,7 @@ val Typography = Typography(
         fontFamily = pretendard,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 20.sp,
+        lineHeight = 22.sp,
     ),
     //Body3
     bodyMedium = TextStyle(
