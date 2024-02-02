@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -45,6 +46,7 @@ fun NumberPicker(
     Box(
         modifier = Modifier
             .height(142.dp)
+            .defaultMinSize(minWidth = 74.dp)
             .wrapContentWidth()
     ) {
         VerticalPager(
