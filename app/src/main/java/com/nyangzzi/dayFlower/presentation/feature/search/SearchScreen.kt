@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -87,6 +89,7 @@ private fun SearchContent(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit
 
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun BeforeSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit) {
 
@@ -185,21 +188,25 @@ private fun BeforeSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit)
 
                 Text("추천 검색어", style = MaterialTheme.typography.labelMedium, color = Gray11)
 
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(73.dp),
-                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    itemsIndexed(uiState.recommendedWords) { _, item ->
-                        Badge(
-                            text = item, style = MaterialTheme.typography.labelSmall,
-                            background = Color(0xFFEFF1FF)
-                        ) {
-                            onEvent(SearchEvent.UpdateSearchWord(item))
-                            onEvent(SearchEvent.SearchFlowerList)
+
+                    uiState.recommendedWords.map { item ->
+
+                        Box(modifier = Modifier.padding(top = 14.dp)) {
+                            Badge(
+                                text = item, style = MaterialTheme.typography.labelSmall,
+                                background = Color(0xFFEFF1FF)
+                            ) {
+                                onEvent(SearchEvent.UpdateSearchWord(item))
+                                onEvent(SearchEvent.SearchFlowerList)
+                            }
                         }
                     }
+
                 }
+
             }
 
         }
