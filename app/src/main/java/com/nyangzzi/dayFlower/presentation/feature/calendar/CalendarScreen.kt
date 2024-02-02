@@ -22,6 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,9 +52,10 @@ import com.nyangzzi.dayFlower.presentation.base.dialog.DatePickerDialog
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.presentation.base.util.loadingShimmerEffect
 import com.nyangzzi.dayFlower.presentation.feature.flowerDetail.FlowerDetailScreen
-import com.nyangzzi.dayFlower.ui.theme.Gray1
+import com.nyangzzi.dayFlower.ui.theme.Gray11
 import com.nyangzzi.dayFlower.ui.theme.Gray5
 import com.nyangzzi.dayFlower.ui.theme.Gray9
+import com.nyangzzi.dayFlower.ui.theme.Primary
 import com.nyangzzi.dayFlower.ui.theme.SystemBlue
 import com.nyangzzi.dayFlower.ui.theme.SystemRed
 import com.nyangzzi.dayFlower.ui.theme.White
@@ -284,36 +287,24 @@ private fun LoadingFlowerCalendar() {
 private fun ErrorFlowerCalendar(msg: String?, onRefresh: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Image(painter = painterResource(id = R.drawable.ic_error_info), contentDescription = null)
+        Text(text = msg ?: "오류가 발생했습니다", color = Gray5, style = MaterialTheme.typography.bodyMedium)
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .background(Gray1, shape = RoundedCornerShape(12.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_empty_img),
-                contentDescription = "empty_img"
-            )
-        }
-
-        Column(
-            modifier = Modifier.height(130.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            IconButton(onClick = { onRefresh() }) {
-                Icon(
-                    imageVector = Icons.Rounded.Refresh,
-                    contentDescription = null,
-                    tint = Gray5
-                )
+        Button(
+            shape = RoundedCornerShape(30.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Primary,
+                contentColor = Gray11
+            ),
+            onClick = { onRefresh() }) {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Icon(imageVector = Icons.Rounded.Refresh, contentDescription = null)
+                Text(text = "재시도")
             }
-            Text(msg ?: "조회에 실패했습니다. 다시 시도해주세요", color = Gray9)
+
         }
     }
 }

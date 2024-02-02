@@ -18,6 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -49,14 +52,15 @@ import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.base.component.Badge
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.presentation.base.util.loadingShimmerEffect
-import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray10
 import com.nyangzzi.dayFlower.ui.theme.Gray11
 import com.nyangzzi.dayFlower.ui.theme.Gray4
 import com.nyangzzi.dayFlower.ui.theme.Gray5
 import com.nyangzzi.dayFlower.ui.theme.Gray6
 import com.nyangzzi.dayFlower.ui.theme.Gray9
+import com.nyangzzi.dayFlower.ui.theme.Primary
 import com.nyangzzi.dayFlower.ui.theme.PrimaryAlpha50
+import com.nyangzzi.dayFlower.ui.theme.SystemRed
 import com.nyangzzi.dayFlower.ui.theme.White
 
 @Composable
@@ -150,43 +154,25 @@ private fun Top(onDismiss: () -> Unit) {
 @Composable
 private fun ErrorContent(msg: String?, onRefresh: () -> Unit) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Image(painter = painterResource(id = R.drawable.ic_error_info), contentDescription = null)
+        Text(text = msg ?: "오류가 발생했습니다", color = Gray5, style = MaterialTheme.typography.bodyMedium)
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .background(Gray1, shape = RoundedCornerShape(12.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_empty_img),
-                contentDescription = "empty_img"
-            )
-        }
-
-        Column(
-            modifier = Modifier.height(130.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            IconButton(onClick = { onRefresh() }) {
-                Icon(
-                    imageVector = Icons.Rounded.Refresh,
-                    contentDescription = null,
-                    tint = Gray5
-                )
+        Button(
+            shape = RoundedCornerShape(30.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Primary,
+                contentColor = Gray11
+            ),
+            onClick = { onRefresh() }) {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Icon(imageVector = Icons.Rounded.Refresh, contentDescription = null)
+                Text(text = "재시도")
             }
-            Text(
-                msg ?: "조회에 실패했습니다. 다시 시도해주세요",
-                color = Gray9,
-                style = MaterialTheme.typography.bodyMedium
-            )
+
         }
     }
 }
@@ -343,7 +329,7 @@ private fun SuccessContent(flower: FlowerDetail) {
 
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     flower.flowNm?.let {
@@ -353,6 +339,13 @@ private fun SuccessContent(flower: FlowerDetail) {
                             color = Gray11
                         )
                     }
+
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_empty_heart_outline),
+                        modifier = Modifier.size(24.dp),
+                        colorFilter = ColorFilter.tint(SystemRed),
+                        contentDescription = null
+                    )
 
                 }
 
