@@ -154,7 +154,7 @@ private fun SuccessContent(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier.horizontalScroll(rememberScrollState())
             ) {
-                flower.flowLang?.replace(" ", "")?.split(',')?.map {
+                flower.flowLang?.split(", ")?.map {
                     Badge(
                         text = it,
                         style = when (cardSize) {

@@ -332,30 +332,34 @@ private fun SuccessContent(flower: FlowerDetail) {
         Column(
             modifier = Modifier
                 .padding(vertical = 20.dp, horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp),
+            verticalArrangement = Arrangement.spacedBy(26.dp),
         ) {
 
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                flower.flowLang?.replace(" ", "")?.split(',')?.map {
+                flower.flowLang?.split(", ")?.map {
                     Badge(it)
                 }
             }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                flower.flowNm?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Gray11
-                    )
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    flower.flowNm?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = Gray11
+                        )
+                    }
+
                 }
+
                 flower.fEngNm?.let {
                     Text(
                         text = it,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = Gray6
                     )
                 }
@@ -389,7 +393,7 @@ private fun SuccessContent(flower: FlowerDetail) {
                 Text(
                     text = "[출처] $it",
                     color = Gray4,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .align(Alignment.End)
                         .padding(bottom = 24.dp, end = 6.dp)
@@ -402,7 +406,7 @@ private fun SuccessContent(flower: FlowerDetail) {
 @Composable
 private fun ChildContent(title: String, content: String) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(title, style = MaterialTheme.typography.titleSmall, color = Gray10)
-        Text(content, style = MaterialTheme.typography.bodyMedium, color = Gray9)
+        Text(title, style = MaterialTheme.typography.titleMedium, color = Gray10)
+        Text(content, style = MaterialTheme.typography.bodyLarge, color = Gray9)
     }
 }

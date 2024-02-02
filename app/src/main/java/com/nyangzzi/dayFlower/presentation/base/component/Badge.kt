@@ -22,6 +22,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.nyangzzi.dayFlower.R
+import com.nyangzzi.dayFlower.presentation.base.util.noRippleClickable
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray9
 import com.nyangzzi.dayFlower.ui.theme.White
@@ -40,7 +41,7 @@ fun Badge(
         textAlign = TextAlign.Center,
         modifier = Modifier
             .background(color = background, shape = RoundedCornerShape(32.dp))
-            .clickable {
+            .noRippleClickable {
                 onClick()
             }
             .padding(horizontal = 11.dp, vertical = 6.dp)
