@@ -111,7 +111,7 @@ private fun TodayFlower(
     setShowDetail: (Boolean) -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = 20.dp),
+        modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
 

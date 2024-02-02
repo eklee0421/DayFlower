@@ -122,7 +122,7 @@ private fun ProfileContent(uiState: ProfileUiState, onEvent: (ProfileEvent) -> U
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp)
-            .padding(bottom = 32.dp),
+            .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         User(name = uiState.nickname, uiState.imgUrl, uiState.email, uiState.platform) {

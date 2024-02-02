@@ -102,6 +102,7 @@ private fun CalendarContent(
         modifier = Modifier
             .fillMaxWidth()
             .background(White)
+            .padding(bottom = 24.dp)
     ) {
         Column(
             modifier = Modifier

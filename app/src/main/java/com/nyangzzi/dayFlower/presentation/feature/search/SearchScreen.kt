@@ -21,7 +21,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Refresh
@@ -77,7 +79,8 @@ private fun SearchContent(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit
     Column(
         modifier = Modifier
             .statusBarsPadding()
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
 
@@ -93,7 +96,11 @@ private fun SearchContent(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit
 @Composable
 private fun BeforeSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit) {
 
-    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp)
+    ) {
         Row(
             modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -182,13 +189,13 @@ private fun BeforeSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit)
         if (uiState.selectedType == SearchTapType.MEAN && uiState.recommendedWords.isNotEmpty()) {
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.padding(top = 20.dp)
             ) {
 
                 Text("추천 검색어", style = MaterialTheme.typography.labelMedium, color = Gray11)
 
                 FlowRow(
+                    modifier = Modifier.padding(top = 2.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
 
