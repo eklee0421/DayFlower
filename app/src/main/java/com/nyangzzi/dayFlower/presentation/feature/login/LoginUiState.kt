@@ -5,4 +5,5 @@ data class LoginUiState(
     val bottomMsg: String? = "자동 로그인 중입니다",
     val isBtnVisible: Boolean = false,
     val isSuccessLogin: Boolean = false,
+    val isNextScreen: Boolean = false
 )

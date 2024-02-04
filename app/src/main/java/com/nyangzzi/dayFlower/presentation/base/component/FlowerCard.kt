@@ -104,8 +104,8 @@ private fun SuccessContent(
             .clip(shape = RoundedCornerShape(12.dp))
             .clickable { showDetail() }
     ) {
-
-        val imgList = listOf(
+        
+        val imgList = listOfNotNull(
             flower.imgUrl1,
             flower.imgUrl2,
             flower.imgUrl3
@@ -146,7 +146,7 @@ private fun SuccessContent(
         }
 
         Column(
-            modifier = Modifier.padding(vertical = 12.dp, horizontal = 20.dp),
+            modifier = Modifier.padding(vertical = 12.dp, horizontal = cardSize.contentHorizontal),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
@@ -158,7 +158,7 @@ private fun SuccessContent(
                     Badge(
                         text = it,
                         style = when (cardSize) {
-                            FlowerCardSize.LARGE -> MaterialTheme.typography.labelSmall
+                            FlowerCardSize.LARGE -> MaterialTheme.typography.labelMedium
                             FlowerCardSize.SMALL -> MaterialTheme.typography.labelSmall
                         }
                     )
@@ -166,6 +166,7 @@ private fun SuccessContent(
             }
 
             Row(
+                modifier = Modifier.padding(start = 2.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -227,7 +228,7 @@ private fun LoadingContent(cardSize: FlowerCardSize = FlowerCardSize.LARGE) {
 
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.padding(vertical = 12.dp, horizontal = 20.dp)
+            modifier = Modifier.padding(vertical = 12.dp, horizontal = cardSize.contentHorizontal)
         ) {
 
             Spacer(
@@ -320,7 +321,12 @@ fun PreviewErrorFlowerCard() {
 }
 
 
-enum class FlowerCardSize(val imgHeight: Dp, val textHeight: Dp, val textWidth: Dp) {
-    LARGE(imgHeight = 220.dp, textHeight = 26.dp, textWidth = 100.dp),
-    SMALL(imgHeight = 132.dp, textHeight = 16.dp, textWidth = 50.dp)
+enum class FlowerCardSize(
+    val imgHeight: Dp,
+    val textHeight: Dp,
+    val textWidth: Dp,
+    val contentHorizontal: Dp
+) {
+    LARGE(imgHeight = 220.dp, textHeight = 26.dp, textWidth = 100.dp, contentHorizontal = 18.dp),
+    SMALL(imgHeight = 132.dp, textHeight = 16.dp, textWidth = 50.dp, contentHorizontal = 12.dp)
 }

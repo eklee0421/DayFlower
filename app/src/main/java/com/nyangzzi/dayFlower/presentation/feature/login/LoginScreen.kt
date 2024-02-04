@@ -53,6 +53,12 @@ fun LoginScreen(
 
     LaunchedEffect(key1 = uiState.isSuccessLogin) {
         if (uiState.isSuccessLogin) {
+            viewModel.onEvent(LoginEvent.LoadApp)
+        }
+    }
+
+    LaunchedEffect(key1 = uiState.isNextScreen) {
+        if (uiState.isNextScreen) {
             onNavigate(Screens.MainFlower)
         }
     }

@@ -5,4 +5,5 @@ sealed class LoginEvent {
     object NaverLogin : LoginEvent()
     object ClearToastMsg : LoginEvent()
     object ClearDataStore : LoginEvent()
+    object LoadApp : LoginEvent()
 }

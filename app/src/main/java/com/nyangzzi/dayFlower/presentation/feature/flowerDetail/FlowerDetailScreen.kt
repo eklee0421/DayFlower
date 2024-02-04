@@ -52,6 +52,7 @@ import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.base.component.Badge
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.presentation.base.util.loadingShimmerEffect
+import com.nyangzzi.dayFlower.presentation.base.util.noRippleClickable
 import com.nyangzzi.dayFlower.ui.theme.Gray10
 import com.nyangzzi.dayFlower.ui.theme.Gray11
 import com.nyangzzi.dayFlower.ui.theme.Gray4
@@ -95,6 +96,9 @@ fun FlowerDetailScreen(
             onDismiss = {
                 onDismiss()
                 viewModel.onEvent(FlowerDetailOnEvent.OnDismiss)
+            },
+            onSave = {
+                viewModel.onEvent(FlowerDetailOnEvent.UpdateLocker)
             }
         )
     }
@@ -105,7 +109,8 @@ fun FlowerDetailScreen(
 private fun Content(
     flowerDetail: ResultWrapper<FlowerDetail>,
     onRefresh: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onSave: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -123,7 +128,7 @@ private fun Content(
             }
 
             is ResultWrapper.Success -> {
-                SuccessContent(flowerDetail.data)
+                SuccessContent(flowerDetail.data, onSave = onSave)
             }
 
             ResultWrapper.None -> {}
@@ -255,7 +260,7 @@ private fun LoadingContent() {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-private fun SuccessContent(flower: FlowerDetail) {
+private fun SuccessContent(flower: FlowerDetail, onSave: () -> Unit) {
     Column(
         modifier = Modifier.verticalScroll(
             rememberScrollState()
@@ -342,7 +347,11 @@ private fun SuccessContent(flower: FlowerDetail) {
 
                     Image(
                         painter = painterResource(id = R.drawable.ic_empty_heart_outline),
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier
+                            .size(24.dp)
+                            .noRippleClickable {
+                                onSave()
+                            },
                         colorFilter = ColorFilter.tint(SystemRed),
                         contentDescription = null
                     )

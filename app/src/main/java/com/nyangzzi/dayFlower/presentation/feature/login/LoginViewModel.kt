@@ -7,6 +7,7 @@ import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.User
 import com.nyangzzi.dayFlower.domain.usecase.datastore.ClearRecentWordUseCase
 import com.nyangzzi.dayFlower.domain.usecase.firebase.GetUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.firebase.LoadAppUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.firebase.CreateFirebaseUserUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.firebase.LoginFirebaseUserUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.firebase.UpdateFirebaseUserUseCase
@@ -29,6 +30,7 @@ class LoginViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val updateFirebaseUserUseCase: UpdateFirebaseUserUseCase,
     private val clearRecentWordUseCase: ClearRecentWordUseCase,
+    private val loadAppUseCase: LoadAppUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -58,10 +60,35 @@ class LoginViewModel @Inject constructor(
                 }
 
                 LoginEvent.ClearDataStore -> clearSearchWord()
+                LoginEvent.LoadApp -> loadApp()
             }
         }
     }
 
+    private suspend fun loadApp() {
+        loadAppUseCase().collect { result ->
+            when (result) {
+                ResultWrapper.Loading -> {
+                    _uiState.update {
+                        it.copy(
+                            isBtnVisible = false,
+                            bottomMsg = "정보를 로딩 중입니다"
+                        )
+                    }
+                }
+
+                is ResultWrapper.Success -> _uiState.update {
+                    it.copy(
+                        isNextScreen = true,
+                        toastMsg = "환영합니다!"
+                    )
+                }
+
+                else -> {}
+            }
+
+        }
+    }
 
     private suspend fun clearSearchWord() {
         clearRecentWordUseCase.clearWord()
@@ -179,7 +206,6 @@ class LoginViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     _uiState.update {
                         it.copy(
-                            toastMsg = "${user.nickname}님, 환영합니다!",
                             isSuccessLogin = true
                         )
                     }
