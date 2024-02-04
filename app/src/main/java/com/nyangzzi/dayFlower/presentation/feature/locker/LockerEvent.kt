@@ -1,4 +1,5 @@
 package com.nyangzzi.dayFlower.presentation.feature.locker
 
-class LockerEvent {
+sealed class LockerEvent {
+    data class SetShowDetail(val isShown: Boolean) : LockerEvent()
 }

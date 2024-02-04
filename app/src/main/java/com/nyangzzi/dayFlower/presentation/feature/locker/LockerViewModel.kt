@@ -1,6 +1,5 @@
 package com.nyangzzi.dayFlower.presentation.feature.locker
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.domain.usecase.firebase.FirebaseManager
@@ -43,13 +42,15 @@ class LockerViewModel @Inject constructor(
 
     }
 
+    fun onEvent(event: LockerEvent) {
+        when (event) {
+            is LockerEvent.SetShowDetail -> _uiState.update { it.copy(isShowDetail = event.isShown) }
+        }
+    }
+
     private suspend fun getSaveFlower() {
         firebaseManager.locker().collect { result ->
-
             _uiState.update { it.copy(saveFlower = result) }
-
-            Log.d("34234", result.toString())
-
         }
     }
 
