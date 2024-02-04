@@ -13,5 +13,6 @@ interface GetFirebaseRepository {
     fun getUser(): Flow<FirebaseUser?>
     suspend fun setLocker(flower: FlowerDetail): Flow<ResultWrapper<Unit>>
     suspend fun getLocker(): Flow<ResultWrapper<List<FlowerDetail>>>
+    suspend fun checkIsSaved(dataNo: Int): Flow<Boolean>
 
 }

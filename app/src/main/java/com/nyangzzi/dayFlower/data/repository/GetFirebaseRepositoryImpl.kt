@@ -141,5 +141,11 @@ class GetFirebaseRepositoryImpl : GetFirebaseRepository {
             awaitClose { channel.close() }
         }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
 
+    override suspend fun checkIsSaved(dataNo: Int): Flow<Boolean> = flow {
+        emit(
+            lockerFlower.any { it.dataNo == dataNo }
+        )
+    }.flowOn(Dispatchers.IO)
+
 
 }

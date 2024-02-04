@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
+import com.nyangzzi.dayFlower.domain.usecase.firebase.CheckIsSavedUseCase
 import com.nyangzzi.dayFlower.domain.usecase.firebase.UpdateLockerUseCase
 import com.nyangzzi.dayFlower.domain.usecase.network.GetFlowerDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FlowerDetailViewModel @Inject constructor(
     val getFlowerDetailUseCase: GetFlowerDetailUseCase,
-    private val updateLockerUseCase: UpdateLockerUseCase
+    private val updateLockerUseCase: UpdateLockerUseCase,
+    private val checkIsSavedUseCase: CheckIsSavedUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(FlowerDetailUiState())
     val uiState: StateFlow<FlowerDetailUiState> = _uiState
@@ -49,17 +51,36 @@ class FlowerDetailViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(flowerDetail = result)
                 }
+                if (result is ResultWrapper.Success) {
+                    checkIsSaved()
+                }
             }
         }
     }
 
     private suspend fun updateFlower() {
+        updateLockerUseCase((uiState.value.flowerDetail as ResultWrapper.Success<FlowerDetail>).data).collect { result ->
+            when (result) {
+                is ResultWrapper.Success -> {
+                    checkIsSaved()
+                }
 
-        updateLockerUseCase((uiState.value.flowerDetail as ResultWrapper.Success<FlowerDetail>).data).collect {
+                else -> {}
+            }
 
         }
-
-
     }
 
+    private suspend fun checkIsSaved() {
+        if (uiState.value.flowerDetail is ResultWrapper.Success) {
+            (uiState.value.flowerDetail as ResultWrapper.Success<FlowerDetail>).data.dataNo?.let { dataNo ->
+                checkIsSavedUseCase(dataNo).collect { result ->
+                    _uiState.update {
+                        it.copy(isSaved = result)
+                    }
+                }
+            }
+        }
+
+    }
 }

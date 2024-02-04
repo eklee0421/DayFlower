@@ -90,6 +90,7 @@ fun FlowerDetailScreen(
     ) {
         Content(
             flowerDetail = uiState.flowerDetail,
+            isSaved = uiState.isSaved,
             onRefresh = {
                 viewModel.onEvent(FlowerDetailOnEvent.OnSearchDetail(dataNo))
             },
@@ -108,6 +109,7 @@ fun FlowerDetailScreen(
 @Composable
 private fun Content(
     flowerDetail: ResultWrapper<FlowerDetail>,
+    isSaved: Boolean,
     onRefresh: () -> Unit,
     onDismiss: () -> Unit,
     onSave: () -> Unit
@@ -128,7 +130,7 @@ private fun Content(
             }
 
             is ResultWrapper.Success -> {
-                SuccessContent(flowerDetail.data, onSave = onSave)
+                SuccessContent(flowerDetail.data, isSaved = isSaved, onSave = onSave)
             }
 
             ResultWrapper.None -> {}
@@ -260,7 +262,11 @@ private fun LoadingContent() {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-private fun SuccessContent(flower: FlowerDetail, onSave: () -> Unit) {
+private fun SuccessContent(
+    flower: FlowerDetail,
+    isSaved: Boolean,
+    onSave: () -> Unit
+) {
     Column(
         modifier = Modifier.verticalScroll(
             rememberScrollState()
@@ -352,7 +358,7 @@ private fun SuccessContent(flower: FlowerDetail, onSave: () -> Unit) {
                             .noRippleClickable {
                                 onSave()
                             },
-                        colorFilter = ColorFilter.tint(SystemRed),
+                        colorFilter = if (isSaved) ColorFilter.tint(SystemRed) else null,
                         contentDescription = null
                     )
 
