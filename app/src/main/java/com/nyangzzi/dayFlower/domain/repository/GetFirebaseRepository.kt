@@ -7,12 +7,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface GetFirebaseRepository {
     suspend fun loadApp(): Flow<ResultWrapper<Unit>>
-    suspend fun locker(): Flow<List<FlowerDetail>>
-    suspend fun searchWords(): Flow<List<String>>
+    fun locker(): Flow<List<FlowerDetail>>
+    fun searchWords(): Flow<List<String>>
     suspend fun getSearchWords(): Flow<ResultWrapper<List<String>>>
     fun getUser(): Flow<FirebaseUser?>
     suspend fun setLocker(flower: FlowerDetail): Flow<ResultWrapper<Unit>>
+    suspend fun removeLocker(dataNo: Int): Flow<ResultWrapper<Unit>>
     suspend fun getLocker(): Flow<ResultWrapper<List<FlowerDetail>>>
-    suspend fun checkIsSaved(dataNo: Int): Flow<Boolean>
+    fun checkIsSaved(dataNo: Int): Flow<Boolean>
 
 }

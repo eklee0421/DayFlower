@@ -1,5 +1,6 @@
 package com.nyangzzi.dayFlower.presentation.base.component
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -45,6 +48,7 @@ import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.presentation.base.util.loadingShimmerEffect
+import com.nyangzzi.dayFlower.presentation.base.util.noRippleClickable
 import com.nyangzzi.dayFlower.presentation.feature.flowerDetail.FlowerDetailScreen
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray11
@@ -52,6 +56,7 @@ import com.nyangzzi.dayFlower.ui.theme.Gray5
 import com.nyangzzi.dayFlower.ui.theme.Gray6
 import com.nyangzzi.dayFlower.ui.theme.Gray9
 import com.nyangzzi.dayFlower.ui.theme.PrimaryAlpha50
+import com.nyangzzi.dayFlower.ui.theme.SystemRed
 import com.nyangzzi.dayFlower.ui.theme.White
 
 @Composable
@@ -60,6 +65,7 @@ fun FlowerCard(
     onRefresh: () -> Unit = {},
     isShowDetail: Boolean = false,
     setShowDetail: (Boolean, Int) -> Unit = { _, _ -> },
+    savedFlower: List<FlowerDetail> = emptyList(),
     cardSize: FlowerCardSize = FlowerCardSize.LARGE
 ) {
 
@@ -72,7 +78,9 @@ fun FlowerCard(
             SuccessContent(
                 flower.data,
                 cardSize = cardSize,
-                showDetail = { setShowDetail(true, flower.data.dataNo ?: -1) })
+                isSaved = savedFlower.any { it.dataNo == flower.data.dataNo },
+                showDetail = { setShowDetail(true, flower.data.dataNo ?: -1) },
+            )
             if (isShowDetail) {
                 FlowerDetailScreen(
                     dataNo = flower.data.dataNo,
@@ -89,13 +97,17 @@ fun FlowerCard(
 
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun SuccessContent(
     flower: FlowerDetail,
     cardSize: FlowerCardSize = FlowerCardSize.LARGE,
-    showDetail: () -> Unit = {}
+    showDetail: () -> Unit = {},
+    isSaved: Boolean = false,
+    onSave: () -> Unit = {}
 ) {
+
 
     Column(
         modifier = Modifier
@@ -104,7 +116,7 @@ private fun SuccessContent(
             .clip(shape = RoundedCornerShape(12.dp))
             .clickable { showDetail() }
     ) {
-        
+
         val imgList = listOfNotNull(
             flower.imgUrl1,
             flower.imgUrl2,
@@ -142,6 +154,24 @@ private fun SuccessContent(
                 pagerState = imgState,
                 activeColor = MaterialTheme.colorScheme.primary,
                 inactiveColor = PrimaryAlpha50
+            )
+
+            Image(
+                painter = painterResource(
+                    id = if (isSaved) R.drawable.ic_empty_heart_outline
+                    else R.drawable.ic_empty_heart
+                ),
+                modifier = Modifier
+                    .padding(12.dp)
+                    .size(cardSize.iconSize)
+                    .align(Alignment.TopEnd)
+                    .noRippleClickable {
+
+                    },
+                colorFilter = if (isSaved) ColorFilter.tint(
+                    SystemRed
+                ) else null,
+                contentDescription = null
             )
         }
 
@@ -304,7 +334,8 @@ fun PreviewSuccessFlowerCard() {
             flowNm = "꽃명",
             fEngNm = "영문",
             fContent = "설명입니다."
-        )
+        ),
+        isSaved = false
     )
 }
 
@@ -325,8 +356,21 @@ enum class FlowerCardSize(
     val imgHeight: Dp,
     val textHeight: Dp,
     val textWidth: Dp,
-    val contentHorizontal: Dp
+    val contentHorizontal: Dp,
+    val iconSize: Dp,
 ) {
-    LARGE(imgHeight = 220.dp, textHeight = 26.dp, textWidth = 100.dp, contentHorizontal = 18.dp),
-    SMALL(imgHeight = 132.dp, textHeight = 16.dp, textWidth = 50.dp, contentHorizontal = 12.dp)
+    LARGE(
+        imgHeight = 220.dp,
+        textHeight = 26.dp,
+        textWidth = 100.dp,
+        contentHorizontal = 18.dp,
+        iconSize = 36.dp
+    ),
+    SMALL(
+        imgHeight = 132.dp,
+        textHeight = 16.dp,
+        textWidth = 50.dp,
+        contentHorizontal = 12.dp,
+        iconSize = 20.dp
+    )
 }

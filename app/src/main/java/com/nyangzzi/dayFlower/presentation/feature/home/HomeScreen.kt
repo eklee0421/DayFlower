@@ -70,6 +70,7 @@ private fun HomeContent(uiState: HomeUiState, onEvent: (HomeEvent) -> Unit) {
             flowerDetail = uiState.flowerDetail,
             onRefresh = { onEvent(HomeEvent.GetDayFlower) },
             isShowDetail = uiState.isShowDetail,
+            savedFlower = uiState.savedFlower,
             setShowDetail = { onEvent(HomeEvent.SetShowDetail(it)) })
     }
 }
@@ -107,11 +108,14 @@ private fun TodayFlower(
     localDate: LocalDate,
     flowerDetail: ResultWrapper<FlowerDetail>,
     onRefresh: () -> Unit,
+    savedFlower: List<FlowerDetail>,
     isShowDetail: Boolean,
     setShowDetail: (Boolean) -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 24.dp),
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
 
@@ -124,6 +128,7 @@ private fun TodayFlower(
         FlowerCard(
             flower = flowerDetail,
             onRefresh = onRefresh,
+            savedFlower = savedFlower,
             isShowDetail = isShowDetail,
             setShowDetail = { it, _ -> setShowDetail(it) })
 

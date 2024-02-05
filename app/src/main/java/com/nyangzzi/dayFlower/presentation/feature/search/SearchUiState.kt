@@ -10,7 +10,8 @@ data class SearchUiState(
     val isShowDetail: Boolean = false,
     val recommendedWords: List<String> = emptyList(),
     val recentName: List<String> = emptyList(),
-    val recentMean: List<String> = emptyList()
+    val recentMean: List<String> = emptyList(),
+    val savedFlower: List<FlowerDetail> = emptyList()
 )
 
 enum class SearchTapType(val type: Int, val title: String) {

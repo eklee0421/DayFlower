@@ -262,7 +262,8 @@ private fun AfterSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit) 
             is ResultWrapper.Loading -> LoadingFlower()
             is ResultWrapper.Success -> SuccessSearchFlower(
                 uiState.flowerList.data,
-                uiState.isShowDetail
+                uiState.isShowDetail,
+                savedFlower = uiState.savedFlower
             ) {
                 onEvent(SearchEvent.SetShowDetail(it))
             }
@@ -277,6 +278,7 @@ private fun AfterSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit) 
 private fun SuccessSearchFlower(
     flower: List<FlowerDetail>,
     isShowDetail: Boolean,
+    savedFlower: List<FlowerDetail>,
     setShowDetail: (Boolean) -> Unit
 ) {
 
@@ -328,6 +330,7 @@ private fun SuccessSearchFlower(
                     FlowerCard(
                         flower = ResultWrapper.Success(item),
                         cardSize = FlowerCardSize.SMALL,
+                        savedFlower = savedFlower,
                         isShowDetail = isShowDetail && item.dataNo == selectedItem,
                         setShowDetail = { isShown, dataNo ->
                             selectedItem = dataNo

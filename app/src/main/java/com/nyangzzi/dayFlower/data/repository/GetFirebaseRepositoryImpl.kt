@@ -27,6 +27,7 @@ class GetFirebaseRepositoryImpl : GetFirebaseRepository {
 
         var searchWords: List<String> = emptyList()
         var lockerFlower: List<FlowerDetail> = emptyList()
+
     }
 
     override suspend fun loadApp(): Flow<ResultWrapper<Unit>> = flow<ResultWrapper<Unit>> {
@@ -49,11 +50,15 @@ class GetFirebaseRepositoryImpl : GetFirebaseRepository {
     }.onStart { emit(ResultWrapper.Loading) }
         .flowOn(Dispatchers.IO)
 
-    override suspend fun locker(): Flow<List<FlowerDetail>> = flow {
-        emit(lockerFlower)
+    override fun locker(): Flow<List<FlowerDetail>> = flow {
+        while (true) {
+            emit(lockerFlower)
+            kotlinx.coroutines.delay(1000)
+        }
+
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun searchWords(): Flow<List<String>> = flow {
+    override fun searchWords(): Flow<List<String>> = flow {
         emit(searchWords)
     }.flowOn(Dispatchers.IO)
 
@@ -108,11 +113,33 @@ class GetFirebaseRepositoryImpl : GetFirebaseRepository {
             awaitClose { channel.close() }
         }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
 
-    override suspend fun getLocker(): Flow<ResultWrapper<List<FlowerDetail>>> =
+    override suspend fun removeLocker(dataNo: Int): Flow<ResultWrapper<Unit>> =
         callbackFlow {
 
             val db = FirebaseFirestore.getInstance()
 
+            auth.currentUser?.uid?.let {
+                db.collection(userKey)   // 작업할 컬렉션
+                    .document(it)
+                    .collection(lockerFlowerKey)
+                    .document(dataNo.toString())
+                    .delete()     // 문서 업데이트
+                    .addOnSuccessListener { result ->
+                        trySend(ResultWrapper.Success(Unit))
+                    }
+                    .addOnFailureListener { exception ->
+                        // 실패할 경우
+                        trySend(ResultWrapper.Error("오류가 발생했습니다"))
+                    }
+            }
+
+            awaitClose { channel.close() }
+        }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
+
+    override suspend fun getLocker(): Flow<ResultWrapper<List<FlowerDetail>>> =
+        callbackFlow {
+
+            val db = FirebaseFirestore.getInstance()
 
             auth.currentUser?.uid?.let {
                 db.collection(userKey)   // 작업할 컬렉션
@@ -141,7 +168,7 @@ class GetFirebaseRepositoryImpl : GetFirebaseRepository {
             awaitClose { channel.close() }
         }.onStart { emit(ResultWrapper.Loading) }.flowOn(Dispatchers.IO)
 
-    override suspend fun checkIsSaved(dataNo: Int): Flow<Boolean> = flow {
+    override fun checkIsSaved(dataNo: Int): Flow<Boolean> = flow {
         emit(
             lockerFlower.any { it.dataNo == dataNo }
         )

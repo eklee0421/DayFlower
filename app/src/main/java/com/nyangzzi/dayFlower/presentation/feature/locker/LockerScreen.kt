@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,12 +59,19 @@ fun LockerScreen() {
             contentDescription = null
         )
 
-        LockerContent(uiState = uiState, onEvent = viewModel::onEvent)
+        LockerContent(
+            uiState = uiState,
+            savedFlower = uiState.savedFlower,
+            onEvent = viewModel::onEvent
+        )
     }
 }
 
 @Composable
-private fun LockerContent(uiState: LockerUiState, onEvent: (LockerEvent) -> Unit) {
+private fun LockerContent(
+    uiState: LockerUiState,
+    savedFlower: List<FlowerDetail>, onEvent: (LockerEvent) -> Unit
+) {
 
     Column(
         modifier = Modifier
@@ -76,7 +84,8 @@ private fun LockerContent(uiState: LockerUiState, onEvent: (LockerEvent) -> Unit
         Top(user = uiState.user)
 
         SavedFlower(
-            flower = uiState.saveFlower,
+            flower = savedFlower,
+            savedFlower = uiState.savedFlower,
             isShowDetail = uiState.isShowDetail,
             setShowDetail = {
                 onEvent(LockerEvent.SetShowDetail(it))
@@ -114,11 +123,13 @@ private fun Top(user: FirebaseUser?) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun SavedFlower(
     flower: List<FlowerDetail>,
+    savedFlower: List<FlowerDetail>,
     isShowDetail: Boolean,
-    setShowDetail: (Boolean) -> Unit
+    setShowDetail: (Boolean) -> Unit,
 ) {
 
     Column(
@@ -155,9 +166,11 @@ private fun SavedFlower(
         var selectedItem by remember { mutableStateOf(-1) }
 
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
+
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(152.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -168,6 +181,7 @@ private fun SavedFlower(
                     FlowerCard(
                         flower = ResultWrapper.Success(item),
                         cardSize = FlowerCardSize.SMALL,
+                        savedFlower = savedFlower,
                         isShowDetail = isShowDetail && item.dataNo == selectedItem,
                         setShowDetail = { isShown, dataNo ->
                             selectedItem = dataNo

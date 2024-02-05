@@ -10,24 +10,50 @@ import javax.inject.Inject
 class UpdateLockerUseCase @Inject constructor(
     private val repository: GetFirebaseRepository,
 ) {
-    suspend operator fun invoke(flower: FlowerDetail): Flow<ResultWrapper<List<FlowerDetail>>> =
+    suspend operator fun invoke(
+        isSaved: Boolean,
+        flower: FlowerDetail
+    ): Flow<ResultWrapper<List<FlowerDetail>>> =
         flow {
-            repository.setLocker(flower).collect { result ->
-                when (result) {
-                    is ResultWrapper.Error -> {
-                        emit(ResultWrapper.Error(result.errorMessage))
-                    }
 
-                    ResultWrapper.Loading -> emit(ResultWrapper.Loading)
-                    ResultWrapper.None -> emit(ResultWrapper.None)
-                    is ResultWrapper.Success -> {
-                        repository.getLocker().collect {
-                            emit(it)
+            if (isSaved) {
+                flower.dataNo?.let {
+                    repository.removeLocker(it).collect { result ->
+                        when (result) {
+                            is ResultWrapper.Error -> {
+                                emit(ResultWrapper.Error(result.errorMessage))
+                            }
+
+                            ResultWrapper.Loading -> emit(ResultWrapper.Loading)
+                            ResultWrapper.None -> emit(ResultWrapper.None)
+                            is ResultWrapper.Success -> {
+                                repository.getLocker().collect {
+                                    emit(it)
+                                }
+                            }
                         }
+
                     }
                 }
+            } else {
+                repository.setLocker(flower).collect { result ->
+                    when (result) {
+                        is ResultWrapper.Error -> {
+                            emit(ResultWrapper.Error(result.errorMessage))
+                        }
 
+                        ResultWrapper.Loading -> emit(ResultWrapper.Loading)
+                        ResultWrapper.None -> emit(ResultWrapper.None)
+                        is ResultWrapper.Success -> {
+                            repository.getLocker().collect {
+                                emit(it)
+                            }
+                        }
+                    }
+
+                }
             }
+
         }
 
 }

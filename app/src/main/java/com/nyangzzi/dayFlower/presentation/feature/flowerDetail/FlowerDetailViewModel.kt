@@ -59,7 +59,10 @@ class FlowerDetailViewModel @Inject constructor(
     }
 
     private suspend fun updateFlower() {
-        updateLockerUseCase((uiState.value.flowerDetail as ResultWrapper.Success<FlowerDetail>).data).collect { result ->
+        updateLockerUseCase(
+            isSaved = uiState.value.isSaved,
+            flower = (uiState.value.flowerDetail as ResultWrapper.Success<FlowerDetail>).data
+        ).collect { result ->
             when (result) {
                 is ResultWrapper.Success -> {
                     checkIsSaved()

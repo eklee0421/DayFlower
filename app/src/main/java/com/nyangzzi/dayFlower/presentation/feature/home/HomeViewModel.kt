@@ -3,6 +3,8 @@ package com.nyangzzi.dayFlower.presentation.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.domain.model.flowerDay.RequestFlowerDay
+import com.nyangzzi.dayFlower.domain.usecase.firebase.CheckIsSavedUseCase
+import com.nyangzzi.dayFlower.domain.usecase.firebase.FirebaseManager
 import com.nyangzzi.dayFlower.domain.usecase.firebase.GetUserUseCase
 import com.nyangzzi.dayFlower.domain.usecase.network.GetFlowerDayUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,21 +20,26 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val dayFlowerUseCase: GetFlowerDayUseCase,
-    private val getUserUseCase: GetUserUseCase
+    private val getUserUseCase: GetUserUseCase,
+    private val checkIsSavedUseCase: CheckIsSavedUseCase,
+    private val firebaseManager: FirebaseManager
 ) : ViewModel() {
 
     private val _user = getUserUseCase()
+    private val _savedFlower = firebaseManager.locker()
 
     private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState: StateFlow<HomeUiState> = combine(_uiState, _user) { state, user ->
-        state.copy(
-            user = user
+    val uiState: StateFlow<HomeUiState> =
+        combine(_uiState, _user, _savedFlower) { state, user, savedFlower ->
+            state.copy(
+                user = user,
+                savedFlower = savedFlower
+            )
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(1000),
+            HomeUiState()
         )
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        HomeUiState()
-    )
 
     init {
         viewModelScope.launch {
@@ -62,4 +69,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private suspend fun checkIsSaved(dataNo: Int) {
+        checkIsSavedUseCase(dataNo).collect {
+
+        }
+    }
 }

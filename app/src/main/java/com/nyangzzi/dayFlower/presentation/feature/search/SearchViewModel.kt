@@ -31,12 +31,20 @@ class SearchViewModel @Inject constructor(
     private val _recentName = recentSearchNameUseCase.recentName
     private val _recentMean = recentSearchMeanUseCase.recentMean
 
+    private val _savedFlower = firebaseManager.locker()
+
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> =
-        combine(_uiState, _recentName, _recentMean) { state, recentName, recentMean ->
+        combine(
+            _uiState,
+            _recentName,
+            _recentMean,
+            _savedFlower
+        ) { state, recentName, recentMean, savedFlower ->
             state.copy(
                 recentName = recentName,
-                recentMean = recentMean
+                recentMean = recentMean,
+                savedFlower = savedFlower
             )
         }.stateIn(
             viewModelScope,
