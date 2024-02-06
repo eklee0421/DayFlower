@@ -56,6 +56,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.nyangzzi.dayFlower.BuildConfig
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.domain.model.common.PLATFORM_KAKAO
 import com.nyangzzi.dayFlower.presentation.base.dialog.LogoutDialog
@@ -352,9 +353,8 @@ private fun AppInfo(onEvent: (ProfileEvent) -> Unit) {
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(32.dp)
             ) {
-                ProfileInfo("버전 정보", "")
-                ProfileInfo("빌드 정보", "")
-
+                ProfileInfo("버전 정보", BuildConfig.VERSION_NAME)
+                ProfileInfo("빌드 정보", BuildConfig.VERSION_CODE.toString())
             }
             ProfileTextBtn("오픈소스 라이선스", textColor = Gray6) {
 
