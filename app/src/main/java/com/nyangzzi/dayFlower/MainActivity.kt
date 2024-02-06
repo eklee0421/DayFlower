@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -29,7 +30,9 @@ class MainActivity : ComponentActivity() {
                 val localFocusManager = LocalFocusManager.current
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize().pointerInput(Unit) {
+                        .fillMaxSize()
+                        .navigationBarsPadding()
+                        .pointerInput(Unit) {
                             detectTapGestures {
                                 localFocusManager.clearFocus()
                             }
