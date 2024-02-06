@@ -56,6 +56,7 @@ fun DeletedBadge(
     text: String,
     style: TextStyle = MaterialTheme.typography.labelSmall,
     background: Color = White,
+    onClick: () -> Unit = {},
     onDeleted: () -> Unit = {}
 ) {
     Row(
@@ -65,6 +66,9 @@ fun DeletedBadge(
             .background(color = background, shape = RoundedCornerShape(32.dp))
             .border(width = 1.dp, color = Gray1, shape = RoundedCornerShape(32.dp))
             .padding(horizontal = 11.dp)
+            .noRippleClickable {
+                onClick()
+            }
     ) {
         Box(modifier = Modifier.height(26.dp), contentAlignment = Alignment.Center) {
             Text(

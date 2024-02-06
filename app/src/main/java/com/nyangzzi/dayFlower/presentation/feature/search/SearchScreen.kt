@@ -174,7 +174,11 @@ private fun BeforeSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit)
                     itemsIndexed(item) { _, item ->
                         DeletedBadge(
                             text = item,
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.labelSmall,
+                            onClick = {
+                                onEvent(SearchEvent.UpdateSearchWord(item))
+                                onEvent(SearchEvent.SearchFlowerList)
+                            }
                         ) {
                             onEvent(SearchEvent.RemoveRecentWord(item = item))
                         }
