@@ -79,11 +79,11 @@ fun FlowerDetailScreen(
 
     Dialog(
         onDismissRequest = {
-            //onDismiss()
-            //viewModel.onEvent(FlowerDetailOnEvent.OnDismiss)
+            onDismiss()
+            viewModel.onEvent(FlowerDetailOnEvent.OnDismiss)
         },
         properties = DialogProperties(
-            dismissOnBackPress = false,
+            dismissOnBackPress = true,
             dismissOnClickOutside = false,
             usePlatformDefaultWidth = false
         )
