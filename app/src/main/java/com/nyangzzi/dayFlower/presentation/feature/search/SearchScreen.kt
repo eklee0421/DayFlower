@@ -58,6 +58,7 @@ import com.nyangzzi.dayFlower.presentation.base.component.SearchTextField
 import com.nyangzzi.dayFlower.ui.theme.Gray11
 import com.nyangzzi.dayFlower.ui.theme.Gray5
 import com.nyangzzi.dayFlower.ui.theme.Primary
+import com.nyangzzi.dayFlower.ui.theme.Secondary
 import com.nyangzzi.dayFlower.ui.theme.White
 
 @Composable
@@ -265,8 +266,10 @@ private fun AfterSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit) 
 
             is ResultWrapper.Loading -> LoadingFlower()
             is ResultWrapper.Success -> SuccessSearchFlower(
+                uiState = uiState,
                 uiState.flowerList.data,
                 uiState.isShowDetail,
+                onEvent = onEvent,
                 savedFlower = uiState.savedFlower
             ) {
                 onEvent(SearchEvent.SetShowDetail(it))
@@ -278,11 +281,14 @@ private fun AfterSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit) 
 
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SuccessSearchFlower(
+    uiState: SearchUiState,
     flower: List<FlowerDetail>,
     isShowDetail: Boolean,
     savedFlower: List<FlowerDetail>,
+    onEvent: (SearchEvent) -> Unit,
     setShowDetail: (Boolean) -> Unit
 ) {
 
@@ -301,19 +307,66 @@ private fun SuccessSearchFlower(
             )
         } else {
             Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_error_info),
-                    contentDescription = null
+                Text(
+                    text = "검색된 꽃이 없습니다.",
+                    color = Gray11,
+                    style = MaterialTheme.typography.titleSmall
                 )
                 Text(
-                    text = "검색된 결과가 없습니다",
+                    text = "다른 검색어를 입력해주세요.",
                     color = Gray5,
                     style = MaterialTheme.typography.bodyMedium
                 )
+
+                if (uiState.selectedType == SearchTapType.MEAN && uiState.recommendedWords.isNotEmpty()) {
+
+                    Column(
+                        modifier = Modifier.padding(top = 30.dp)
+                    ) {
+
+                        Row {
+                            Text(
+                                "추천 검색어",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = Secondary
+                            )
+                            Text(
+                                "로 찾아볼까요?",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = Gray11
+                            )
+                        }
+
+                        FlowRow(
+                            modifier = Modifier.padding(top = 2.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+
+                            uiState.recommendedWords.map { item ->
+
+                                Box(modifier = Modifier.padding(top = 14.dp)) {
+                                    Badge(
+                                        text = item, style = MaterialTheme.typography.labelSmall,
+                                        background = Color(0xFFEFF1FF)
+                                    ) {
+                                        onEvent(SearchEvent.UpdateSearchWord(item))
+                                        onEvent(SearchEvent.SearchFlowerList)
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+
 
             }
         }
