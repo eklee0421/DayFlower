@@ -3,6 +3,7 @@ package com.nyangzzi.dayFlower
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
+                        .background(color = White)
                         .navigationBarsPadding()
                         .pointerInput(Unit) {
                             detectTapGestures {
