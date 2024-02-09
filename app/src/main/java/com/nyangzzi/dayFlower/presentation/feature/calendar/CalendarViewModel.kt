@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.domain.model.flowerMonth.RequestFlowerMonth
 import com.nyangzzi.dayFlower.domain.usecase.network.GetFlowerMonthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -23,6 +24,8 @@ class CalendarViewModel @Inject constructor(
             getFlowerMonth()
         }
     }
+
+    private var job: Job? = null
 
     fun onEvent(event: CalendarOnEvent) {
         viewModelScope.launch {
@@ -64,13 +67,16 @@ class CalendarViewModel @Inject constructor(
     }
 
     private suspend fun getFlowerMonth() {
-        flowerMonthUseCase(
-            requestFlowerMonth = RequestFlowerMonth(
-                fMonth = _uiState.value.localDate.month.value
-            )
-        ).collect { result ->
-            _uiState.update {
-                it.copy(flowerMonth = result)
+        if (job?.isActive == true) job?.cancel()
+        job = viewModelScope.launch {
+            flowerMonthUseCase(
+                requestFlowerMonth = RequestFlowerMonth(
+                    fMonth = _uiState.value.localDate.month.value
+                )
+            ).collect { result ->
+                _uiState.update {
+                    it.copy(flowerMonth = result)
+                }
             }
         }
     }

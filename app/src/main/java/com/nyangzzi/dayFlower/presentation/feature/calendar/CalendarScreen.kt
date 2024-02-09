@@ -3,6 +3,7 @@ package com.nyangzzi.dayFlower.presentation.feature.calendar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -63,6 +65,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
+import kotlin.math.abs
 
 @Composable
 fun CalendarScreen(viewModel: CalendarViewModel = hiltViewModel()) {
@@ -119,7 +122,50 @@ private fun CalendarContent(
                 onNextMonth = { onEvent(CalendarOnEvent.OnNextMonth) },
                 setDatePicker = { onEvent(CalendarOnEvent.SetDatePickerDialog(true)) })
 
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+            var offsetX by remember { mutableStateOf(0f) }
+
+            var direction by remember { mutableStateOf(-1) }
+
+            Column(modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .pointerInput(Unit) {
+                    detectDragGestures(
+                        onDrag = { change, dragAmount ->
+                            change.consume()
+                            val (x, y) = dragAmount
+                            if (abs(x) > abs(y)) {
+                                when {
+                                    x > 0 -> {    //right
+                                        offsetX += x
+                                        direction = 0
+                                    }
+
+                                    x < 0 -> {  // left
+                                        offsetX += x
+                                        direction = 1
+                                    }
+                                }
+                            }
+                        },
+                        onDragEnd = {
+                            when (direction) {
+                                0 -> {
+                                    if (offsetX > 500) {
+                                        onEvent(CalendarOnEvent.OnPrevMonth)
+                                    }
+                                    offsetX = 0f
+                                }
+
+                                1 -> {
+                                    if (offsetX < -500) {
+                                        onEvent(CalendarOnEvent.OnNextMonth)
+                                    }
+                                    offsetX = 0f
+                                }
+                            }
+                        }
+                    )
+                }) {
 
                 DayOfWeek()
 
