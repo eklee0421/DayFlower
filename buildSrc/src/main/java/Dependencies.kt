@@ -16,6 +16,9 @@ object Dependencies {
     const val composeMaterial3 = "androidx.compose.material3:material3"
     const val navigationCompose =
         "androidx.navigation:navigation-compose:${Versions.NAVIGATION_COMPOSE}"
+    const val composeBom = "androidx.compose:compose-bom:${Versions.COMPOSE_BOM}"
+    const val composeFoundation =
+        "androidx.compose.foundation:foundation:${Versions.COMPOSE_FOUNDATION}"
 
     //hilt
     const val hiltAndroid = "com.google.dagger:hilt-android:${Versions.HILT_ANDROID}"
@@ -49,4 +52,24 @@ object Dependencies {
         "com.google.accompanist:accompanist-pager-indicators:${Versions.ACCOMPANIST_PAGER}"
 
     const val datastore = "androidx.datastore:datastore-preferences:${Versions.DATASTORE}"
+
+    //login
+    const val kakaoSdk = "com.kakao.sdk:v2-user:${Versions.KAKAO_SDK}"
+    const val naverOauth = "com.navercorp.nid:oauth:${Versions.NAVER_OAUTH}"
+
+    //firebase
+    const val firebaseBom = "com.google.firebase:firebase-bom:${Versions.FIREBASE_BOM}"
+    const val firebaseAnalytics = "com.google.firebase:firebase-analytics"
+    const val firebaseaAthKtx = "com.google.firebase:firebase-auth-ktx"
+    const val firebaseAuth = "com.google.firebase:firebase-auth:${Versions.FIREBASE_AUTH}"
+    const val firebaseDatabase =
+        "com.google.firebase:firebase-database:${Versions.FIREBASE_DATABASE}"
+    const val firestoreKtx = "com.google.firebase:firebase-firestore-ktx:${Versions.FIREBASE_KTS}"
+
+    const val junit = "junit:junit:${Versions.JUNIT}"
+    const val testExtJunit = "androidx.test.ext:junit:${Versions.TEST_EXT_JUNIT}"
+    const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.ESPRESSO_CORE}"
+    const val uiTestJunit = "androidx.compose.ui:ui-test-junit4"
+    const val uiTooling = "androidx.compose.ui:ui-tooling"
+    const val uiTestManifest = "androidx.compose.ui:ui-test-manifest"
 }

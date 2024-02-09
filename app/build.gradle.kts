@@ -88,7 +88,7 @@ dependencies {
     implementation(Dependencies.coreKtx)
     implementation(Dependencies.lifecycleRuntimeKtx)
     implementation(Dependencies.lifecycleRuntimeCompose)
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    implementation(platform(Dependencies.composeBom))
 
     //compose
     implementation(Dependencies.composeActivity)
@@ -97,11 +97,10 @@ dependencies {
     implementation(Dependencies.composeUiToolingPreview)
     implementation(Dependencies.composeMaterial3)
     implementation(Dependencies.navigationCompose)
-    implementation("androidx.compose.foundation:foundation:1.3.0")
+    implementation(Dependencies.composeFoundation)
 
     //hilt
     implementation(Dependencies.hiltAndroid)
-    implementation("com.google.firebase:firebase-auth:22.3.1")
     kapt(Dependencies.hiltAndroidComplier)
     implementation(Dependencies.hiltNavigationCompose)
 
@@ -125,25 +124,26 @@ dependencies {
     implementation(Dependencies.accompanistPager)
     implementation(Dependencies.accompanistPagerIndicators)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    testImplementation(Dependencies.junit)
+    androidTestImplementation(Dependencies.testExtJunit)
+    androidTestImplementation(Dependencies.espressoCore)
+    androidTestImplementation(platform(Dependencies.composeBom))
+    androidTestImplementation(Dependencies.uiTestJunit)
 
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    debugImplementation(Dependencies.uiTooling)
+    debugImplementation(Dependencies.uiTestManifest)
 
     //login
-    implementation("com.kakao.sdk:v2-user:2.19.0") // 카카오 로그인
-    implementation("com.navercorp.nid:oauth:5.9.0") //네이버 로그인
+    implementation(Dependencies.kakaoSdk) // 카카오 로그인
+    implementation(Dependencies.naverOauth) //네이버 로그인
 
     //firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-database:20.3.0")
-    implementation("com.google.firebase:firebase-firestore-ktx:24.10.1")
+    implementation(platform(Dependencies.firebaseBom))
+    implementation(Dependencies.firebaseAnalytics)
+    implementation(Dependencies.firebaseaAthKtx)
+    implementation(Dependencies.firebaseAuth)
+    implementation(Dependencies.firebaseDatabase)
+    implementation(Dependencies.firestoreKtx)
 
     //datastore
     implementation(Dependencies.datastore)
