@@ -146,7 +146,8 @@ class SearchViewModel @Inject constructor(
     private fun updateSelectedType(selectedType: SearchTapType) {
         _uiState.update {
             it.copy(
-                selectedType = selectedType
+                selectedType = selectedType,
+                searchWord = ""
             )
         }
     }
