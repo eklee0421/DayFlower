@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.domain.model.flowerDay.RequestFlowerDay
+import com.nyangzzi.dayFlower.domain.usecase.datastore.RecentViewFlowerUseCase
 import com.nyangzzi.dayFlower.domain.usecase.firebase.CheckIsSavedUseCase
 import com.nyangzzi.dayFlower.domain.usecase.firebase.FirebaseManager
 import com.nyangzzi.dayFlower.domain.usecase.firebase.GetUserUseCase
@@ -26,18 +27,26 @@ class HomeViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val checkIsSavedUseCase: CheckIsSavedUseCase,
     private val firebaseManager: FirebaseManager,
-    private val updateLockerUseCase: UpdateLockerUseCase
+    private val updateLockerUseCase: UpdateLockerUseCase,
+    private val recentViewFlowerUseCase: RecentViewFlowerUseCase
 ) : ViewModel() {
 
     private val _user = getUserUseCase()
     private val _savedFlower = firebaseManager.locker()
+    private val _recentViewFlower = recentViewFlowerUseCase.recentViewFlower
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> =
-        combine(_uiState, _user, _savedFlower) { state, user, savedFlower ->
+        combine(
+            _uiState,
+            _user,
+            _savedFlower,
+            _recentViewFlower
+        ) { state, user, savedFlower, recentViewFlower ->
             state.copy(
                 user = user,
-                savedFlower = savedFlower
+                savedFlower = savedFlower,
+                recentViewFlower = recentViewFlower
             )
         }.stateIn(
             viewModelScope,
@@ -55,7 +64,13 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             when (event) {
                 is HomeEvent.GetDayFlower -> getDayFlower()
-                is HomeEvent.SetShowDetail -> _uiState.update { it.copy(isShowDetail = event.isShown) }
+                is HomeEvent.SetShowDetail -> _uiState.update {
+                    it.copy(
+                        isShowDetail = event.isShown,
+                        isShowDataNo = event.dataNo
+                    )
+                }
+
                 is HomeEvent.UpdateLocker -> updateFlower(
                     isSaved = event.isSaved,
                     flower = event.flowerDetail
@@ -82,6 +97,7 @@ class HomeViewModel @Inject constructor(
 
         }
     }
+
 
     private suspend fun updateFlower(isSaved: Boolean, flower: FlowerDetail) {
         updateLockerUseCase(

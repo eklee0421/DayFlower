@@ -10,5 +10,7 @@ data class HomeUiState(
     val localDate: LocalDate = LocalDate.now(),
     val isShowDetail: Boolean = false,
     val user: FirebaseUser? = null,
-    val savedFlower: List<FlowerDetail> = emptyList()
+    val savedFlower: List<FlowerDetail> = emptyList(),
+    val recentViewFlower: List<FlowerDetail> = emptyList(),
+    val isShowDataNo: Int? = null
 )

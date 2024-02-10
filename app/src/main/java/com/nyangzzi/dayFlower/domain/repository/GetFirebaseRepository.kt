@@ -15,5 +15,4 @@ interface GetFirebaseRepository {
     suspend fun removeLocker(dataNo: Int): Flow<ResultWrapper<Unit>>
     suspend fun getLocker(): Flow<ResultWrapper<List<FlowerDetail>>>
     fun checkIsSaved(dataNo: Int): Flow<Boolean>
-
 }
