@@ -5,6 +5,7 @@ sealed class ProfileEvent {
     object Logout : ProfileEvent()
     object RemoveUser : ProfileEvent()
     object ClearToastMsg : ProfileEvent()
+    object OpenSourceLicense : ProfileEvent()
     data class SetShowRemoveDialog(val isShown: Boolean) : ProfileEvent()
     data class SetShowLogoutDialog(val isShown: Boolean) : ProfileEvent()
 }

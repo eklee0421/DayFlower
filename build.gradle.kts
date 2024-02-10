@@ -1,6 +1,7 @@
 buildscript {
     dependencies {
         classpath(Dependencies.gmsGoogleServices)
+        classpath(Dependencies.gmsOssLicensesPlugin)
     }
 }
 // Top-level build file where you can add configuration options common to all sub-projects/modules.

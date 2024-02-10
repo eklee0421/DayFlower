@@ -3,9 +3,11 @@ package com.nyangzzi.dayFlower.data.di
 import android.content.Context
 import com.nyangzzi.dayFlower.data.repository.GetFirebaseRepositoryImpl
 import com.nyangzzi.dayFlower.data.repository.LoginRepositoryImpl
+import com.nyangzzi.dayFlower.data.repository.OpenSourceLicenseRepositoryImpl
 import com.nyangzzi.dayFlower.data.repository.SearchFlowerRepositoryImpl
 import com.nyangzzi.dayFlower.domain.repository.GetFirebaseRepository
 import com.nyangzzi.dayFlower.domain.repository.LoginRepository
+import com.nyangzzi.dayFlower.domain.repository.OpenSourceLicenseRepository
 import com.nyangzzi.dayFlower.domain.repository.SearchFlowerRepository
 import dagger.Module
 import dagger.Provides
@@ -38,6 +40,14 @@ class RepositoryProvideModule {
     fun bindGetFirebaseRepository(
     ): GetFirebaseRepository {
         return GetFirebaseRepositoryImpl()
+    }
+
+    @Singleton
+    @Provides
+    fun bindOpenSourceLicense(
+        @ApplicationContext context: Context
+    ): OpenSourceLicenseRepository {
+        return OpenSourceLicenseRepositoryImpl(context)
     }
 
 }

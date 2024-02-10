@@ -10,5 +10,5 @@ data class ProfileUiState(
     val isLogoutSuccess: Boolean = false,
 
     val isRemoveDialog: Boolean = false,
-    val isLogoutDialog: Boolean = false
+    val isLogoutDialog: Boolean = false,
 )

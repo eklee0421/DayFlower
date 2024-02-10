@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
 import com.nyangzzi.dayFlower.domain.model.common.PLATFORM_KAKAO
 import com.nyangzzi.dayFlower.domain.model.common.PLATFORM_NAVER
+import com.nyangzzi.dayFlower.domain.usecase.base.OpenSourceLicenseUseCase
 import com.nyangzzi.dayFlower.domain.usecase.firebase.GetUserUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.firebase.LogoutFirebaseUserUseCase
 import com.nyangzzi.dayFlower.domain.usecase.login.firebase.RemoveFirebaseUserUseCase
@@ -34,7 +35,8 @@ class ProfileViewModel @Inject constructor(
     private val kakaoLogoutUseCase: KakaoLogoutUseCase,
     private val removeFirebaseUserUseCase: RemoveFirebaseUserUseCase,
     private val kakaoRemoveUseCase: KakaoRemoveUseCase,
-    private val naverRemoveUseCase: NaverRemoveUseCase
+    private val naverRemoveUseCase: NaverRemoveUseCase,
+    private val openSourceLicenseUseCase: OpenSourceLicenseUseCase
 ) : ViewModel() {
 
     private var _user = getUserUseCase()
@@ -62,6 +64,7 @@ class ProfileViewModel @Inject constructor(
                 is ProfileEvent.RemoveUser -> removeUser()
                 is ProfileEvent.SetShowLogoutDialog -> _uiState.update { it.copy(isLogoutDialog = event.isShown) }
                 is ProfileEvent.SetShowRemoveDialog -> _uiState.update { it.copy(isRemoveDialog = event.isShown) }
+                ProfileEvent.OpenSourceLicense -> openSourceLicenseUseCase()
             }
         }
     }

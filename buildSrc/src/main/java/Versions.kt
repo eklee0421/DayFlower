@@ -49,4 +49,6 @@ object Versions {
     const val ESPRESSO_CORE = "3.5.1"
 
     const val GMS_GOOGLE_SERVICE = "4.4.0"
+    const val GMS_OSS_LICENSES_PLUGIN = "0.10.5"
+    const val GMS_PLAY_SERVICES_OSS_LICENSES = "17.0.0"
 }

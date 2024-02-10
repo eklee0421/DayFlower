@@ -4,6 +4,7 @@ plugins {
     kotlin(Plugins.KAPT)
     id(Plugins.HILT_ANDROID)
     id(Plugins.GMS_GOOGLE_SERVICE)
+    id(Plugins.GMS_OSS_LICENSES_PLUGIN)
 }
 
 android {
@@ -147,6 +148,8 @@ dependencies {
 
     //datastore
     implementation(Dependencies.datastore)
+
+    implementation(Dependencies.gmsPlayServicesOssLicenses)
 }
 
 kapt {

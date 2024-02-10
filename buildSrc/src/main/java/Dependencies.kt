@@ -74,4 +74,8 @@ object Dependencies {
     const val uiTestManifest = "androidx.compose.ui:ui-test-manifest"
 
     const val gmsGoogleServices = "com.google.gms:google-services:${Versions.GMS_GOOGLE_SERVICE}"
+    const val gmsOssLicensesPlugin =
+        "com.google.android.gms:oss-licenses-plugin:${Versions.GMS_OSS_LICENSES_PLUGIN}"
+    const val gmsPlayServicesOssLicenses =
+        "com.google.android.gms:play-services-oss-licenses:${Versions.GMS_PLAY_SERVICES_OSS_LICENSES}"
 }

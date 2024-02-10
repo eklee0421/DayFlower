@@ -45,12 +45,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -62,6 +64,7 @@ import com.nyangzzi.dayFlower.domain.model.common.PLATFORM_KAKAO
 import com.nyangzzi.dayFlower.presentation.base.dialog.LogoutDialog
 import com.nyangzzi.dayFlower.presentation.base.dialog.RemoveUserDialog
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
+import com.nyangzzi.dayFlower.presentation.base.util.noRippleClickable
 import com.nyangzzi.dayFlower.presentation.navigation.Screens
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray11
@@ -146,32 +149,26 @@ private fun User(
     var editName by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
 
-    Column {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "${name}님",
-                style = MaterialTheme.typography.titleSmall,
-                color = Gray11
-            )
-        }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+        Text(
+            text = "${name}님",
+            style = MaterialTheme.typography.titleSmall,
+            color = Gray11,
+            modifier = Modifier.height(56.dp),
+            textAlign = TextAlign.Center
+        )
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(vertical = 24.dp),
-            contentAlignment = Alignment.Center
         ) {
-
             if (urlImg.isNullOrEmpty()) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_none_profile_img),
                     contentDescription = null,
                     modifier = Modifier
+                        .align(Alignment.Center)
                         .size(100.dp)
                 )
 
@@ -184,6 +181,7 @@ private fun User(
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
+                        .align(Alignment.Center)
                         .size(100.dp)
                         .clip(CircleShape)
                         .border(width = 1.dp, color = Color(0xFFAFB1B6), shape = CircleShape),
@@ -191,10 +189,22 @@ private fun User(
                 )
             }
 
+            Image(
+                painterResource(id = R.drawable.ic_edit_profile_img),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(32.dp)
+                    .align(Alignment.BottomEnd)
+                    .noRippleClickable {
+
+                    }
+                    .shadow(10.dp, shape = CircleShape)
+            )
         }
 
         Text(
             "프로필 설정",
+            modifier = Modifier.fillMaxWidth(),
             style = MaterialTheme.typography.labelMedium,
             color = Gray11
         )
@@ -345,6 +355,7 @@ private fun User(
 
 @Composable
 private fun AppInfo(onEvent: (ProfileEvent) -> Unit) {
+
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         ProfileBtn(text = "앱 정보")
         {
@@ -357,7 +368,7 @@ private fun AppInfo(onEvent: (ProfileEvent) -> Unit) {
                 ProfileInfo("빌드 정보", BuildConfig.VERSION_CODE.toString())
             }
             ProfileTextBtn("오픈소스 라이선스", textColor = Gray6) {
-
+                onEvent(ProfileEvent.OpenSourceLicense)
             }
         }
 
