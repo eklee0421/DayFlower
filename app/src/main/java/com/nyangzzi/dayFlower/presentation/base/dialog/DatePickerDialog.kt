@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.nyangzzi.dayFlower.presentation.base.component.NumberPicker
+import com.nyangzzi.dayFlower.presentation.base.util.noRippleClickable
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray8
 import com.nyangzzi.dayFlower.ui.theme.White
@@ -57,7 +57,11 @@ fun DatePickerDialog(
 @Composable
 private fun DateView(year: Int, month: Int, onConfirm: (Int, Int) -> Unit, onDismiss: () -> Unit) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .noRippleClickable {
+                onDismiss()
+            },
         contentAlignment = Alignment.BottomCenter
     ) {
 
@@ -72,7 +76,11 @@ private fun DateView(year: Int, month: Int, onConfirm: (Int, Int) -> Unit, onDis
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                .background(
+                    color = White,
+                    shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                )
+                .noRippleClickable { }
                 .padding(26.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
