@@ -3,7 +3,7 @@ plugins {
     id(Plugins.KOTLIN_ANDROID)
     kotlin(Plugins.KAPT)
     id(Plugins.HILT_ANDROID)
-    id("com.google.gms.google-services")
+    id(Plugins.GMS_GOOGLE_SERVICE)
 }
 
 android {

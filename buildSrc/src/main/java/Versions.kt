@@ -47,4 +47,6 @@ object Versions {
     const val JUNIT = "4.13.2"
     const val TEST_EXT_JUNIT = "1.1.5"
     const val ESPRESSO_CORE = "3.5.1"
+
+    const val GMS_GOOGLE_SERVICE = "4.4.0"
 }

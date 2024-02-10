@@ -72,4 +72,6 @@ object Dependencies {
     const val uiTestJunit = "androidx.compose.ui:ui-test-junit4"
     const val uiTooling = "androidx.compose.ui:ui-tooling"
     const val uiTestManifest = "androidx.compose.ui:ui-test-manifest"
+
+    const val gmsGoogleServices = "com.google.gms:google-services:${Versions.GMS_GOOGLE_SERVICE}"
 }
