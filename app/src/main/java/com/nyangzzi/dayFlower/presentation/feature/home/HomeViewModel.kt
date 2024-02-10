@@ -2,10 +2,13 @@ package com.nyangzzi.dayFlower.presentation.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nyangzzi.dayFlower.data.network.ResultWrapper
+import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.domain.model.flowerDay.RequestFlowerDay
 import com.nyangzzi.dayFlower.domain.usecase.firebase.CheckIsSavedUseCase
 import com.nyangzzi.dayFlower.domain.usecase.firebase.FirebaseManager
 import com.nyangzzi.dayFlower.domain.usecase.firebase.GetUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.firebase.UpdateLockerUseCase
 import com.nyangzzi.dayFlower.domain.usecase.network.GetFlowerDayUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +25,8 @@ class HomeViewModel @Inject constructor(
     private val dayFlowerUseCase: GetFlowerDayUseCase,
     private val getUserUseCase: GetUserUseCase,
     private val checkIsSavedUseCase: CheckIsSavedUseCase,
-    private val firebaseManager: FirebaseManager
+    private val firebaseManager: FirebaseManager,
+    private val updateLockerUseCase: UpdateLockerUseCase
 ) : ViewModel() {
 
     private val _user = getUserUseCase()
@@ -52,6 +56,10 @@ class HomeViewModel @Inject constructor(
             when (event) {
                 is HomeEvent.GetDayFlower -> getDayFlower()
                 is HomeEvent.SetShowDetail -> _uiState.update { it.copy(isShowDetail = event.isShown) }
+                is HomeEvent.UpdateLocker -> updateFlower(
+                    isSaved = event.isSaved,
+                    flower = event.flowerDetail
+                )
             }
         }
     }
@@ -71,6 +79,22 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun checkIsSaved(dataNo: Int) {
         checkIsSavedUseCase(dataNo).collect {
+
+        }
+    }
+
+    private suspend fun updateFlower(isSaved: Boolean, flower: FlowerDetail) {
+        updateLockerUseCase(
+            isSaved = isSaved,
+            flower = flower
+        ).collect { result ->
+            when (result) {
+                is ResultWrapper.Success -> {
+
+                }
+
+                else -> {}
+            }
 
         }
     }

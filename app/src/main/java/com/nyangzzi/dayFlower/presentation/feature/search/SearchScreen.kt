@@ -80,8 +80,7 @@ private fun SearchContent(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit
     Column(
         modifier = Modifier
             .statusBarsPadding()
-            .fillMaxSize()
-            .padding(bottom = 24.dp),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
 
@@ -101,6 +100,7 @@ private fun BeforeSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit)
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp)
+            .padding(bottom = 24.dp)
     ) {
         Row(
             modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
@@ -270,10 +270,14 @@ private fun AfterSearch(uiState: SearchUiState, onEvent: (SearchEvent) -> Unit) 
                 uiState.flowerList.data,
                 uiState.isShowDetail,
                 onEvent = onEvent,
-                savedFlower = uiState.savedFlower
-            ) {
-                onEvent(SearchEvent.SetShowDetail(it))
-            }
+                savedFlower = uiState.savedFlower,
+                setShowDetail = {
+                    onEvent(SearchEvent.SetShowDetail(it))
+                },
+                onSave = { isSaved, flower ->
+                    onEvent(SearchEvent.UpdateLocker(isSaved, flower))
+                }
+            )
 
             else -> {}
         }
@@ -289,7 +293,8 @@ private fun SuccessSearchFlower(
     isShowDetail: Boolean,
     savedFlower: List<FlowerDetail>,
     onEvent: (SearchEvent) -> Unit,
-    setShowDetail: (Boolean) -> Unit
+    setShowDetail: (Boolean) -> Unit,
+    onSave: (Boolean, FlowerDetail) -> Unit
 ) {
 
     Column(
@@ -392,7 +397,8 @@ private fun SuccessSearchFlower(
                         setShowDetail = { isShown, dataNo ->
                             selectedItem = dataNo
                             setShowDetail(isShown)
-                        }
+                        },
+                        onSave = onSave
                     )
                 }
             }

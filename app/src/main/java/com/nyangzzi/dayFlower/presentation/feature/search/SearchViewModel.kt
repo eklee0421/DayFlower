@@ -3,10 +3,12 @@ package com.nyangzzi.dayFlower.presentation.feature.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nyangzzi.dayFlower.data.network.ResultWrapper
+import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.domain.model.flowerList.RequestFlowerList
 import com.nyangzzi.dayFlower.domain.usecase.datastore.RecentSearchMeanUseCase
 import com.nyangzzi.dayFlower.domain.usecase.datastore.RecentSearchNameUseCase
 import com.nyangzzi.dayFlower.domain.usecase.firebase.FirebaseManager
+import com.nyangzzi.dayFlower.domain.usecase.firebase.UpdateLockerUseCase
 import com.nyangzzi.dayFlower.domain.usecase.network.GetFlowerListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -25,7 +27,8 @@ class SearchViewModel @Inject constructor(
     private val flowerListUseCase: GetFlowerListUseCase,
     private val recentSearchNameUseCase: RecentSearchNameUseCase,
     private val recentSearchMeanUseCase: RecentSearchMeanUseCase,
-    private val firebaseManager: FirebaseManager
+    private val firebaseManager: FirebaseManager,
+    private val updateLockerUseCase: UpdateLockerUseCase,
 ) : ViewModel() {
 
     private val _recentName = recentSearchNameUseCase.recentName
@@ -80,7 +83,10 @@ class SearchViewModel @Inject constructor(
                     all = event.all
                 )
 
-                else -> {}
+                is SearchEvent.UpdateLocker -> updateFlower(
+                    isSaved = event.isSaved,
+                    flower = event.flowerDetail
+                )
             }
         }
     }
@@ -175,6 +181,22 @@ class SearchViewModel @Inject constructor(
                     _uiState.update { it.copy(flowerList = result) }
                 }
             }
+        }
+    }
+
+    private suspend fun updateFlower(isSaved: Boolean, flower: FlowerDetail) {
+        updateLockerUseCase(
+            isSaved = isSaved,
+            flower = flower
+        ).collect { result ->
+            when (result) {
+                is ResultWrapper.Success -> {
+
+                }
+
+                else -> {}
+            }
+
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -36,7 +37,7 @@ import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.presentation.base.component.FlowerCard
 import com.nyangzzi.dayFlower.presentation.base.component.FlowerCardSize
 import com.nyangzzi.dayFlower.ui.theme.Gray11
-import com.nyangzzi.dayFlower.ui.theme.Gray5
+import com.nyangzzi.dayFlower.ui.theme.Gray6
 import com.nyangzzi.dayFlower.ui.theme.Gray7
 import com.nyangzzi.dayFlower.ui.theme.White
 
@@ -89,6 +90,9 @@ private fun LockerContent(
             isShowDetail = uiState.isShowDetail,
             setShowDetail = {
                 onEvent(LockerEvent.SetShowDetail(it))
+            },
+            onSave = { isSaved, flower ->
+                onEvent(LockerEvent.UpdateLocker(isSaved, flower))
             }
         )
     }
@@ -130,6 +134,7 @@ private fun SavedFlower(
     savedFlower: List<FlowerDetail>,
     isShowDetail: Boolean,
     setShowDetail: (Boolean) -> Unit,
+    onSave: (Boolean, FlowerDetail) -> Unit
 ) {
 
     Column(
@@ -147,16 +152,17 @@ private fun SavedFlower(
         } else {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_error_info),
+                    painter = painterResource(id = R.drawable.ic_empty_heart_outline),
+                    modifier = Modifier.size(28.dp),
                     contentDescription = null
                 )
                 Text(
                     text = "저장된 꽃이 없습니다",
-                    color = Gray5,
+                    color = Gray6,
                     style = MaterialTheme.typography.bodyMedium
                 )
 
@@ -186,7 +192,8 @@ private fun SavedFlower(
                         setShowDetail = { isShown, dataNo ->
                             selectedItem = dataNo
                             setShowDetail(isShown)
-                        }
+                        },
+                        onSave = onSave
                     )
                 }
             }

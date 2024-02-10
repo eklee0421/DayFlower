@@ -71,7 +71,8 @@ private fun HomeContent(uiState: HomeUiState, onEvent: (HomeEvent) -> Unit) {
             onRefresh = { onEvent(HomeEvent.GetDayFlower) },
             isShowDetail = uiState.isShowDetail,
             savedFlower = uiState.savedFlower,
-            setShowDetail = { onEvent(HomeEvent.SetShowDetail(it)) })
+            setShowDetail = { onEvent(HomeEvent.SetShowDetail(it)) },
+            updateLocker = { isSaved, flower -> onEvent(HomeEvent.UpdateLocker(isSaved, flower)) })
     }
 }
 
@@ -110,7 +111,8 @@ private fun TodayFlower(
     onRefresh: () -> Unit,
     savedFlower: List<FlowerDetail>,
     isShowDetail: Boolean,
-    setShowDetail: (Boolean) -> Unit
+    setShowDetail: (Boolean) -> Unit,
+    updateLocker: (Boolean, FlowerDetail) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -130,7 +132,9 @@ private fun TodayFlower(
             onRefresh = onRefresh,
             savedFlower = savedFlower,
             isShowDetail = isShowDetail,
-            setShowDetail = { it, _ -> setShowDetail(it) })
+            setShowDetail = { it, _ -> setShowDetail(it) },
+            onSave = updateLocker
+        )
 
 
     }

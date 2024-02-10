@@ -2,8 +2,11 @@ package com.nyangzzi.dayFlower.presentation.feature.locker
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nyangzzi.dayFlower.data.network.ResultWrapper
+import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.domain.usecase.firebase.FirebaseManager
 import com.nyangzzi.dayFlower.domain.usecase.firebase.GetUserUseCase
+import com.nyangzzi.dayFlower.domain.usecase.firebase.UpdateLockerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LockerViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
-    private val firebaseManager: FirebaseManager
+    private val firebaseManager: FirebaseManager,
+    private val updateLockerUseCase: UpdateLockerUseCase,
 ) : ViewModel() {
 
     private val _user = getUserUseCase()
@@ -40,7 +44,27 @@ class LockerViewModel @Inject constructor(
         viewModelScope.launch {
             when (event) {
                 is LockerEvent.SetShowDetail -> _uiState.update { it.copy(isShowDetail = event.isShown) }
+                is LockerEvent.UpdateLocker -> updateFlower(
+                    isSaved = event.isSaved,
+                    flower = event.flowerDetail
+                )
             }
+        }
+    }
+
+    private suspend fun updateFlower(isSaved: Boolean, flower: FlowerDetail) {
+        updateLockerUseCase(
+            isSaved = isSaved,
+            flower = flower
+        ).collect { result ->
+            when (result) {
+                is ResultWrapper.Success -> {
+
+                }
+
+                else -> {}
+            }
+
         }
     }
 

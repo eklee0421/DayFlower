@@ -66,6 +66,7 @@ fun FlowerCard(
     isShowDetail: Boolean = false,
     setShowDetail: (Boolean, Int) -> Unit = { _, _ -> },
     savedFlower: List<FlowerDetail> = emptyList(),
+    onSave: (Boolean, FlowerDetail) -> Unit = { _, _ -> },
     cardSize: FlowerCardSize = FlowerCardSize.LARGE
 ) {
 
@@ -79,6 +80,7 @@ fun FlowerCard(
                 flower.data,
                 cardSize = cardSize,
                 isSaved = savedFlower.any { it.dataNo == flower.data.dataNo },
+                onSave = onSave,
                 showDetail = { setShowDetail(true, flower.data.dataNo ?: -1) },
             )
             if (isShowDetail) {
@@ -105,9 +107,8 @@ private fun SuccessContent(
     cardSize: FlowerCardSize = FlowerCardSize.LARGE,
     showDetail: () -> Unit = {},
     isSaved: Boolean = false,
-    onSave: () -> Unit = {}
+    onSave: (Boolean, FlowerDetail) -> Unit = { _, _ -> }
 ) {
-
 
     Column(
         modifier = Modifier
@@ -166,7 +167,7 @@ private fun SuccessContent(
                     .size(cardSize.iconSize)
                     .align(Alignment.TopEnd)
                     .noRippleClickable {
-
+                        onSave(isSaved, flower)
                     },
                 colorFilter = if (isSaved) ColorFilter.tint(
                     SystemRed
