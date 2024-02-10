@@ -76,17 +76,21 @@ fun FlowerCard(
         }
 
         is ResultWrapper.Success -> {
-            SuccessContent(
-                flower.data,
-                cardSize = cardSize,
-                isSaved = savedFlower.any { it.dataNo == flower.data.dataNo },
-                onSave = onSave,
-                showDetail = { setShowDetail(true, flower.data.dataNo ?: -1) },
-            )
-            if (isShowDetail) {
-                FlowerDetailScreen(
-                    dataNo = flower.data.dataNo,
-                    onDismiss = { setShowDetail(false, -1) })
+            if (flower.data.dataNo == null) {
+                ErrorContent(msg = "오류가 발생했습니다.", cardSize = cardSize, onRefresh = onRefresh)
+            } else {
+                SuccessContent(
+                    flower.data,
+                    cardSize = cardSize,
+                    isSaved = savedFlower.any { it.dataNo == flower.data.dataNo },
+                    onSave = onSave,
+                    showDetail = { setShowDetail(true, flower.data.dataNo) },
+                )
+                if (isShowDetail) {
+                    FlowerDetailScreen(
+                        dataNo = flower.data.dataNo,
+                        onDismiss = { setShowDetail(false, -1) })
+                }
             }
         }
 
