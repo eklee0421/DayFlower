@@ -65,6 +65,7 @@ import com.nyangzzi.dayFlower.presentation.base.dialog.LogoutDialog
 import com.nyangzzi.dayFlower.presentation.base.dialog.RemoveUserDialog
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.presentation.base.util.noRippleClickable
+import com.nyangzzi.dayFlower.presentation.feature.mediaStore.MediaStoreScreen
 import com.nyangzzi.dayFlower.presentation.navigation.Screens
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray11
@@ -109,6 +110,12 @@ fun ProfileScreen(onNavigate: (Screens) -> Unit) {
         onConfirm = { viewModel.onEvent(ProfileEvent.Logout) },
         onDismiss = { viewModel.onEvent(ProfileEvent.SetShowLogoutDialog(false)) })
 
+
+    MediaStoreScreen(isShown = uiState.isSetProfileImg,
+        onDismiss = { viewModel.onEvent(ProfileEvent.SetProfileImg(false)) }
+    )
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -129,9 +136,16 @@ private fun ProfileContent(uiState: ProfileUiState, onEvent: (ProfileEvent) -> U
             .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
-        User(name = uiState.nickname, uiState.imgUrl, uiState.email, uiState.platform) {
-            onEvent(ProfileEvent.UpdateUserName(it))
-        }
+        User(name = uiState.nickname,
+            uiState.imgUrl,
+            uiState.email,
+            uiState.platform,
+            updateName = {
+                onEvent(ProfileEvent.UpdateUserName(it))
+            },
+            updateImg = {
+                onEvent(ProfileEvent.SetProfileImg(it))
+            })
         AppInfo(onEvent = onEvent)
     }
 }
@@ -143,7 +157,8 @@ private fun User(
     urlImg: String?,
     email: String,
     platform: String,
-    updateName: (String) -> Unit
+    updateName: (String) -> Unit,
+    updateImg: (Boolean) -> Unit
 ) {
     var isEditName by remember { mutableStateOf(false) }
     var editName by remember { mutableStateOf("") }
@@ -196,7 +211,7 @@ private fun User(
                     .size(32.dp)
                     .align(Alignment.BottomEnd)
                     .noRippleClickable {
-
+                        updateImg(true)
                     }
                     .shadow(10.dp, shape = CircleShape)
             )

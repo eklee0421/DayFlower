@@ -51,4 +51,6 @@ object Versions {
     const val GMS_GOOGLE_SERVICE = "4.4.0"
     const val GMS_OSS_LICENSES_PLUGIN = "0.10.5"
     const val GMS_PLAY_SERVICES_OSS_LICENSES = "17.0.0"
+
+    const val accompanist = "0.20.2"
 }

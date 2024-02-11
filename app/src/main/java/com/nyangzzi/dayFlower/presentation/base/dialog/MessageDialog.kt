@@ -129,7 +129,7 @@ private fun DialogView(title: String?, content: String?, isShowContentIcon: Bool
 }
 
 @Composable
-private fun BottomButton(confirmText: String, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+fun BottomButton(confirmText: String, onConfirm: () -> Unit, onDismiss: () -> Unit) {
 
     Row(
         modifier = Modifier

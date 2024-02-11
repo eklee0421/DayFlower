@@ -150,6 +150,11 @@ dependencies {
     implementation(Dependencies.datastore)
 
     implementation(Dependencies.gmsPlayServicesOssLicenses)
+
+    implementation("com.google.accompanist:accompanist-permissions:${Versions.accompanist}")
+    implementation("com.google.accompanist:accompanist-pager:${Versions.accompanist}")
+    implementation("com.google.accompanist:accompanist-placeholder:${Versions.accompanist}")
+
 }
 
 kapt {

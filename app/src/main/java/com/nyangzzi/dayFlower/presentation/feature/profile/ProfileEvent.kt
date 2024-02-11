@@ -8,4 +8,5 @@ sealed class ProfileEvent {
     object OpenSourceLicense : ProfileEvent()
     data class SetShowRemoveDialog(val isShown: Boolean) : ProfileEvent()
     data class SetShowLogoutDialog(val isShown: Boolean) : ProfileEvent()
+    data class SetProfileImg(val isShown: Boolean) : ProfileEvent()
 }
