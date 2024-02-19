@@ -7,9 +7,9 @@
 ▮ SNS 연동 로그인 (네이버/카카오)
 <div>
   <img width="260" alt="image" src="https://github.com/nyangzzi/DayFlower/assets/52737339/19ecebc4-2108-4575-bf66-0ac3aac6d576">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;
   <img width="260" alt="image" src="https://github.com/nyangzzi/DayFlower/assets/52737339/6db3465a-718f-43c4-99a2-7d976e06ab1a">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;
   <img width="260" alt="image" src="https://github.com/nyangzzi/DayFlower/assets/52737339/c6951741-5c5c-408c-95d7-1628beacd811">
 </div>
 
