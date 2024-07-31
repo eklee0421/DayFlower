@@ -1,4 +1,46 @@
 
+# Day flower (하루 한 송이)
+공공데이터([농촌진흥청 국립원예특작과학원_오늘의 꽃 조회 서비스(2.0)](https://www.data.go.kr/iim/api/selectAPIAcountView.do "공공데이터 포탈로 이동"))를 활용하여 오늘의 꽃을 조회하는 안드로이드 어플리케이션입니다. 
+
+# 패키지명
+com.nyangzzi.dayFlower
+
+# Build Version
++ kotlin 1.9.0
++ min sdk 28 
++ target sdk 33
++ jvm 17
+
+# Quick Start
+
+### install
+  ```
+  git clone https://github.com/nyangzzi/DayFlower.git
+  ```
+
+### set local.properties
+**작성 예시** naver_client_id="AbCDefG1234567" <br/>
+|키|값|포털|비고|
+|:---|:---|:---|:---|
+|search_flower_api_key|일반 인증키(Decoding)|[공공데이터 포털](https://www.data.go.kr/iim/api/selectAPIAcountView.do)|**농촌진흥청 국립원예특작과학원_오늘의 꽃 조회 서비스(2.0)** API 서비스 사용 신청 후 발급받은 키 사용|
+|naver_client_id|Client ID|[Naver Developers](https://developers.naver.com/apps/#/myapps/WwO1gYPUeqIDcDglx2yX/overview)|**네이버 개발** dayflower 안드로이드 어플리케이션 패키지 등록 후 발급받은 키 사용|
+|naver_client_secret|Client Secret|[Naver Developers](https://developers.naver.com/apps/#/myapps/WwO1gYPUeqIDcDglx2yX/overview)|**네이버 개발** dayflower 안드로이드 어플리케이션 패키지 등록 후 발급받은 키 사용|
+|kakao_api_key|네이티브 앱 키|[kakao developer](https://developers.kakao.com/console/app/1016039/config/appKey)|**카카오 개발** dayflower 안드로이드 어플리케이션 패키지 등록 후 발급받은 키 사용|
+|kakao_api_key_string|REST API 키|[kakao developer](https://developers.kakao.com/console/app/1016039/config/appKey)|**카카오 개발** dayflower 안드로이드 어플리케이션 패키지 등록 후 발급받은 키 사용|
+
+### set google-services.json
+&emsp;1. Firebase 콘솔로 이동 <br/>
+&emsp;&emsp;▮ Firebase Console에 로그인 > 새 프로젝트 생성/프로젝트 선택 
+<br/><br/>
+&emsp;2. google-services.json 다운로드 <br/>
+&emsp;&emsp;▮ 프로젝트 설정으로 이동 > "앱 설정"에서 "프로젝트 설정"으로 이동 > "일반" 탭에서 "Android 앱" 등록 >google-services.json 파일 다운
+<br/><br/>
+&emsp;3. 프로젝트에 google-services.json 추가 <br/>
+&emsp;&emsp;▮ google-services.json 파일 app 폴더에 추가 (파일 경로 dayFlower/app/google-services.json)
+
+<br/>
+
+
 
 # 전체 기능
 
