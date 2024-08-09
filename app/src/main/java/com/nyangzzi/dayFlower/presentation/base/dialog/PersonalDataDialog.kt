@@ -37,16 +37,10 @@ import com.nyangzzi.dayFlower.ui.theme.Gray4
 import com.nyangzzi.dayFlower.ui.theme.White
 
 @Composable
-fun PersonalDataDialog(isShow: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+fun PersonalDataDialog(isShow: Boolean, onDismiss: () -> Unit) {
 
     if (isShow) {
-        MessageDialog(
-            title = "앱 회원을 탈퇴하시겠습니까?",
-            content = "탈퇴 시 보관함을 비롯한 모든 개인정보가 삭제되며, 복구 불가능합니다.",
-            confirmText = "회원탈퇴",
-            onConfirm = onConfirm,
-            onDismiss = onDismiss
-        )
+        Dialog(onDismiss = onDismiss)
     }
 }
 
@@ -276,7 +270,7 @@ private fun Content() {
         )
 
         sectionList.mapIndexed { index, section ->
-            if (index != 0) Divider(color = Gray3, modifier  = Modifier.width(56.dp))
+            if (index != 0) Divider(color = Gray3, modifier = Modifier.width(56.dp))
             SectionContent(title = "제${index + 1}조 (${section.title})", contents = section.contents)
         }
 
@@ -288,8 +282,10 @@ private fun Content() {
 
 @Composable
 private fun SectionContent(title: String?, contents: List<ArticleData>) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxWidth()) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
         title?.let {
             Text(text = it, style = MaterialTheme.typography.titleMedium, color = Gray11)
         }
