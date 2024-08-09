@@ -64,6 +64,7 @@ class ProfileViewModel @Inject constructor(
                 is ProfileEvent.RemoveUser -> removeUser()
                 is ProfileEvent.SetShowLogoutDialog -> _uiState.update { it.copy(isLogoutDialog = event.isShown) }
                 is ProfileEvent.SetShowRemoveDialog -> _uiState.update { it.copy(isRemoveDialog = event.isShown) }
+                is ProfileEvent.SetPersonalDialog -> _uiState.update { it.copy(isPersonalDialog = event.isShown) }
                 ProfileEvent.OpenSourceLicense -> openSourceLicenseUseCase()
                 is ProfileEvent.SetProfileImg -> _uiState.update { it.copy(isSetProfileImg = event.isShown) }
             }
