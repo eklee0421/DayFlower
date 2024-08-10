@@ -10,4 +10,5 @@ sealed class ProfileEvent {
     data class SetPersonalDialog(val isShown: Boolean) : ProfileEvent()
     data class SetShowLogoutDialog(val isShown: Boolean) : ProfileEvent()
     data class SetProfileImg(val isShown: Boolean) : ProfileEvent()
+    data class SelectGallery(val isShown: Boolean) : ProfileEvent()
 }

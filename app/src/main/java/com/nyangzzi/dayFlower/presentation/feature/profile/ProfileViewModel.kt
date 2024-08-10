@@ -67,6 +67,7 @@ class ProfileViewModel @Inject constructor(
                 is ProfileEvent.SetPersonalDialog -> _uiState.update { it.copy(isPersonalDialog = event.isShown) }
                 ProfileEvent.OpenSourceLicense -> openSourceLicenseUseCase()
                 is ProfileEvent.SetProfileImg -> _uiState.update { it.copy(isSetProfileImg = event.isShown) }
+                is ProfileEvent.SelectGallery -> _uiState.update { it.copy(isSelectGallery = event.isShown) }
             }
         }
     }

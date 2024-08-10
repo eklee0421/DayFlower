@@ -45,7 +45,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -65,8 +64,8 @@ import com.nyangzzi.dayFlower.presentation.base.dialog.LogoutDialog
 import com.nyangzzi.dayFlower.presentation.base.dialog.PersonalDataDialog
 import com.nyangzzi.dayFlower.presentation.base.dialog.RemoveUserDialog
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
-import com.nyangzzi.dayFlower.presentation.base.util.noRippleClickable
 import com.nyangzzi.dayFlower.presentation.feature.mediaStore.MediaStoreScreen
+import com.nyangzzi.dayFlower.presentation.feature.mediaStore.SelectProfilePhotoDialog
 import com.nyangzzi.dayFlower.presentation.navigation.Screens
 import com.nyangzzi.dayFlower.ui.theme.Gray1
 import com.nyangzzi.dayFlower.ui.theme.Gray11
@@ -111,10 +110,17 @@ fun ProfileScreen(onNavigate: (Screens) -> Unit) {
         onConfirm = { viewModel.onEvent(ProfileEvent.Logout) },
         onDismiss = { viewModel.onEvent(ProfileEvent.SetShowLogoutDialog(false)) })
 
+    SelectProfilePhotoDialog(
+        isShow = uiState.isSetProfileImg,
+        onDismiss = { viewModel.onEvent(ProfileEvent.SetProfileImg(false)) },
+        deletePhoto = {},
+        syncSnsPhoto = {},
+        selectGallery = { viewModel.onEvent(ProfileEvent.SelectGallery(true)) }
+    )
 
     MediaStoreScreen(
-        isShown = uiState.isSetProfileImg,
-        onDismiss = { viewModel.onEvent(ProfileEvent.SetProfileImg(false)) }
+        isShown = uiState.isSelectGallery,
+        onDismiss = { viewModel.onEvent(ProfileEvent.SelectGallery(false)) }
     )
 
     PersonalDataDialog(
@@ -209,17 +215,21 @@ private fun User(
                 )
             }
 
-            Image(
-                painterResource(id = R.drawable.ic_edit_profile_img),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(32.dp)
-                    .align(Alignment.BottomEnd)
-                    .noRippleClickable {
-                        updateImg(true)
-                    }
-                    .shadow(10.dp, shape = CircleShape)
-            )
+            //todo image 서버 저장 문제로 기능 임시 해제
+//            Icon(
+//                if (urlImg.isNullOrEmpty()) Icons.Rounded.Refresh else Icons.Rounded.Delete,
+//                contentDescription = null,
+//                tint = Gray6,
+//                modifier = Modifier
+//                    .size(32.dp)
+//                    .background(color = Gray2, shape = CircleShape)
+//                    .align(Alignment.BottomEnd)
+//                    .padding(6.dp)
+//                    .noRippleClickable {
+//                        updateImg(true)
+//                    }
+//                    .shadow(10.dp, shape = CircleShape)
+//            )
         }
 
         Text(

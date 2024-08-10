@@ -13,6 +13,7 @@ data class ProfileUiState(
     val isLogoutDialog: Boolean = false,
 
     val isSetProfileImg: Boolean = false,
+    val isSelectGallery: Boolean = false,
 
     val isPersonalDialog: Boolean = false,
 )
