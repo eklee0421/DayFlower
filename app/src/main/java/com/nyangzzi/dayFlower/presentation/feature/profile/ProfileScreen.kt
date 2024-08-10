@@ -62,6 +62,7 @@ import com.nyangzzi.dayFlower.BuildConfig
 import com.nyangzzi.dayFlower.R
 import com.nyangzzi.dayFlower.domain.model.common.PLATFORM_KAKAO
 import com.nyangzzi.dayFlower.presentation.base.dialog.LogoutDialog
+import com.nyangzzi.dayFlower.presentation.base.dialog.PersonalDataDialog
 import com.nyangzzi.dayFlower.presentation.base.dialog.RemoveUserDialog
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
 import com.nyangzzi.dayFlower.presentation.base.util.noRippleClickable
@@ -111,10 +112,14 @@ fun ProfileScreen(onNavigate: (Screens) -> Unit) {
         onDismiss = { viewModel.onEvent(ProfileEvent.SetShowLogoutDialog(false)) })
 
 
-    MediaStoreScreen(isShown = uiState.isSetProfileImg,
+    MediaStoreScreen(
+        isShown = uiState.isSetProfileImg,
         onDismiss = { viewModel.onEvent(ProfileEvent.SetProfileImg(false)) }
     )
 
+    PersonalDataDialog(
+        isShow = uiState.isPersonalDialog,
+        onDismiss = { viewModel.onEvent(ProfileEvent.SetPersonalDialog(false)) })
 
     Box(
         modifier = Modifier
@@ -399,7 +404,7 @@ private fun AppInfo(onEvent: (ProfileEvent) -> Unit) {
 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             ProfileTextBtn("개인정보 처리방침", textColor = Gray6) {
-
+                onEvent(ProfileEvent.SetPersonalDialog(true))
             }
         }
 

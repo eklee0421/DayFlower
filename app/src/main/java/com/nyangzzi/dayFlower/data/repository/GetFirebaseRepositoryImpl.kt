@@ -10,6 +10,8 @@ import com.nyangzzi.dayFlower.domain.repository.GetFirebaseRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -21,12 +23,16 @@ class GetFirebaseRepositoryImpl : GetFirebaseRepository {
     companion object {
         val auth = FirebaseAuth.getInstance()
 
-        const val commonKey = "common"
-        const val userKey = "user"
-        const val lockerFlowerKey = "lockerFlower"
+        const val COMMON_KEY = "common"
+        const val USER_KEY = "user"
+        const val LOCKER_FLOWER_KEY = "lockerFlower"
 
-        var searchWords: List<String> = emptyList()
-        var lockerFlower: List<FlowerDetail> = emptyList()
+        private val _searchWords = MutableStateFlow<List<String>>(emptyList())
+        val searchWords: StateFlow<List<String>> get() = _searchWords
+
+        private val _lockerFlower = MutableStateFlow<List<FlowerDetail>>(emptyList())
+        val lockerFlower: StateFlow<List<FlowerDetail>> get() = _lockerFlower
+
 
     }
 
@@ -35,11 +41,11 @@ class GetFirebaseRepositoryImpl : GetFirebaseRepository {
         getSearchWords().zip(getLocker()) { words, locker ->
 
             if (words is ResultWrapper.Success) {
-                searchWords = words.data
+                _searchWords.value = words.data
             }
 
             if (locker is ResultWrapper.Success) {
-                lockerFlower = locker.data
+                _lockerFlower.value = locker.data
             }
 
             words is ResultWrapper.Success && locker is ResultWrapper.Success
@@ -50,24 +56,16 @@ class GetFirebaseRepositoryImpl : GetFirebaseRepository {
     }.onStart { emit(ResultWrapper.Loading) }
         .flowOn(Dispatchers.IO)
 
-    override fun locker(): Flow<List<FlowerDetail>> = flow {
-        while (true) {
-            emit(lockerFlower)
-            kotlinx.coroutines.delay(1000)
-        }
+    override fun locker(): Flow<List<FlowerDetail>> = lockerFlower
 
-    }.flowOn(Dispatchers.IO)
-
-    override fun searchWords(): Flow<List<String>> = flow {
-        emit(searchWords)
-    }.flowOn(Dispatchers.IO)
+    override fun searchWords(): Flow<List<String>> = searchWords
 
     override suspend fun getSearchWords(): Flow<ResultWrapper<List<String>>> =
         callbackFlow {
 
             val db = FirebaseFirestore.getInstance()
 
-            db.collection(commonKey)   // 작업할 컬렉션
+            db.collection(COMMON_KEY)   // 작업할 컬렉션
                 .get()      // 문서 가져오기
                 .addOnSuccessListener { result ->
                     trySend(
@@ -96,9 +94,9 @@ class GetFirebaseRepositoryImpl : GetFirebaseRepository {
             val db = FirebaseFirestore.getInstance()
 
             auth.currentUser?.uid?.let {
-                db.collection(userKey)   // 작업할 컬렉션
+                db.collection(USER_KEY)   // 작업할 컬렉션
                     .document(it)
-                    .collection(lockerFlowerKey)
+                    .collection(LOCKER_FLOWER_KEY)
                     .document(flower.dataNo.toString())
                     .set(flower)      // 문서 업데이트
                     .addOnSuccessListener { result ->
@@ -119,9 +117,9 @@ class GetFirebaseRepositoryImpl : GetFirebaseRepository {
             val db = FirebaseFirestore.getInstance()
 
             auth.currentUser?.uid?.let {
-                db.collection(userKey)   // 작업할 컬렉션
+                db.collection(USER_KEY)   // 작업할 컬렉션
                     .document(it)
-                    .collection(lockerFlowerKey)
+                    .collection(LOCKER_FLOWER_KEY)
                     .document(dataNo.toString())
                     .delete()     // 문서 업데이트
                     .addOnSuccessListener { result ->
@@ -142,19 +140,19 @@ class GetFirebaseRepositoryImpl : GetFirebaseRepository {
             val db = FirebaseFirestore.getInstance()
 
             auth.currentUser?.uid?.let {
-                db.collection(userKey)   // 작업할 컬렉션
+                db.collection(USER_KEY)   // 작업할 컬렉션
                     .document(it)
-                    .collection(lockerFlowerKey)
+                    .collection(LOCKER_FLOWER_KEY)
                     .get()      // 문서 가져오기
                     .addOnSuccessListener { result ->
 
-                        lockerFlower = result.documents.map { document ->
+                        _lockerFlower.value = result.documents.map { document ->
                             document.toObject<FlowerDetail>() ?: FlowerDetail()
                         }.toList()
 
                         trySend(
                             ResultWrapper.Success(
-                                lockerFlower
+                                lockerFlower.value
                             )
                         )
 
@@ -170,7 +168,7 @@ class GetFirebaseRepositoryImpl : GetFirebaseRepository {
 
     override fun checkIsSaved(dataNo: Int): Flow<Boolean> = flow {
         emit(
-            lockerFlower.any { it.dataNo == dataNo }
+            lockerFlower.value.any { it.dataNo == dataNo }
         )
     }.flowOn(Dispatchers.IO)
 
