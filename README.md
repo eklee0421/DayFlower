@@ -19,14 +19,14 @@ com.nyangzzi.dayFlower
   ```
 
 ### set local.properties
-**작성 예시** naver_client_id="AbCDefG1234567" <br/>
+**작성 예시** naver_client_id="AbCDefG1234567" / kakao_api_key 제외하고 큰 따옴표 내에 키 작성 <br/>
 |키|값|포털|비고|
 |:---|:---|:---|:---|
 |search_flower_api_key|일반 인증키(Decoding)|[공공데이터 포털](https://www.data.go.kr/iim/api/selectAPIAcountView.do)|**농촌진흥청 국립원예특작과학원_오늘의 꽃 조회 서비스(2.0)** API 서비스 사용 신청 후 발급받은 키 사용|
 |naver_client_id|Client ID|[Naver Developers](https://developers.naver.com/apps/#/myapps/WwO1gYPUeqIDcDglx2yX/overview)|**네이버 개발** dayflower 안드로이드 어플리케이션 패키지 등록 후 발급받은 키 사용|
 |naver_client_secret|Client Secret|[Naver Developers](https://developers.naver.com/apps/#/myapps/WwO1gYPUeqIDcDglx2yX/overview)|**네이버 개발** dayflower 안드로이드 어플리케이션 패키지 등록 후 발급받은 키 사용|
-|kakao_api_key|네이티브 앱 키|[kakao developer](https://developers.kakao.com/console/app/1016039/config/appKey)|**카카오 개발** dayflower 안드로이드 어플리케이션 패키지 등록 후 발급받은 키 사용|
-|kakao_api_key_string|REST API 키|[kakao developer](https://developers.kakao.com/console/app/1016039/config/appKey)|**카카오 개발** dayflower 안드로이드 어플리케이션 패키지 등록 후 발급받은 키 사용|
+|kakao_api_key|네이티브 앱 키|[kakao developer](https://developers.kakao.com/console/app/1016039/config/appKey)|**카카오 개발** dayflower 안드로이드 어플리케이션 패키지 등록 후 발급받은 키 사용 / 단순 키만 작성|
+|kakao_api_key_string|네이티브 앱 키|[kakao developer](https://developers.kakao.com/console/app/1016039/config/appKey)|**카카오 개발** dayflower 안드로이드 어플리케이션 패키지 등록 후 발급받은 키 사용 / string 타입(큰 따옴표 안에)으로 작성 ex)"네이티브 앱 키"|
 
 ### set google-services.json
 &emsp;1. Firebase 콘솔로 이동 <br/>
