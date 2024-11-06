@@ -2,7 +2,6 @@ package com.nyangzzi.dayFlower.presentation.navigation
 
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -22,7 +21,7 @@ fun NavGraph(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = Screens.Login.route
+        startDestination = Screens.MainFlower.route
     ) {
 
         composable(route = Screens.Login.route) {

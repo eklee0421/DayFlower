@@ -87,6 +87,7 @@ private fun HomeContent(uiState: HomeUiState, onEvent: (HomeEvent) -> Unit) {
             isShowDetail = uiState.isShowDetail && uiState.isShowDataNo == null,
             savedFlower = uiState.savedFlower,
             setShowDetail = { onEvent(HomeEvent.SetShowDetail(it)) },
+            isLogin = uiState.user?.uid?.isNotBlank() == true,
             updateLocker = { isSaved, flower -> onEvent(HomeEvent.UpdateLocker(isSaved, flower)) })
 
         if (uiState.recentViewFlower.isNotEmpty()) {
@@ -96,6 +97,7 @@ private fun HomeContent(uiState: HomeUiState, onEvent: (HomeEvent) -> Unit) {
                 isShowDetail = uiState.isShowDetail,
                 savedFlower = uiState.savedFlower,
                 isShowDataNo = uiState.isShowDataNo ?: -1,
+                isLogin = uiState.user?.uid?.isNotBlank() == true,
                 setShowDetail = { isShown, dataNo ->
                     onEvent(
                         HomeEvent.SetShowDetail(
@@ -137,7 +139,7 @@ private fun HomeTop(uiState: HomeUiState) {
         )
 
         Text(
-            text = "${uiState.user?.displayName}님, 오늘도 좋은 날이에요.\n오늘의 꽃을 추천드릴게요.",
+            text = "${if (uiState.user?.displayName.isNullOrEmpty()) "" else "${uiState.user?.displayName}님, "}오늘도 좋은 날이에요.\n오늘의 꽃을 추천드릴게요.",
             style = MaterialTheme.typography.headlineSmall,
             color = Gray11,
             modifier = Modifier.padding(top = 65.dp, start = 20.dp)
@@ -151,6 +153,7 @@ private fun TodayFlower(
     flowerDetail: ResultWrapper<FlowerDetail>,
     onRefresh: () -> Unit,
     savedFlower: List<FlowerDetail>,
+    isLogin: Boolean,
     isShowDetail: Boolean,
     setShowDetail: (Boolean) -> Unit,
     updateLocker: (Boolean, FlowerDetail) -> Unit
@@ -174,6 +177,7 @@ private fun TodayFlower(
             savedFlower = savedFlower,
             isShowDetail = isShowDetail,
             setShowDetail = { it, _ -> setShowDetail(it) },
+            isLogin = isLogin,
             onSave = updateLocker
         )
 
@@ -188,6 +192,7 @@ private fun RecentViewFlower(
     savedFlower: List<FlowerDetail>,
     isShowDetail: Boolean,
     isShowDataNo: Int,
+    isLogin: Boolean,
     setShowDetail: (Boolean, Int) -> Unit,
     updateLocker: (Boolean, FlowerDetail) -> Unit
 ) {
@@ -253,6 +258,7 @@ private fun RecentViewFlower(
                                 setShowDetail(isShown, dataNo)
                             }
                         },
+                        isLogin = isLogin,
                         onSave = updateLocker,
                         cardSize = FlowerCardSize.SMALL
                     )

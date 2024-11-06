@@ -5,5 +5,6 @@ import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 
 data class FlowerDetailUiState(
     val flowerDetail: ResultWrapper<FlowerDetail> = ResultWrapper.Loading,
+    val isLogin: Boolean = false,
     val isSaved: Boolean = false
 )

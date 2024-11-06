@@ -7,24 +7,43 @@ import com.nyangzzi.dayFlower.domain.model.common.FlowerDetail
 import com.nyangzzi.dayFlower.domain.model.flowerDetail.RequestFlowerDetail
 import com.nyangzzi.dayFlower.domain.usecase.datastore.RecentViewFlowerUseCase
 import com.nyangzzi.dayFlower.domain.usecase.firebase.CheckIsSavedUseCase
+import com.nyangzzi.dayFlower.domain.usecase.firebase.GetUserUseCase
 import com.nyangzzi.dayFlower.domain.usecase.firebase.UpdateLockerUseCase
 import com.nyangzzi.dayFlower.domain.usecase.network.GetFlowerDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FlowerDetailViewModel @Inject constructor(
+    private val getUserUseCase: GetUserUseCase,
     val getFlowerDetailUseCase: GetFlowerDetailUseCase,
     private val updateLockerUseCase: UpdateLockerUseCase,
     private val checkIsSavedUseCase: CheckIsSavedUseCase,
     private val recentViewFlowerUseCase: RecentViewFlowerUseCase
 ) : ViewModel() {
+
+    private val _user = getUserUseCase()
+
     private val _uiState = MutableStateFlow(FlowerDetailUiState())
-    val uiState: StateFlow<FlowerDetailUiState> = _uiState
+    val uiState: StateFlow<FlowerDetailUiState> = combine(
+        _uiState,
+        _user,
+    ) { state, user ->
+        state.copy(
+            isLogin = user?.uid?.isNotBlank() == true
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(1000),
+        FlowerDetailUiState()
+    )
 
     fun onEvent(event: FlowerDetailOnEvent) {
         viewModelScope.launch {

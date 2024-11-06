@@ -329,7 +329,7 @@ private fun SuccessSearchFlower(
                     style = MaterialTheme.typography.bodyMedium
                 )
 
-                if (uiState.selectedType == SearchTapType.MEAN && uiState.recommendedWords.isNotEmpty()) {
+                if (uiState.selectedType == SearchTapType.MEAN) {
 
                     Column(
                         modifier = Modifier.padding(top = 30.dp)
@@ -398,6 +398,7 @@ private fun SuccessSearchFlower(
                             selectedItem = dataNo
                             setShowDetail(isShown)
                         },
+                        isLogin = false,
                         onSave = onSave
                     )
                 }
@@ -448,6 +449,7 @@ private fun LoadingFlower() {
         items(4) {
             FlowerCard(
                 flower = ResultWrapper.Loading,
+                isLogin = false,
                 cardSize = FlowerCardSize.SMALL
             )
         }

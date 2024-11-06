@@ -63,6 +63,7 @@ import com.nyangzzi.dayFlower.ui.theme.White
 fun FlowerCard(
     flower: ResultWrapper<FlowerDetail>,
     onRefresh: () -> Unit = {},
+    isLogin: Boolean,
     isShowDetail: Boolean = false,
     setShowDetail: (Boolean, Int) -> Unit = { _, _ -> },
     savedFlower: List<FlowerDetail> = emptyList(),
@@ -82,6 +83,7 @@ fun FlowerCard(
                 SuccessContent(
                     flower.data,
                     cardSize = cardSize,
+                    isLogin = isLogin,
                     isSaved = savedFlower.any { it.dataNo == flower.data.dataNo },
                     onSave = onSave,
                     showDetail = { setShowDetail(true, flower.data.dataNo) },
@@ -110,6 +112,7 @@ private fun SuccessContent(
     flower: FlowerDetail,
     cardSize: FlowerCardSize = FlowerCardSize.LARGE,
     showDetail: () -> Unit = {},
+    isLogin: Boolean,
     isSaved: Boolean = false,
     onSave: (Boolean, FlowerDetail) -> Unit = { _, _ -> }
 ) {
@@ -161,23 +164,25 @@ private fun SuccessContent(
                 inactiveColor = PrimaryAlpha50
             )
 
-            Image(
-                painter = painterResource(
-                    id = if (isSaved) R.drawable.ic_empty_heart_outline
-                    else R.drawable.ic_empty_heart
-                ),
-                modifier = Modifier
-                    .padding(12.dp)
-                    .size(cardSize.iconSize)
-                    .align(Alignment.TopEnd)
-                    .noRippleClickable {
-                        onSave(isSaved, flower)
-                    },
-                colorFilter = if (isSaved) ColorFilter.tint(
-                    SystemRed
-                ) else null,
-                contentDescription = null
-            )
+            if (isLogin) {
+                Image(
+                    painter = painterResource(
+                        id = if (isSaved) R.drawable.ic_empty_heart_outline
+                        else R.drawable.ic_empty_heart
+                    ),
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .size(cardSize.iconSize)
+                        .align(Alignment.TopEnd)
+                        .noRippleClickable {
+                            onSave(isSaved, flower)
+                        },
+                    colorFilter = if (isSaved) ColorFilter.tint(
+                        SystemRed
+                    ) else null,
+                    contentDescription = null
+                )
+            }
         }
 
         Column(
@@ -340,6 +345,7 @@ fun PreviewSuccessFlowerCard() {
             fEngNm = "영문",
             fContent = "설명입니다."
         ),
+        isLogin = true,
         isSaved = false
     )
 }

@@ -91,6 +91,7 @@ fun FlowerDetailScreen(
         Content(
             flowerDetail = uiState.flowerDetail,
             isSaved = uiState.isSaved,
+            isLogin = uiState.isLogin,
             onRefresh = {
                 viewModel.onEvent(FlowerDetailOnEvent.OnSearchDetail(dataNo))
             },
@@ -110,6 +111,7 @@ fun FlowerDetailScreen(
 private fun Content(
     flowerDetail: ResultWrapper<FlowerDetail>,
     isSaved: Boolean,
+    isLogin: Boolean,
     onRefresh: () -> Unit,
     onDismiss: () -> Unit,
     onSave: () -> Unit
@@ -130,7 +132,12 @@ private fun Content(
             }
 
             is ResultWrapper.Success -> {
-                SuccessContent(flowerDetail.data, isSaved = isSaved, onSave = onSave)
+                SuccessContent(
+                    isLogin = isLogin,
+                    flowerDetail.data,
+                    isSaved = isSaved,
+                    onSave = onSave
+                )
             }
 
             ResultWrapper.None -> {}
@@ -263,6 +270,7 @@ private fun LoadingContent() {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun SuccessContent(
+    isLogin: Boolean,
     flower: FlowerDetail,
     isSaved: Boolean,
     onSave: () -> Unit
@@ -351,16 +359,18 @@ private fun SuccessContent(
                         )
                     }
 
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_empty_heart_outline),
-                        modifier = Modifier
-                            .size(24.dp)
-                            .noRippleClickable {
-                                onSave()
-                            },
-                        colorFilter = if (isSaved) ColorFilter.tint(SystemRed) else null,
-                        contentDescription = null
-                    )
+                    if (isLogin) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_empty_heart_outline),
+                            modifier = Modifier
+                                .size(24.dp)
+                                .noRippleClickable {
+                                    onSave()
+                                },
+                            colorFilter = if (isSaved) ColorFilter.tint(SystemRed) else null,
+                            contentDescription = null
+                        )
+                    }
 
                 }
 

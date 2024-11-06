@@ -45,7 +45,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -65,7 +64,6 @@ import com.nyangzzi.dayFlower.presentation.base.dialog.LogoutDialog
 import com.nyangzzi.dayFlower.presentation.base.dialog.PersonalDataDialog
 import com.nyangzzi.dayFlower.presentation.base.dialog.RemoveUserDialog
 import com.nyangzzi.dayFlower.presentation.base.util.Utils
-import com.nyangzzi.dayFlower.presentation.base.util.noRippleClickable
 import com.nyangzzi.dayFlower.presentation.feature.mediaStore.MediaStoreScreen
 import com.nyangzzi.dayFlower.presentation.navigation.Screens
 import com.nyangzzi.dayFlower.ui.theme.Gray1
@@ -151,7 +149,7 @@ private fun ProfileContent(uiState: ProfileUiState, onEvent: (ProfileEvent) -> U
             updateImg = {
                 onEvent(ProfileEvent.SetProfileImg(it))
             })
-        AppInfo(onEvent = onEvent)
+        AppInfo(isLogin = uiState.nickname.isNotBlank(), onEvent = onEvent)
     }
 }
 
@@ -169,10 +167,13 @@ private fun User(
     var editName by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         Text(
-            text = "${name}님",
+            text = if (name.isBlank()) "" else "${name}님",
             style = MaterialTheme.typography.titleSmall,
             color = Gray11,
             modifier = Modifier.height(56.dp),
@@ -209,6 +210,7 @@ private fun User(
                 )
             }
 
+            /* 사용자 이미지 변경 기능 제거
             Image(
                 painterResource(id = R.drawable.ic_edit_profile_img),
                 contentDescription = null,
@@ -219,132 +221,152 @@ private fun User(
                         updateImg(true)
                     }
                     .shadow(10.dp, shape = CircleShape)
-            )
+            )*/
         }
 
-        Text(
-            "프로필 설정",
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.labelMedium,
-            color = Gray11
-        )
+        if (name.isNotBlank()) {
+            Text(
+                "프로필 설정",
+                modifier = Modifier.fillMaxWidth(),
+                style = MaterialTheme.typography.labelMedium,
+                color = Gray11
+            )
 
-        Spacer(modifier = Modifier.height(11.dp))
+            Spacer(modifier = Modifier.height(11.dp))
 
-        val textFieldColor = TextFieldDefaults.textFieldColors(
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-            containerColor = Color.Transparent,
-            cursorColor = Gray4,
-            placeholderColor = Gray5,
-            disabledTextColor = Gray6,
-            textColor = Gray11
-        )
+            val textFieldColor = TextFieldDefaults.textFieldColors(
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                containerColor = Color.Transparent,
+                cursorColor = Gray4,
+                placeholderColor = Gray5,
+                disabledTextColor = Gray6,
+                textColor = Gray11
+            )
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(110.dp)
-                .background(color = Gray1, shape = RoundedCornerShape(10.dp))
-        ) {
-
-            Row(
+            Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth()
+                    .height(110.dp)
+                    .background(color = Gray1, shape = RoundedCornerShape(10.dp))
             ) {
 
-                val scope = rememberCoroutineScope()
-
-                LaunchedEffect(name) {
-                    editName = name
-                    isEditName = false
-                }
-
-                TextField(
-                    value = editName,
-                    onValueChange = { editName = it },
-                    //readOnly = !isEditName,
-                    enabled = isEditName,
-                    textStyle = MaterialTheme.typography.bodyMedium,
-                    singleLine = true,
-                    colors = textFieldColor,
-                    placeholder = {
-                        Text(text = "닉네임을 입력하세요", style = MaterialTheme.typography.bodyMedium)
-                    },
+                Row(
                     modifier = Modifier
-                        .focusRequester(focusRequester)
-                        .weight(1f),
-                )
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    val scope = rememberCoroutineScope()
+
+                    LaunchedEffect(name) {
+                        editName = name
+                        isEditName = false
+                    }
+
+                    TextField(
+                        value = editName,
+                        onValueChange = { editName = it },
+                        //readOnly = !isEditName,
+                        enabled = isEditName,
+                        textStyle = MaterialTheme.typography.bodyMedium,
+                        singleLine = true,
+                        colors = textFieldColor,
+                        placeholder = {
+                            Text(text = "닉네임을 입력하세요", style = MaterialTheme.typography.bodyMedium)
+                        },
+                        modifier = Modifier
+                            .focusRequester(focusRequester)
+                            .weight(1f),
+                    )
 
 
-                Box(modifier = Modifier
-                    .padding(end = 12.dp)
-                    .clip(shape = RoundedCornerShape(6.dp))
-                    .clickable {
-                        scope.launch {
-                            isEditName = !isEditName
-                            delay(100)
-                            if (!isEditName) editName = name
-                            else focusRequester.requestFocus()
+                    Box(modifier = Modifier
+                        .padding(end = 12.dp)
+                        .clip(shape = RoundedCornerShape(6.dp))
+                        .clickable {
+                            scope.launch {
+                                isEditName = !isEditName
+                                delay(100)
+                                if (!isEditName) editName = name
+                                else focusRequester.requestFocus()
+                            }
+                        }
+                        .padding(2.dp)
+                    ) {
+                        if (isEditName) {
+                            Text(
+                                "취소",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color(0xFF9090A0)
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(
+                                    id = R.drawable.ic_edit_pen
+                                ),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
                         }
                     }
-                    .padding(2.dp)
-                ) {
-                    if (isEditName) {
-                        Text(
-                            "취소",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFF9090A0)
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(
-                                id = R.drawable.ic_edit_pen
-                            ),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
                 }
-            }
 
-            Divider(color = Gray3)
+                Divider(color = Gray3)
 
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-
-                Image(
-                    painter = painterResource(
-                        id =
-                        if (platform == PLATFORM_KAKAO) R.drawable.ic_login_kakao
-                        else R.drawable.ic_login_naver
-                    ), contentDescription = null,
+                Row(
                     modifier = Modifier
-                        .size(20.dp)
-                        .background(
-                            color = if (platform == PLATFORM_KAKAO) Color(0xFFFEE500)
-                            else Color(0xFF03C75A),
-                            shape = RoundedCornerShape(6.dp)
-                        )
-                        .padding(6.dp)
-                )
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
 
+                    Image(
+                        painter = painterResource(
+                            id =
+                            if (platform == PLATFORM_KAKAO) R.drawable.ic_login_kakao
+                            else R.drawable.ic_login_naver
+                        ), contentDescription = null,
+                        modifier = Modifier
+                            .size(20.dp)
+                            .background(
+                                color = if (platform == PLATFORM_KAKAO) Color(0xFFFEE500)
+                                else Color(0xFF03C75A),
+                                shape = RoundedCornerShape(6.dp)
+                            )
+                            .padding(6.dp)
+                    )
+
+                    Text(
+                        text = email, style = MaterialTheme.typography.bodyMedium,
+                        color = Gray6
+                    )
+                }
+
+
+            }
+        } else {
+            Button(
+                onClick = {
+                    updateName(editName)
+                }, modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black
+                ),
+                shape = RoundedCornerShape(8.dp)
+            ) {
                 Text(
-                    text = email, style = MaterialTheme.typography.bodyMedium,
-                    color = Gray6
+                    text = "로그인이 필요합니다",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = White
                 )
             }
-
-
         }
 
         if (isEditName) {
@@ -370,11 +392,15 @@ private fun User(
                 )
             }
         }
+
     }
 }
 
 @Composable
-private fun AppInfo(onEvent: (ProfileEvent) -> Unit) {
+private fun AppInfo(
+    isLogin: Boolean,
+    onEvent: (ProfileEvent) -> Unit
+) {
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         ProfileBtn(text = "앱 정보")
@@ -392,14 +418,17 @@ private fun AppInfo(onEvent: (ProfileEvent) -> Unit) {
             }
         }
 
-        ProfileBtn(text = "계정설정") {
-            ProfileTextBtn("로그아웃") {
-                onEvent(ProfileEvent.SetShowLogoutDialog(true))
-            }
-            ProfileTextBtn("계정 삭제") {
-                onEvent(ProfileEvent.SetShowRemoveDialog(true))
-            }
+        if (isLogin) {
 
+            ProfileBtn(text = "계정설정") {
+                ProfileTextBtn("로그아웃") {
+                    onEvent(ProfileEvent.SetShowLogoutDialog(true))
+                }
+                ProfileTextBtn("계정 삭제") {
+                    onEvent(ProfileEvent.SetShowRemoveDialog(true))
+                }
+
+            }
         }
 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {

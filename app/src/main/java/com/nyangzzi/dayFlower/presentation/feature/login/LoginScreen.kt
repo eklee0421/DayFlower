@@ -1,6 +1,7 @@
 package com.nyangzzi.dayFlower.presentation.feature.login
 
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -23,11 +24,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -85,49 +86,28 @@ private fun LoginContent(
         bottomBar = {
             if (uiState.isBtnVisible) {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Button(
-                        onClick = {
-                            onEvent(LoginEvent.KakaoLogin)
-                        },
-                        modifier = Modifier
-                            .height(50.dp)
-                            .fillMaxWidth(),
+
+
+                    /* 보안 이슈로 기능 삭제
+                   LoginButton(
+                        icon = R.drawable.ic_login_kakao,
+                        title = "카카오로 시작하기",
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFFEE500),
                             contentColor = Color(0xFF000000),
                         ),
-                        shape = RoundedCornerShape(size = 12.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_login_kakao),
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .size(16.dp),
-                            contentDescription = "kakao"
-                        )
-                        Text("카카오로 시작하기")
-                    }
+                        onClick = { onEvent(LoginEvent.KakaoLogin) }
+                    )
 
-                    Button(
-                        onClick = { onEvent(LoginEvent.NaverLogin) },
-                        modifier = Modifier
-                            .height(50.dp)
-                            .fillMaxWidth(),
+                    LoginButton(
+                        icon = R.drawable.ic_login_naver,
+                        title = "네이버로 시작하기",
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF03C75A),
                             contentColor = Color(0xFFFFFFFF),
                         ),
-                        shape = RoundedCornerShape(size = 12.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_login_naver),
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .size(16.dp),
-                            contentDescription = "kakao"
-                        )
-                        Text("네이버로 시작하기")
-                    }
+                        onClick = { onEvent(LoginEvent.NaverLogin) }
+                    )*/
                 }
             } else {
                 Column(
@@ -167,4 +147,36 @@ private fun LoginContent(
             }
         }
     }
+}
+
+@Composable
+private fun LoginButton(
+    @DrawableRes icon: Int,
+    title: String,
+    colors: ButtonColors,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .height(50.dp)
+            .fillMaxWidth(),
+        colors = colors,
+        shape = RoundedCornerShape(size = 12.dp),
+    ) {
+        Image(
+            painter = painterResource(id = icon),
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(16.dp),
+            contentDescription = "kakao"
+        )
+        Text(title)
+    }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    LoginContent(onEvent = {}, onNavigate = {}, uiState = LoginUiState())
 }

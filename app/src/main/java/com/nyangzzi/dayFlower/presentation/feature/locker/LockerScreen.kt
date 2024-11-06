@@ -74,28 +74,34 @@ private fun LockerContent(
     savedFlower: List<FlowerDetail>, onEvent: (LockerEvent) -> Unit
 ) {
 
-    Column(
-        modifier = Modifier
-            .statusBarsPadding()
-            .fillMaxSize()
-        /*.verticalScroll(rememberScrollState())*/,
-        verticalArrangement = Arrangement.spacedBy(30.dp)
-    ) {
+    if (uiState.user?.displayName != null) {
 
 
-        Top(user = uiState.user)
+        Column(
+            modifier = Modifier
+                .statusBarsPadding()
+                .fillMaxSize()
+            /*.verticalScroll(rememberScrollState())*/,
+            verticalArrangement = Arrangement.spacedBy(30.dp)
+        ) {
 
-        SavedFlower(
-            flower = savedFlower,
-            savedFlower = uiState.savedFlower,
-            isShowDetail = uiState.isShowDetail,
-            setShowDetail = {
-                onEvent(LockerEvent.SetShowDetail(it))
-            },
-            onSave = { isSaved, flower ->
-                onEvent(LockerEvent.UpdateLocker(isSaved, flower))
-            }
-        )
+
+            Top(user = uiState.user)
+
+            SavedFlower(
+                flower = savedFlower,
+                savedFlower = uiState.savedFlower,
+                isShowDetail = uiState.isShowDetail,
+                setShowDetail = {
+                    onEvent(LockerEvent.SetShowDetail(it))
+                },
+                onSave = { isSaved, flower ->
+                    onEvent(LockerEvent.UpdateLocker(isSaved, flower))
+                }
+            )
+        }
+    } else {
+        //todo 로그인 유도 기능 추가
     }
 }
 
@@ -194,6 +200,7 @@ private fun SavedFlower(
                             selectedItem = dataNo
                             setShowDetail(isShown)
                         },
+                        isLogin = true,
                         onSave = onSave
                     )
                 }
